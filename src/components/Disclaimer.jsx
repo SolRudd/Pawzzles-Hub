@@ -21,9 +21,9 @@ export default function Disclaimer({
       <p className="leading-relaxed">
         {children || (
           <>
-            This is a general guide only. Always check food packaging and speak
-            to a qualified professional if your dog has health issues or
-            special dietary needs.
+            General guidance only. Always check food packaging, supervise dogs
+            with new toys or feeding products, and ask a qualified professional
+            if your dog has individual needs.
           </>
         )}
       </p>

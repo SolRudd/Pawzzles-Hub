@@ -18,7 +18,7 @@ export default function TrustSection() {
           <div className="max-w-2xl">
             <p className="eyebrow">About Pawzzles</p>
             <h2 className="mt-2 font-display text-3xl sm:text-4xl lg:text-5xl text-navy inline-flex items-center gap-3">
-              Why trust Pawzzles?
+              Why Pawzzles?
               <PawMark size={24} color="#f58232" />
             </h2>
             <p className="mt-2 text-muted">
@@ -50,9 +50,9 @@ export default function TrustSection() {
         </div>
 
         <p className="mt-10 text-xs text-muted text-center max-w-3xl mx-auto">
-          The information on Pawzzles is general guidance only and is not
-          medical or veterinary advice. Always speak to a qualified
-          professional if your dog has health issues or special needs.
+          The information on Pawzzles is general guidance only. Always
+          supervise dogs with new toys or feeding products and ask a qualified
+          professional if your dog has individual needs.
         </p>
       </div>
     </section>

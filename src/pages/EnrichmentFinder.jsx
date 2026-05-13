@@ -2,12 +2,14 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
+import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResource } from '../data/resources.js'
 import { resourceHubImages } from '../data/imageAssets.js'
+import { SITE, absoluteUrl } from '../data/site.js'
 
 const STAGES = [
   { id: 'puppy', label: 'Puppy' },
@@ -163,8 +165,29 @@ export default function EnrichmentFinder() {
     .map((id) => getResource(id))
     .filter(Boolean)
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Enrichment Finder',
+    url: absoluteUrl('/calculators/enrichment-finder'),
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    description:
+      'A Pawzzles tool that suggests dog enrichment ideas for everyday routines.',
+    publisher: {
+      '@type': 'Organization',
+      name: SITE.brandName,
+    },
+  }
+
   return (
     <>
+      <SEOHead
+        title="Dog Enrichment Finder | Pawzzles Practical Tool"
+        description="Use the Pawzzles Enrichment Finder to choose dog-friendly enrichment ideas by life stage, energy, goal and play style."
+        canonical="/calculators/enrichment-finder"
+        structuredData={schema}
+      />
       <PageHero
         eyebrow="Tool"
         title="Enrichment Finder"
@@ -326,13 +349,16 @@ export default function EnrichmentFinder() {
                 </div>
 
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <Link to="/resources/best-dog-enrichment-ideas" className="btn-primary">
-                    Read the full enrichment guide
+                  <Link to="/resources?category=enrichment" className="btn-primary">
+                    Browse enrichment ideas
                     <Icon name="arrowRight" className="w-4 h-4" />
                   </Link>
-                  <Link to="/resources/toy-safety-guide" className="btn-secondary">
-                    Check toy safety
+                  <Link to="/resources?category=feeding" className="btn-secondary">
+                    Explore feeding guides
                   </Link>
+                  <a href={SITE.shopUrl} className="btn-ghost">
+                    Visit shop
+                  </a>
                 </div>
               </div>
             )}

@@ -215,6 +215,19 @@ export const resources = [
     categories: ['guides', 'enrichment'],
     comingSoon: true,
   },
+  {
+    id: 'body-condition-check-in',
+    type: 'Guide',
+    title: 'Body Condition Check-In',
+    description: 'A simple way to notice changes and keep feeding routines consistent.',
+    time: '5 min read',
+    image: 'resource-body-condition',
+    imageSrc: resourceHubImages['resource-body-condition'],
+    imageAlt: 'Relaxed dog standing in a clean home setting',
+    href: '/resources',
+    categories: ['guides', 'feeding'],
+    comingSoon: true,
+  },
 ]
 
 export const categories = [

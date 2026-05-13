@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../icons/Icons.jsx'
 import { PawMark } from '../PawAccent.jsx'
+import { SITE } from '../../data/site.js'
 
 const COLUMNS = [
   {
@@ -32,14 +33,15 @@ const COLUMNS = [
   {
     title: 'About',
     links: [
-      { label: 'Our approach', to: '/resources' },
+      { label: 'About Pawzzles', to: '/about' },
+      { label: 'Our approach', to: '/about' },
       { label: 'Contact us', to: '/resources' },
     ],
   },
   {
     title: 'Shop',
     links: [
-      { label: 'Visit shop', external: '#shop' },
+      { label: 'Visit shop', external: SITE.shopUrl },
     ],
   },
 ]
@@ -57,6 +59,10 @@ function Social({ children, label }) {
 }
 
 export default function Footer() {
+  function openCookieSettings() {
+    window.dispatchEvent(new Event('pawzzles:open-cookie-settings'))
+  }
+
   return (
     <footer className="relative bg-teal-deep text-white">
       <PawMark className="absolute top-10 right-10 opacity-10" color="#fff" size={36} />
@@ -130,24 +136,41 @@ export default function Footer() {
           <div className="lg:col-span-3">
             <h3 className="font-display text-lg">Questions about your dog?</h3>
             <p className="text-sm text-white/80 mt-1">We&apos;re building this hub for owners like you.</p>
-            <Link
-              to="/resources"
-              className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border-2 border-white/30 hover:border-white text-white font-bold text-sm transition-colors"
-            >
-              Explore resources
-              <Icon name="arrowRight" className="w-4 h-4" />
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                to="/resources"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border-2 border-white/30 hover:border-white text-white font-bold text-sm transition-colors"
+              >
+                Explore resources
+                <Icon name="arrowRight" className="w-4 h-4" />
+              </Link>
+              <a
+                href={SITE.shopUrl}
+                className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-white text-teal-deep font-bold text-sm transition-colors hover:bg-cream"
+              >
+                Visit Shop
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="border-t border-white/15">
         <div className="max-w-7xl mx-auto container-px py-5 flex flex-col sm:flex-row gap-3 items-center justify-between text-xs text-white/75">
-          <p>© {new Date().getFullYear()} Pawzzles. General guidance only — not medical or veterinary advice.</p>
-          <ul className="flex items-center gap-4 sm:gap-6">
+          <p>© {new Date().getFullYear()} Pawzzles. General guidance only.</p>
+          <ul className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             <li className="inline-flex items-center gap-1.5"><Icon name="brain" className="w-3.5 h-3.5" />Behaviour-led</li>
             <li className="inline-flex items-center gap-1.5"><Icon name="wrench" className="w-3.5 h-3.5" />Practical tools</li>
             <li className="inline-flex items-center gap-1.5"><Icon name="heart" className="w-3.5 h-3.5" />Built for everyday care</li>
+            <li>
+              <button
+                type="button"
+                onClick={openCookieSettings}
+                className="font-bold text-white/85 hover:text-white"
+              >
+                Cookie settings
+              </button>
+            </li>
           </ul>
         </div>
       </div>

@@ -8,7 +8,9 @@ import Resources from './pages/Resources.jsx'
 import ResourceDetail from './pages/ResourceDetail.jsx'
 import DogFeedingCalculator from './pages/DogFeedingCalculator.jsx'
 import EnrichmentFinder from './pages/EnrichmentFinder.jsx'
+import About from './pages/About.jsx'
 import NotFound from './pages/NotFound.jsx'
+import CookieConsent from './components/CookieConsent.jsx'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -29,6 +31,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/about" element={<About />} />
             <Route path="/resources/:slug" element={<ResourceDetail />} />
             <Route
               path="/calculators/dog-feeding-calculator"
@@ -42,6 +45,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <CookieConsent />
       </div>
     </BrowserRouter>
   )

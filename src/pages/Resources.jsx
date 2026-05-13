@@ -4,7 +4,9 @@ import PageHero from '../components/PageHero.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
 import NewsletterSignup from '../components/NewsletterSignup.jsx'
 import SearchBar from '../components/SearchBar.jsx'
+import SEOHead from '../components/SEOHead.jsx'
 import { resources, categories, filterResources } from '../data/resources.js'
+import { SITE, absoluteUrl } from '../data/site.js'
 
 export default function Resources() {
   const [params, setParams] = useSearchParams()
@@ -38,8 +40,29 @@ export default function Resources() {
     )
   }, [active, query])
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Pawzzles Resource Hub',
+    url: absoluteUrl('/resources'),
+    description:
+      'Pawzzles practical calculators, dog-friendly guides and checklists for enrichment, feeding and everyday routines.',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: SITE.name,
+      url: SITE.url,
+    },
+  }
+
   return (
     <>
+      <SEOHead
+        title="Dog Enrichment, Feeding & Puppy Resources | Pawzzles Resource Hub"
+        description="Browse Pawzzles dog-friendly guides, feeding tools, slow feeder advice, enrichment ideas and practical checklists built for everyday dog care."
+        canonical="/resources"
+        ogType="website"
+        structuredData={schema}
+      />
       <PageHero
         eyebrow="Resources"
         title="Browse the Pawzzles Resource Hub"

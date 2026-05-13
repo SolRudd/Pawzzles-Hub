@@ -2,12 +2,14 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
+import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
-import { resources, getResource } from '../data/resources.js'
+import { getResource } from '../data/resources.js'
 import { resourceHubImages } from '../data/imageAssets.js'
+import { SITE, absoluteUrl } from '../data/site.js'
 
 const LIFE_STAGES = [
   { id: 'puppy-young', label: 'Puppy (under 4 months)', factor: 3.0 },
@@ -99,8 +101,29 @@ export default function DogFeedingCalculator() {
     .map((id) => getResource(id))
     .filter(Boolean)
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Dog Feeding Calculator',
+    url: absoluteUrl('/calculators/dog-feeding-calculator'),
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    description:
+      'A Pawzzles practical feeding calculator for everyday dog portion planning.',
+    publisher: {
+      '@type': 'Organization',
+      name: SITE.brandName,
+    },
+  }
+
   return (
     <>
+      <SEOHead
+        title="Dog Feeding Calculator | Pawzzles Practical Feeding Tool"
+        description="Use the Pawzzles dog feeding calculator as a practical starting point for daily portions, calories and mealtime planning."
+        canonical="/calculators/dog-feeding-calculator"
+        structuredData={schema}
+      />
       <PageHero
         eyebrow="Calculator"
         title="Dog Feeding Calculator"
@@ -291,13 +314,16 @@ export default function DogFeedingCalculator() {
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link to="/resources/best-dog-enrichment-ideas" className="btn-primary">
-                    See enrichment ideas
+                  <Link to="/resources?category=feeding" className="btn-primary">
+                    Explore feeding guides
                     <Icon name="arrowRight" className="w-4 h-4" />
                   </Link>
-                  <Link to="/calculators/enrichment-finder" className="btn-secondary">
-                    Try the Enrichment Finder
+                  <Link to="/resources?category=enrichment" className="btn-secondary">
+                    Browse enrichment ideas
                   </Link>
+                  <a href={SITE.shopUrl} className="btn-ghost">
+                    Visit shop
+                  </a>
                 </div>
               </div>
             ) : submitted ? (

@@ -18,7 +18,7 @@ export const calculators = [
       'Helpful starting portion estimate',
       'Adjusts for life stage and activity',
       'Optional food kcal for grams-per-day',
-      'General guidance, not medical advice',
+      'General guidance only',
     ],
   },
   {

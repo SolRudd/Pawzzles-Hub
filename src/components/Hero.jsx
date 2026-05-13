@@ -13,11 +13,9 @@ export default function Hero() {
       className="relative overflow-hidden"
       aria-labelledby="hero-heading"
     >
-      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
-        <div className="absolute -top-32 -right-24 w-[520px] h-[520px] rounded-full bg-orange/10 blur-3xl" />
-        <div className="absolute -bottom-32 -left-24 w-[420px] h-[420px] rounded-full bg-teal/10 blur-3xl" />
-        <PawMark className="absolute top-24 left-8 opacity-20 rotate-[-18deg]" size={28} color="#138fa1" />
-        <PawMark className="absolute top-40 right-1/4 opacity-15 rotate-[8deg]" size={20} color="#f58232" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,#fff8ef_0%,#fff3e6_100%)]" aria-hidden>
+        <PawMark className="absolute top-24 left-8 opacity-15 rotate-[-18deg]" size={28} color="#138fa1" />
+        <PawMark className="absolute top-40 right-1/4 opacity-10 rotate-[8deg]" size={20} color="#f58232" />
       </div>
 
       <div className="max-w-7xl mx-auto container-px pt-12 lg:pt-20 pb-14 lg:pb-24">
@@ -75,8 +73,8 @@ export default function Hero() {
                 />
               </div>
 
-              <div className="absolute -left-3 sm:-left-6 bottom-8 bg-white rounded-2xl px-4 py-3 shadow-card flex items-center gap-3 max-w-[240px]">
-                <span className="inline-flex w-9 h-9 items-center justify-center rounded-full bg-orange/15 text-orange">
+              <div className="absolute z-20 -left-3 sm:-left-6 bottom-8 bg-white rounded-2xl px-4 py-3 shadow-card flex items-center gap-3 max-w-[240px]">
+                <span className="inline-flex w-9 h-9 items-center justify-center rounded-full bg-orange text-white">
                   <PawMark size={18} />
                 </span>
                 <div className="leading-tight">
@@ -85,8 +83,8 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div className="absolute -right-2 sm:-right-4 top-6 bg-white rounded-2xl px-4 py-3 shadow-card flex items-center gap-3">
-                <span className="inline-flex w-9 h-9 items-center justify-center rounded-full bg-teal/10 text-teal">
+              <div className="absolute z-20 -right-2 sm:-right-4 top-6 bg-white rounded-2xl px-4 py-3 shadow-card flex items-center gap-3">
+                <span className="inline-flex w-9 h-9 items-center justify-center rounded-full bg-teal text-white">
                   <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 3v3M3 12h3M21 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" />
                     <circle cx="12" cy="12" r="4" />

@@ -14,11 +14,10 @@ export default function PageHero({
 }) {
   return (
     <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
-        <div className="absolute -top-24 -right-20 w-[420px] h-[420px] rounded-full bg-orange/10 blur-3xl" />
-        <div className="absolute -bottom-32 -left-24 w-[360px] h-[360px] rounded-full bg-teal/10 blur-3xl" />
-        <PawMark className="absolute top-16 left-10 opacity-20" size={22} color="#f58232" />
-        <PawMark className="absolute top-28 right-1/4 opacity-15" size={18} color="#138fa1" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-cream" aria-hidden>
+        <div className="absolute inset-x-0 bottom-0 h-px bg-navy/5" />
+        <PawMark className="absolute top-16 left-10 opacity-15" size={22} color="#f58232" />
+        <PawMark className="absolute top-28 right-1/4 opacity-10" size={18} color="#138fa1" />
       </div>
 
       <div className="max-w-7xl mx-auto container-px pt-10 lg:pt-14 pb-10 lg:pb-12">

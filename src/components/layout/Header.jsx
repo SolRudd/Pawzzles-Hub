@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Icon } from '../icons/Icons.jsx'
+import { SITE } from '../../data/site.js'
 
 const NAV = [
   { label: 'Resources', to: '/resources' },
   { label: 'Feeding Calculator', to: '/calculators/dog-feeding-calculator' },
   { label: 'Enrichment Finder', to: '/calculators/enrichment-finder' },
-  { label: 'Puppy', to: '/resources/puppy-socialisation-checklist' },
+  { label: 'About', to: '/about' },
 ]
 
 export default function Header() {
@@ -49,7 +50,7 @@ export default function Header() {
           >
             <Icon name="search" className="w-5 h-5" />
           </Link>
-          <a href="#shop" className="btn-primary shadow-glow">
+          <a href={SITE.shopUrl} className="btn-primary shadow-glow">
             Visit Shop
           </a>
           <button

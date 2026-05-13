@@ -4,11 +4,13 @@ import PageHero from '../components/PageHero.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
 import NewsletterSignup from '../components/NewsletterSignup.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
+import SEOHead from '../components/SEOHead.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResourceContent } from '../data/content/index.js'
 import { getResource } from '../data/resources.js'
+import { SITE, absoluteUrl } from '../data/site.js'
 
 export default function ResourceDetail() {
   const { slug } = useParams()
@@ -29,8 +31,38 @@ export default function ResourceDetail() {
     .map((id) => getResource(id))
     .filter(Boolean)
 
+  const canonical = `/resources/${content.slug}`
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: content.title,
+    description: content.metaDescription || content.intro,
+    image: content.imageSrc ? absoluteUrl(content.imageSrc) : undefined,
+    mainEntityOfPage: absoluteUrl(canonical),
+    author: {
+      '@type': 'Organization',
+      name: SITE.brandName,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE.brandName,
+      logo: {
+        '@type': 'ImageObject',
+        url: absoluteUrl('/pawzzles-logo.svg'),
+      },
+    },
+  }
+
   return (
     <>
+      <SEOHead
+        title={content.metaTitle || `${content.title} | Pawzzles`}
+        description={content.metaDescription || content.intro}
+        canonical={canonical}
+        ogType="article"
+        ogImage={content.imageSrc || SITE.defaultOgImage}
+        structuredData={schema}
+      />
       <PageHero
         eyebrow={content.category}
         title={content.title}
