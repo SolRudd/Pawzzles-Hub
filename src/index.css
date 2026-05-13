@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream text-navy font-body antialiased;
+    font-feature-settings: 'ss01' on, 'cv11' on;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: #ffd9b8;
+    color: #142033;
+  }
+}
+
+@layer components {
+  .container-px {
+    @apply px-5 sm:px-8 lg:px-12;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-bold text-sm sm:text-base transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-orange/30 disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-orange text-white shadow-glow hover:bg-orange-bright hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-teal border-2 border-teal/30 hover:border-teal hover:bg-teal/5;
+  }
+  .btn-ghost {
+    @apply btn text-teal hover:text-teal-deep underline-offset-4 hover:underline;
+  }
+  .eyebrow {
+    @apply text-teal font-extrabold uppercase tracking-[0.18em] text-xs sm:text-sm;
+  }
+  .card {
+    @apply bg-white rounded-3xl shadow-card overflow-hidden;
+  }
+  .ring-soft {
+    box-shadow: 0 0 0 1px rgba(20, 32, 51, 0.04), 0 10px 30px -12px rgba(20, 32, 51, 0.12);
+  }
+  .paw-dot {
+    background-image: radial-gradient(rgba(19, 143, 161, 0.10) 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
+  }
+}
