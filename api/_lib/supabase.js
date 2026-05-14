@@ -45,7 +45,27 @@ export async function insertCalculatorResult(payload) {
     .select('public_token')
     .single()
 
-  if (error) throw error
+  if (error) {
+    const message = String(error.message || '')
+    const missingDogGenderColumn =
+      payload?.dog_gender &&
+      (message.includes('dog_gender') || message.includes('schema cache'))
+
+    if (missingDogGenderColumn) {
+      const { dog_gender, ...fallbackPayload } = payload
+      const retry = await getSupabaseAdmin()
+        .from('calculator_results')
+        .insert(fallbackPayload)
+        .select('public_token')
+        .single()
+
+      if (retry.error) throw retry.error
+      return retry.data
+    }
+
+    throw error
+  }
+
   return data
 }
 

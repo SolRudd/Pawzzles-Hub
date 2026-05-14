@@ -11,21 +11,18 @@ Privacy policy URL: https://pawzzles.co.uk/privacy-policy
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `BREVO_API_KEY`
-- `BREVO_RESULT_TEMPLATE_ID`
-- `BREVO_MARKETING_LIST_ID`
-- `BREVO_CALCULATOR_USERS_LIST_ID`
-- `BREVO_FEEDING_LIST_ID`
-- `BREVO_ENRICHMENT_LIST_ID`
-- `BREVO_PUPPY_LIST_ID`
+- `BREVO_MARKETING_LIST_ID=8`
+- `BREVO_SENDER_EMAIL=info@pawzzles.co.uk`
+- `BREVO_SENDER_NAME=Pawzzles`
 - `NEWSLETTER_PROVIDER=brevo`
 - `SITE_URL=https://resources.pawzzles.co.uk`
 - `SHOP_URL=https://pawzzles.co.uk`
 - `PRIVACY_URL=https://pawzzles.co.uk/privacy-policy`
+- `GTM_CONTAINER_ID=GTM-TBF7XNZ2`
 
-Optional sender settings:
+Optional Brevo settings:
 
-- `BREVO_SENDER_EMAIL`
-- `BREVO_SENDER_NAME`
+- `BREVO_RESULT_TEMPLATE_ID`
 
 ## Supabase
 
@@ -41,15 +38,11 @@ The frontend never imports Supabase directly. Server code uses `api/_lib/supabas
 
 ## Brevo
 
-Create Brevo contact lists for:
+Create one Brevo contact list for now:
 
-- Main marketing list.
-- Calculator users.
-- Feeding.
-- Enrichment.
-- Puppy.
+- Main marketing list, configured as `BREVO_MARKETING_LIST_ID=8`.
 
-Add the list IDs to the matching Vercel env vars. Newsletter signups only sync to Brevo when the user opts in to marketing emails.
+Newsletter signups and calculator form submitters only sync to Brevo when the user opts in to marketing emails.
 
 Calculator result emails are sent through `api/results/email.js`. If `BREVO_RESULT_TEMPLATE_ID` is set, Brevo sends that template with `dogName`, `calculatorType`, `resultData` and `resultUrl` params. If no template ID is set, `api/_lib/brevo.js` sends the fallback HTML email from `buildFallbackResultEmail`.
 
@@ -61,9 +54,9 @@ The API route:
 
 - Validates the email address.
 - Saves the signup to Supabase.
-- Saves a consent event to Supabase.
+- Saves a consent event to Supabase when the consent table is available.
 - Adds or updates the Brevo contact only when marketing consent is true.
-- Adds the contact to interest lists based on selected interests.
+- Adds the contact to Brevo list 8 only.
 
 ## Calculator Result Flow
 
@@ -75,7 +68,7 @@ The API route:
 - Saves the result to Supabase.
 - Creates a saved result URL using `SITE_URL`.
 - Sends the Brevo transactional email.
-- Syncs marketing contact lists only when marketing consent is true.
+- Syncs to Brevo list 8 only when marketing consent is true.
 
 Saved public results are fetched through `/api/results/get?token=...` and rendered at `/results/:token`.
 

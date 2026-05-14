@@ -146,14 +146,14 @@ export default function NewsletterSignup({
       }
 
       setStatus('success')
-      setMessage('Thanks, you are on the list.')
+      setMessage("You're in. We'll send useful Pawzzles tips and guides your way.")
       setEmail('')
       trackAppEvent('newsletter_signup_success', {
         source_component: sourceComponent,
       })
     } catch (error) {
       setStatus('error')
-      setMessage('Sorry, we could not sign you up just now. Please try again.')
+      setMessage('Something went wrong. Please try again in a moment.')
       trackAppEvent('newsletter_signup_error', {
         source_component: sourceComponent,
         error_message: error.message,

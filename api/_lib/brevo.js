@@ -16,28 +16,10 @@ function uniqueListIds(listIds) {
   return [...new Set(listIds.map(parseListId).filter(Boolean))]
 }
 
-export function getBrevoListIds({ interests = [], includeMarketing = false, includeCalculator = false } = {}) {
-  const interestSet = new Set(interests)
+export function getBrevoListIds({ includeMarketing = false } = {}) {
   const listIds = []
 
   if (includeMarketing) listIds.push(process.env.BREVO_MARKETING_LIST_ID)
-  if (includeCalculator) listIds.push(process.env.BREVO_CALCULATOR_USERS_LIST_ID)
-
-  if (
-    interestSet.has('feeding') ||
-    interestSet.has('slow_feeders') ||
-    interestSet.has('mealtime_routines')
-  ) {
-    listIds.push(process.env.BREVO_FEEDING_LIST_ID)
-  }
-
-  if (interestSet.has('enrichment') || interestSet.has('toy_safety')) {
-    listIds.push(process.env.BREVO_ENRICHMENT_LIST_ID)
-  }
-
-  if (interestSet.has('puppy') || interestSet.has('training')) {
-    listIds.push(process.env.BREVO_PUPPY_LIST_ID)
-  }
 
   return uniqueListIds(listIds)
 }
@@ -55,7 +37,9 @@ async function brevoRequest(path, options = {}) {
 
   if (!response.ok) {
     const body = await response.text()
-    throw new Error(`Brevo request failed: ${response.status} ${body}`)
+    const error = new Error(`Brevo request failed: ${response.status} ${body}`)
+    error.status = response.status
+    throw error
   }
 
   if (response.status === 204) return null
@@ -63,11 +47,19 @@ async function brevoRequest(path, options = {}) {
 }
 
 export async function upsertBrevoContact({ email, listIds = [] }) {
+  const cleanListIds = uniqueListIds(listIds)
+
+  if (cleanListIds.length === 0) {
+    const error = new Error('Brevo marketing list is not configured.')
+    error.status = 500
+    throw error
+  }
+
   return brevoRequest('/contacts', {
     method: 'POST',
     body: JSON.stringify({
       email,
-      listIds: uniqueListIds(listIds),
+      listIds: cleanListIds,
       updateEnabled: true,
     }),
   })

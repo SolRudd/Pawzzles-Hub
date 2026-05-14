@@ -15,20 +15,17 @@ Required Vercel environment variables:
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `BREVO_API_KEY`
-- `BREVO_RESULT_TEMPLATE_ID`
-- `BREVO_MARKETING_LIST_ID`
-- `BREVO_CALCULATOR_USERS_LIST_ID`
-- `BREVO_FEEDING_LIST_ID`
-- `BREVO_ENRICHMENT_LIST_ID`
-- `BREVO_PUPPY_LIST_ID`
+- `BREVO_MARKETING_LIST_ID=8`
+- `BREVO_SENDER_EMAIL=info@pawzzles.co.uk`
+- `BREVO_SENDER_NAME=Pawzzles`
 - `NEWSLETTER_PROVIDER=brevo`
 - `SITE_URL=https://resources.pawzzles.co.uk`
 - `SHOP_URL=https://pawzzles.co.uk`
 - `PRIVACY_URL=https://pawzzles.co.uk/privacy-policy`
+- `GTM_CONTAINER_ID=GTM-TBF7XNZ2`
 
-Optional Brevo sender variables:
+Optional Brevo variables:
 
-- `BREVO_SENDER_EMAIL`
-- `BREVO_SENDER_NAME`
+- `BREVO_RESULT_TEMPLATE_ID`
 
 Newsletter signups post to `/api/newsletter/subscribe`. Calculator result emails post to `/api/results/email`. Supabase table setup lives in `supabase/schema.sql`, and Brevo request logic lives in `api/_lib/brevo.js`.

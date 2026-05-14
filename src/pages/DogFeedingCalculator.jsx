@@ -1,17 +1,23 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
-import ResultEmailCapture from '../components/ResultEmailCapture.jsx'
+import {
+  CheckboxField,
+  FormError,
+  InputField,
+  SelectField,
+} from '../components/forms/FormFields.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResource } from '../data/resources.js'
 import { resourceHubImages } from '../data/imageAssets.js'
 import { SITE, absoluteUrl } from '../data/site.js'
-import { trackAppEvent, trackVisitShop } from '../lib/tracking.js'
+import { getConsentPreferences, trackAppEvent, trackVisitShop } from '../lib/tracking.js'
+import { emailCalculatorResult, isValidResultEmail } from '../lib/results.js'
 
 const LIFE_STAGES = [
   { id: 'puppy-young', label: 'Puppy (under 4 months)', factor: 3.0 },
@@ -32,6 +38,14 @@ const GOAL = [
   { id: 'maintain', label: 'Maintain weight', mult: 1.0 },
   { id: 'lose', label: 'Lose weight gently', mult: 0.85 },
   { id: 'gain', label: 'Gain weight gently', mult: 1.15 },
+]
+
+const DOG_GENDERS = [
+  { id: '', label: 'Not specified' },
+  { id: 'female', label: 'Female' },
+  { id: 'male', label: 'Male' },
+  { id: 'unknown', label: 'Unknown' },
+  { id: 'prefer_not_to_say', label: 'Prefer not to say' },
 ]
 
 function calculate({ weight, stageId, activityId, goalId, kcalPer100g }) {
@@ -57,29 +71,22 @@ function calculate({ weight, stageId, activityId, goalId, kcalPer100g }) {
   }
 }
 
-function FormGroup({ label, hint, children }) {
-  return (
-    <label className="flex flex-col h-full">
-      <span className="text-sm font-extrabold text-navy">{label}</span>
-      <span className="text-xs text-muted mt-0.5 min-h-[1.25rem] leading-snug">
-        {hint || ' '}
-      </span>
-      <div className="mt-2 flex-1 flex flex-col justify-end">{children}</div>
-    </label>
-  )
-}
-
-const inputCls =
-  'w-full rounded-2xl border border-navy/10 bg-white px-4 py-3 text-navy placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40'
-
 export default function DogFeedingCalculator() {
+  const location = useLocation()
   const [dogName, setDogName] = useState('')
+  const [dogGender, setDogGender] = useState('')
   const [weight, setWeight] = useState('')
   const [stageId, setStageId] = useState('adult-neutered')
   const [activityId, setActivityId] = useState('medium')
   const [goalId, setGoalId] = useState('maintain')
   const [kcalPer100g, setKcalPer100g] = useState('')
+  const [email, setEmail] = useState('')
+  const [marketingConsent, setMarketingConsent] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState({})
+  const [submitStatus, setSubmitStatus] = useState('idle')
+  const [submitMessage, setSubmitMessage] = useState('')
+  const [resultUrl, setResultUrl] = useState('')
 
   useEffect(() => {
     document.title = 'Dog Feeding Calculator | Pawzzles'
@@ -93,18 +100,81 @@ export default function DogFeedingCalculator() {
     [weight, stageId, activityId, goalId, kcalPer100g],
   )
 
-  function onSubmit(e) {
-    e.preventDefault()
-    setSubmitted(true)
-    if (result) {
-      trackAppEvent('feeding_calculator_completed', {
-        source_component: 'feeding_calculator_form',
-        calculator_type: 'dog_feeding',
-      })
+  function validateForm(calculatedResult) {
+    const nextErrors = {}
+    const numericWeight = parseFloat(weight)
+
+    if (!numericWeight || numericWeight <= 0) {
+      nextErrors.weight = "Please enter your dog's weight."
     }
+
+    if (!isValidResultEmail(email)) {
+      nextErrors.email = 'Please enter a valid email address.'
+    }
+
+    if (!calculatedResult) {
+      nextErrors.form = 'Please check the details above to calculate a result.'
+    }
+
+    return nextErrors
+  }
+
+  async function onSubmit(e) {
+    e.preventDefault()
+    const nextErrors = validateForm(result)
+    setFieldErrors(nextErrors)
+    setSubmitMessage('')
+    setResultUrl('')
+
+    if (Object.keys(nextErrors).length > 0) {
+      setSubmitStatus('error')
+      setSubmitted(false)
+      return
+    }
+
+    setSubmitStatus('loading')
+    setSubmitted(true)
     setTimeout(() => {
       document.getElementById('result')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 50)
+
+    trackAppEvent('feeding_calculator_completed', {
+      source_component: 'feeding_calculator_form',
+      calculator_type: 'dog_feeding',
+    })
+
+    const preferences = getConsentPreferences()
+    const response = await emailCalculatorResult({
+      email,
+      dogName,
+      dogGender,
+      calculatorType: 'dog_feeding',
+      inputData: {
+        dogName,
+        dogGender,
+        weight,
+        stageId,
+        activityId,
+        goalId,
+        kcalPer100g,
+      },
+      resultData: result,
+      sourcePage: location.pathname,
+      sourceComponent: 'feeding_calculator_form',
+      consentAnalytics: Boolean(preferences.analytics),
+      consentMarketing: marketingConsent,
+      interests: ['feeding', 'mealtime_routines'],
+    })
+
+    if (response.ok) {
+      setSubmitStatus('success')
+      setSubmitMessage('Your result has been emailed. You can also view it below.')
+      setResultUrl(response.resultUrl || '')
+      return
+    }
+
+    setSubmitStatus('warning')
+    setSubmitMessage('Your result is shown below, but we could not email it. Please try again.')
   }
 
   const next = ['best-dog-enrichment-ideas', 'puppy-socialisation-checklist', 'toy-safety-guide']
@@ -166,101 +236,163 @@ export default function DogFeedingCalculator() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <FormGroup label="Dog name" hint="Optional. Just for friendlier results.">
-                    <input
-                      type="text"
-                      value={dogName}
-                      onChange={(e) => setDogName(e.target.value)}
-                      placeholder="e.g. Cooper"
-                      className={inputCls}
-                    />
-                  </FormGroup>
+                  <InputField
+                    id="feeding-dog-name"
+                    label="Dog name"
+                    helper="Optional. Just for friendlier results."
+                    type="text"
+                    value={dogName}
+                    onChange={(e) => setDogName(e.target.value)}
+                    placeholder="e.g. Cooper"
+                    disabled={submitStatus === 'loading'}
+                  />
 
-                  <FormGroup label="Weight (kg)" hint="Your dog's current weight in kilograms.">
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.1"
-                      required
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      placeholder="e.g. 12"
-                      className={inputCls}
-                    />
-                  </FormGroup>
-
-                  <FormGroup label="Age / life stage">
-                    <select
-                      value={stageId}
-                      onChange={(e) => setStageId(e.target.value)}
-                      className={inputCls}
-                    >
-                      {LIFE_STAGES.map((s) => (
-                        <option key={s.id} value={s.id}>{s.label}</option>
-                      ))}
-                    </select>
-                  </FormGroup>
-
-                  <FormGroup label="Activity level">
-                    <select
-                      value={activityId}
-                      onChange={(e) => setActivityId(e.target.value)}
-                      className={inputCls}
-                    >
-                      {ACTIVITY.map((a) => (
-                        <option key={a.id} value={a.id}>{a.label}</option>
-                      ))}
-                    </select>
-                  </FormGroup>
-
-                  <FormGroup label="Body condition goal">
-                    <select
-                      value={goalId}
-                      onChange={(e) => setGoalId(e.target.value)}
-                      className={inputCls}
-                    >
-                      {GOAL.map((g) => (
-                        <option key={g.id} value={g.id}>{g.label}</option>
-                      ))}
-                    </select>
-                  </FormGroup>
-
-                  <FormGroup
-                    label="Calories per 100g of food"
-                    hint="Optional. Find this on your dog food packaging."
+                  <SelectField
+                    id="feeding-dog-gender"
+                    label="Dog gender"
+                    helper="Optional. Only used to make the saved result more complete."
+                    value={dogGender}
+                    onChange={(e) => setDogGender(e.target.value)}
+                    disabled={submitStatus === 'loading'}
                   >
-                    <input
-                      type="number"
-                      min="0"
-                      step="1"
-                      value={kcalPer100g}
-                      onChange={(e) => setKcalPer100g(e.target.value)}
-                      placeholder="e.g. 360"
-                      className={inputCls}
-                    />
-                  </FormGroup>
+                    {DOG_GENDERS.map((item) => (
+                      <option key={item.id || 'blank'} value={item.id}>{item.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <InputField
+                    id="feeding-weight"
+                    label="Weight (kg)"
+                    helper="Your dog's current weight in kilograms."
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    required
+                    value={weight}
+                    onChange={(e) => {
+                      setWeight(e.target.value)
+                      setFieldErrors((current) => ({ ...current, weight: '' }))
+                    }}
+                    placeholder="e.g. 12"
+                    error={fieldErrors.weight}
+                    disabled={submitStatus === 'loading'}
+                  />
+
+                  <SelectField
+                    id="feeding-stage"
+                    label="Age / life stage"
+                    helper="Choose the option that best fits your dog."
+                    value={stageId}
+                    onChange={(e) => setStageId(e.target.value)}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {LIFE_STAGES.map((s) => (
+                      <option key={s.id} value={s.id}>{s.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <SelectField
+                    id="feeding-activity"
+                    label="Activity level"
+                    helper="Pick the closest everyday activity level."
+                    value={activityId}
+                    onChange={(e) => setActivityId(e.target.value)}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {ACTIVITY.map((a) => (
+                      <option key={a.id} value={a.id}>{a.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <SelectField
+                    id="feeding-goal"
+                    label="Body condition goal"
+                    helper="Use the option that matches your current routine."
+                    value={goalId}
+                    onChange={(e) => setGoalId(e.target.value)}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {GOAL.map((g) => (
+                      <option key={g.id} value={g.id}>{g.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <InputField
+                    id="feeding-calories"
+                    label="Calories per 100g of food"
+                    helper="Optional. Find this on your dog food packaging."
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={kcalPer100g}
+                    onChange={(e) => setKcalPer100g(e.target.value)}
+                    placeholder="e.g. 360"
+                    disabled={submitStatus === 'loading'}
+                  />
+
+                  <InputField
+                    id="feeding-email"
+                    label="Email address"
+                    helper="We will email your result so you can come back to it later."
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setFieldErrors((current) => ({ ...current, email: '' }))
+                    }}
+                    placeholder="you@example.com"
+                    error={fieldErrors.email}
+                    disabled={submitStatus === 'loading'}
+                    wrapperClassName="sm:col-span-2"
+                  />
+
+                  <CheckboxField
+                    id="feeding-marketing"
+                    label="Yes, send me Pawzzles tips, guides and product updates."
+                    helper="We will email your result. Marketing emails are only sent if you opt in."
+                    checked={marketingConsent}
+                    onChange={setMarketingConsent}
+                    disabled={submitStatus === 'loading'}
+                    className="sm:col-span-2"
+                  />
                 </div>
 
+                <FormError id="feeding-form-error">{fieldErrors.form}</FormError>
+
                 <div className="mt-7 flex flex-wrap items-center gap-3">
-                  <button type="submit" className="btn-primary">
-                    Calculate portion
+                  <button type="submit" className="btn-primary" disabled={submitStatus === 'loading'}>
+                    {submitStatus === 'loading' ? 'Emailing result...' : 'Calculate and email result'}
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       setDogName('')
+                      setDogGender('')
                       setWeight('')
                       setStageId('adult-neutered')
                       setActivityId('medium')
                       setGoalId('maintain')
                       setKcalPer100g('')
+                      setEmail('')
+                      setMarketingConsent(false)
                       setSubmitted(false)
+                      setFieldErrors({})
+                      setSubmitStatus('idle')
+                      setSubmitMessage('')
+                      setResultUrl('')
                     }}
                     className="btn-ghost"
+                    disabled={submitStatus === 'loading'}
                   >
                     Reset
                   </button>
                 </div>
+
+                <p className="mt-4 text-[11px] leading-relaxed text-muted">
+                  We will email your result. Marketing emails are only sent if
+                  you opt in.
+                </p>
               </form>
             </div>
 
@@ -302,6 +434,27 @@ export default function DogFeedingCalculator() {
                   Based on {result.stage.toLowerCase()}, {result.activity.toLowerCase()}, goal: {result.goal.toLowerCase()}.
                 </p>
 
+                {submitMessage && (
+                  <div
+                    className={`mt-5 rounded-2xl border p-4 text-sm font-bold ${
+                      submitStatus === 'success'
+                        ? 'border-teal/20 bg-teal/10 text-teal'
+                        : 'border-orange/20 bg-orange/10 text-orange'
+                    }`}
+                    aria-live="polite"
+                  >
+                    {submitMessage}
+                    {resultUrl && (
+                      <a
+                        href={resultUrl}
+                        className="ml-2 inline-flex text-teal underline underline-offset-4"
+                      >
+                        Open saved result
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 <div className="mt-6 grid sm:grid-cols-3 gap-4">
                   <div className="rounded-2xl bg-orange/10 p-5">
                     <p className="text-xs font-extrabold uppercase tracking-wide text-orange">Daily calories</p>
@@ -339,24 +492,6 @@ export default function DogFeedingCalculator() {
                     Visit Shop
                   </a>
                 </div>
-
-                <ResultEmailCapture
-                  sourceComponent="feeding_calculator_result"
-                  calculatorType="dog_feeding"
-                  dogName={dogName}
-                  inputData={{
-                    weight,
-                    stageId,
-                    activityId,
-                    goalId,
-                    kcalPer100g,
-                  }}
-                  resultData={result}
-                  interests={['feeding', 'mealtime_routines']}
-                  title="Email me this result"
-                  body="We'll send your portion estimate to your inbox so you can come back to it later."
-                  buttonLabel="Email my result"
-                />
               </div>
             ) : submitted ? (
               <div className="rounded-2xl bg-white ring-1 ring-navy/5 p-6 text-center text-muted">

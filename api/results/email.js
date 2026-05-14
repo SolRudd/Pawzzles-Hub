@@ -24,16 +24,20 @@ async function readBody(req) {
   return raw ? JSON.parse(raw) : {}
 }
 
-function cleanInterests(interests) {
-  if (!Array.isArray(interests)) return []
-  return interests
-    .map((item) => String(item || '').trim())
-    .filter(Boolean)
-    .slice(0, 12)
-}
-
 function isPlainObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value)
+}
+
+function cleanDogGender(value) {
+  const gender = String(value || '').trim().toLowerCase()
+  return ['female', 'male', 'unknown', 'prefer_not_to_say'].includes(gender) ? gender : ''
+}
+
+function logResultMarketingError(error) {
+  console.error('Brevo marketing sync failed after result email', {
+    message: error?.message,
+    status: error?.status || error?.code,
+  })
 }
 
 export default async function handler(req, res) {
@@ -63,19 +67,28 @@ export default async function handler(req, res) {
     return sendJson(res, 400, { ok: false, error: 'Missing result data.' })
   }
 
-  const interests = cleanInterests(body.interests)
   const analyticsConsent = Boolean(body.consentAnalytics)
   const marketingConsent = Boolean(body.consentMarketing)
   const sourcePage = String(body.sourcePage || '').slice(0, 300)
   const sourceComponent = String(body.sourceComponent || '').slice(0, 120)
   const dogName = String(body.dogName || '').slice(0, 120)
+  const dogGender = cleanDogGender(body.dogGender || body.inputData?.dogGender)
+  const inputData = isPlainObject(body.inputData)
+    ? {
+        ...body.inputData,
+        ...(dogGender ? { dogGender } : {}),
+      }
+    : dogGender
+      ? { dogGender }
+      : {}
 
   try {
     const saved = await insertCalculatorResult({
       email,
       dog_name: dogName || null,
+      dog_gender: dogGender || null,
       calculator_type: calculatorType,
-      input_data: isPlainObject(body.inputData) ? body.inputData : {},
+      input_data: inputData,
       result_data: body.resultData,
       source_page: sourcePage,
       source_component: sourceComponent,
@@ -106,14 +119,10 @@ export default async function handler(req, res) {
 
     if (marketingConsent) {
       try {
-        const listIds = getBrevoListIds({
-          interests,
-          includeMarketing: true,
-          includeCalculator: true,
-        })
+        const listIds = getBrevoListIds({ includeMarketing: true })
         await upsertBrevoContact({ email, listIds })
       } catch (marketingError) {
-        console.error('Brevo marketing sync failed after result email', marketingError)
+        logResultMarketingError(marketingError)
       }
     }
 

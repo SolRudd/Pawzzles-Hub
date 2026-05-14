@@ -1,17 +1,23 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
-import ResultEmailCapture from '../components/ResultEmailCapture.jsx'
+import {
+  CheckboxField,
+  FormError,
+  InputField,
+  SelectField,
+} from '../components/forms/FormFields.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResource } from '../data/resources.js'
 import { resourceHubImages } from '../data/imageAssets.js'
 import { SITE, absoluteUrl } from '../data/site.js'
-import { trackAppEvent, trackVisitShop } from '../lib/tracking.js'
+import { getConsentPreferences, trackAppEvent, trackVisitShop } from '../lib/tracking.js'
+import { emailCalculatorResult, isValidResultEmail } from '../lib/results.js'
 
 const STAGES = [
   { id: 'puppy', label: 'Puppy' },
@@ -39,6 +45,14 @@ const STYLES = [
   { id: 'chaser', label: 'Chaser' },
   { id: 'sniffer', label: 'Sniffer' },
   { id: 'solver', label: 'Problem-solver' },
+]
+
+const DOG_GENDERS = [
+  { id: '', label: 'Not specified' },
+  { id: 'female', label: 'Female' },
+  { id: 'male', label: 'Male' },
+  { id: 'unknown', label: 'Unknown' },
+  { id: 'prefer_not_to_say', label: 'Prefer not to say' },
 ]
 
 const PLAN = {
@@ -117,31 +131,21 @@ function recommend({ stage, energy, goal, style }) {
   }
 }
 
-const inputCls =
-  'w-full rounded-2xl border border-navy/10 bg-white px-4 py-3 text-navy placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40'
-
-function Chip({ active, children, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
-        active
-          ? 'bg-orange text-white border-orange'
-          : 'bg-white text-navy/80 border-navy/10 hover:border-orange/40 hover:text-orange'
-      }`}
-    >
-      {children}
-    </button>
-  )
-}
-
 export default function EnrichmentFinder() {
+  const location = useLocation()
+  const [dogName, setDogName] = useState('')
+  const [dogGender, setDogGender] = useState('')
   const [stage, setStage] = useState('adult')
   const [energy, setEnergy] = useState('medium')
   const [goal, setGoal] = useState('boredom')
   const [style, setStyle] = useState('sniffer')
+  const [email, setEmail] = useState('')
+  const [marketingConsent, setMarketingConsent] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState({})
+  const [submitStatus, setSubmitStatus] = useState('idle')
+  const [submitMessage, setSubmitMessage] = useState('')
+  const [resultUrl, setResultUrl] = useState('')
 
   useEffect(() => {
     document.title = 'Enrichment Finder | Pawzzles'
@@ -155,18 +159,78 @@ export default function EnrichmentFinder() {
     [stage, energy, goal, style],
   )
 
-  function onSubmit(e) {
-    e.preventDefault()
-    setSubmitted(true)
-    if (plan) {
-      trackAppEvent('enrichment_finder_completed', {
-        source_component: 'enrichment_finder_form',
-        calculator_type: 'enrichment_finder',
-      })
+  function validateForm(generatedPlan) {
+    const nextErrors = {}
+
+    if (!stage) nextErrors.stage = 'Please choose a life stage.'
+    if (!energy) nextErrors.energy = 'Please choose an energy level.'
+    if (!goal) nextErrors.goal = 'Please choose a main goal.'
+    if (!style) nextErrors.style = 'Please choose a play style.'
+    if (!isValidResultEmail(email)) {
+      nextErrors.email = 'Please enter a valid email address.'
     }
+    if (!generatedPlan) {
+      nextErrors.form = 'Please check the details above to create a plan.'
+    }
+
+    return nextErrors
+  }
+
+  async function onSubmit(e) {
+    e.preventDefault()
+    const nextErrors = validateForm(plan)
+    setFieldErrors(nextErrors)
+    setSubmitMessage('')
+    setResultUrl('')
+
+    if (Object.keys(nextErrors).length > 0) {
+      setSubmitStatus('error')
+      setSubmitted(false)
+      return
+    }
+
+    setSubmitStatus('loading')
+    setSubmitted(true)
     setTimeout(() => {
       document.getElementById('result')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 50)
+
+    trackAppEvent('enrichment_finder_completed', {
+      source_component: 'enrichment_finder_form',
+      calculator_type: 'enrichment_finder',
+    })
+
+    const preferences = getConsentPreferences()
+    const response = await emailCalculatorResult({
+      email,
+      dogName,
+      dogGender,
+      calculatorType: 'enrichment_finder',
+      inputData: {
+        dogName,
+        dogGender,
+        stage,
+        energy,
+        goal,
+        style,
+      },
+      resultData: plan,
+      sourcePage: location.pathname,
+      sourceComponent: 'enrichment_finder_form',
+      consentAnalytics: Boolean(preferences.analytics),
+      consentMarketing: marketingConsent,
+      interests: ['enrichment', 'toy_safety'],
+    })
+
+    if (response.ok) {
+      setSubmitStatus('success')
+      setSubmitMessage('Your plan has been emailed. You can also view it below.')
+      setResultUrl(response.resultUrl || '')
+      return
+    }
+
+    setSubmitStatus('warning')
+    setSubmitMessage('Your result is shown below, but we could not email it. Please try again.')
   }
 
   const next = ['best-dog-enrichment-ideas', 'toy-safety-guide', 'puppy-socialisation-checklist']
@@ -226,58 +290,130 @@ export default function EnrichmentFinder() {
                   <h2 className="font-display text-2xl text-navy">Your dog</h2>
                 </div>
 
-                <div>
-                  <p className="text-sm font-extrabold text-navy">Life stage</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <InputField
+                    id="enrichment-dog-name"
+                    label="Dog name"
+                    helper="Optional. Just for friendlier results."
+                    type="text"
+                    value={dogName}
+                    onChange={(event) => setDogName(event.target.value)}
+                    placeholder="e.g. Cooper"
+                    disabled={submitStatus === 'loading'}
+                  />
+
+                  <SelectField
+                    id="enrichment-dog-gender"
+                    label="Dog gender"
+                    helper="Optional. Only used to make the saved plan more complete."
+                    value={dogGender}
+                    onChange={(event) => setDogGender(event.target.value)}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {DOG_GENDERS.map((item) => (
+                      <option key={item.id || 'blank'} value={item.id}>{item.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <SelectField
+                    id="enrichment-stage"
+                    label="Life stage"
+                    helper="Choose the option that best fits your dog."
+                    value={stage}
+                    onChange={(event) => setStage(event.target.value)}
+                    error={fieldErrors.stage}
+                    disabled={submitStatus === 'loading'}
+                  >
                     {STAGES.map((s) => (
-                      <Chip key={s.id} active={stage === s.id} onClick={() => setStage(s.id)}>
-                        {s.label}
-                      </Chip>
+                      <option key={s.id} value={s.id}>{s.label}</option>
                     ))}
-                  </div>
+                  </SelectField>
+
+                  <SelectField
+                    id="enrichment-energy"
+                    label="Energy level"
+                    helper="Pick your dog's usual daily energy."
+                    value={energy}
+                    onChange={(event) => setEnergy(event.target.value)}
+                    error={fieldErrors.energy}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {ENERGY.map((item) => (
+                      <option key={item.id} value={item.id}>{item.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <SelectField
+                    id="enrichment-goal"
+                    label="Main goal"
+                    helper="Choose what you want the activity to support."
+                    value={goal}
+                    onChange={(event) => setGoal(event.target.value)}
+                    error={fieldErrors.goal}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {GOALS.map((item) => (
+                      <option key={item.id} value={item.id}>{item.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <SelectField
+                    id="enrichment-style"
+                    label="Play style"
+                    helper="Pick the play style your dog enjoys most."
+                    value={style}
+                    onChange={(event) => setStyle(event.target.value)}
+                    error={fieldErrors.style}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {STYLES.map((item) => (
+                      <option key={item.id} value={item.id}>{item.label}</option>
+                    ))}
+                  </SelectField>
+
+                  <InputField
+                    id="enrichment-email"
+                    label="Email address"
+                    helper="We will email your result so you can come back to it later."
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value)
+                      setFieldErrors((current) => ({ ...current, email: '' }))
+                    }}
+                    placeholder="you@example.com"
+                    error={fieldErrors.email}
+                    disabled={submitStatus === 'loading'}
+                    wrapperClassName="sm:col-span-2"
+                  />
+
+                  <CheckboxField
+                    id="enrichment-marketing"
+                    label="Yes, send me Pawzzles tips, guides and product updates."
+                    helper="We will email your result. Marketing emails are only sent if you opt in."
+                    checked={marketingConsent}
+                    onChange={setMarketingConsent}
+                    disabled={submitStatus === 'loading'}
+                    className="sm:col-span-2"
+                  />
                 </div>
 
-                <div>
-                  <p className="text-sm font-extrabold text-navy">Energy level</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {ENERGY.map((e) => (
-                      <Chip key={e.id} active={energy === e.id} onClick={() => setEnergy(e.id)}>
-                        {e.label}
-                      </Chip>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-extrabold text-navy">Main goal</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {GOALS.map((g) => (
-                      <Chip key={g.id} active={goal === g.id} onClick={() => setGoal(g.id)}>
-                        {g.label}
-                      </Chip>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-extrabold text-navy">Play style</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {STYLES.map((s) => (
-                      <Chip key={s.id} active={style === s.id} onClick={() => setStyle(s.id)}>
-                        {s.label}
-                      </Chip>
-                    ))}
-                  </div>
-                </div>
+                <FormError id="enrichment-form-error">{fieldErrors.form}</FormError>
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <button type="submit" className="btn-primary">
-                    Get my plan
+                  <button type="submit" className="btn-primary" disabled={submitStatus === 'loading'}>
+                    {submitStatus === 'loading' ? 'Emailing plan...' : 'Get and email my plan'}
                   </button>
                   <Link to="/resources/best-dog-enrichment-ideas" className="btn-ghost">
                     See all enrichment ideas
                   </Link>
                 </div>
+
+                <p className="text-[11px] leading-relaxed text-muted">
+                  We will email your result. Marketing emails are only sent if
+                  you opt in.
+                </p>
               </form>
             </div>
 
@@ -315,9 +451,31 @@ export default function EnrichmentFinder() {
               <div className="rounded-[2rem] bg-white ring-1 ring-navy/5 shadow-card p-7 sm:p-10">
                 <p className="eyebrow">Your enrichment plan</p>
                 <h2 className="mt-2 font-display text-3xl sm:text-4xl text-navy">
-                  Start with {plan.primary.toLowerCase()}
+                  {dogName ? `${dogName}'s plan starts with ` : 'Start with '}
+                  {plan.primary.toLowerCase()}
                 </h2>
                 <p className="mt-2 text-muted">{plan.intensity} {plan.stageNote}</p>
+
+                {submitMessage && (
+                  <div
+                    className={`mt-5 rounded-2xl border p-4 text-sm font-bold ${
+                      submitStatus === 'success'
+                        ? 'border-teal/20 bg-teal/10 text-teal'
+                        : 'border-orange/20 bg-orange/10 text-orange'
+                    }`}
+                    aria-live="polite"
+                  >
+                    {submitMessage}
+                    {resultUrl && (
+                      <a
+                        href={resultUrl}
+                        className="ml-2 inline-flex text-teal underline underline-offset-4"
+                      >
+                        Open saved result
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 <div className="mt-7 grid lg:grid-cols-2 gap-5">
                   <div className="rounded-2xl bg-orange/10 p-6">
@@ -372,22 +530,6 @@ export default function EnrichmentFinder() {
                     Visit Shop
                   </a>
                 </div>
-
-                <ResultEmailCapture
-                  sourceComponent="enrichment_finder_result"
-                  calculatorType="enrichment_finder"
-                  inputData={{
-                    stage,
-                    energy,
-                    goal,
-                    style,
-                  }}
-                  resultData={plan}
-                  interests={['enrichment', 'toy_safety']}
-                  title="Save my enrichment plan"
-                  body="Pop in your email and we'll send your plan over so you can come back to it later."
-                  buttonLabel="Save my plan"
-                />
               </div>
             )}
           </div>

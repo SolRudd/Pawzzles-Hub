@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
-import NewsletterSignup from '../components/NewsletterSignup.jsx'
+import ResourceLeadCapture from '../components/ResourceLeadCapture.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
@@ -132,6 +132,15 @@ export default function ResourceDetail() {
                 ))}
               </div>
 
+              <ResourceLeadCapture
+                className="mt-10"
+                title="Get dog care tips by email"
+                body="Join the Pawzzles Pack for practical guides, routines and dog-friendly ideas linked to this topic."
+                buttonLabel="Join the pack"
+                sourceComponent="resource_article"
+                interests={[...new Set(newsletterInterests)]}
+              />
+
               {/* cta block */}
               {content.cta && (
                 <div className="mt-10 rounded-3xl bg-soft-blue ring-1 ring-teal/10 p-6 sm:p-8">
@@ -176,11 +185,6 @@ export default function ResourceDetail() {
           )}
         </div>
       </section>
-
-      <NewsletterSignup
-        sourceComponent="resource_article"
-        interests={[...new Set(newsletterInterests)]}
-      />
     </>
   )
 }

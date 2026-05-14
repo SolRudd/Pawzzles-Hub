@@ -49,7 +49,7 @@ export async function subscribeToNewsletter(payload) {
   } catch {
     return {
       ok: false,
-      error: 'We could not reach the server. Please try again in a moment.',
+      error: 'Something went wrong. Please try again in a moment.',
     }
   }
 }

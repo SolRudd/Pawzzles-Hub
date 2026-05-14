@@ -17,6 +17,14 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload))
 }
 
+function logSubscribeError(step, error) {
+  console.error('Newsletter subscribe error', {
+    step,
+    message: error?.message,
+    status: error?.status || error?.code,
+  })
+}
+
 async function readBody(req) {
   if (Buffer.isBuffer(req.body)) return JSON.parse(req.body.toString('utf8') || '{}')
   if (req.body && typeof req.body === 'object') return req.body
@@ -60,6 +68,8 @@ export default async function handler(req, res) {
   const sourcePage = String(body.sourcePage || '').slice(0, 300)
   const sourceComponent = String(body.sourceComponent || '').slice(0, 120)
 
+  let step = 'supabase_newsletter_signup'
+
   try {
     await insertNewsletterSignup({
       email,
@@ -69,7 +79,16 @@ export default async function handler(req, res) {
       analytics_consent: analyticsConsent,
       marketing_consent: marketingConsent,
     })
+  } catch (error) {
+    logSubscribeError(step, error)
+    return sendJson(res, 500, {
+      ok: false,
+      error: 'Something went wrong. Please try again in a moment.',
+    })
+  }
 
+  step = 'supabase_consent_event'
+  try {
     await insertConsentEvent({
       email,
       source_page: sourcePage,
@@ -79,24 +98,26 @@ export default async function handler(req, res) {
       consent_text: CONSENT_TEXT,
       consent_version: CONSENT_VERSION,
     })
+  } catch (error) {
+    logSubscribeError(step, error)
+  }
 
-    if (marketingConsent) {
-      if (!newsletterProviderIsBrevo()) {
-        return sendJson(res, 500, {
-          ok: false,
-          error: 'Newsletter provider is not configured.',
-        })
-      }
-      const listIds = getBrevoListIds({ interests, includeMarketing: true })
-      await upsertBrevoContact({ email, listIds })
+  if (marketingConsent) {
+    if (!newsletterProviderIsBrevo()) {
+      const error = new Error('Newsletter provider is not configured.')
+      error.status = 500
+      logSubscribeError('brevo_provider', error)
+      return sendJson(res, 200, { ok: true })
     }
 
-    return sendJson(res, 200, { ok: true })
-  } catch (error) {
-    console.error('Newsletter signup failed', error)
-    return sendJson(res, 500, {
-      ok: false,
-      error: 'Could not save newsletter signup. Please try again.',
-    })
+    step = 'brevo_contact_sync'
+    try {
+      const listIds = getBrevoListIds({ includeMarketing: true })
+      await upsertBrevoContact({ email, listIds })
+    } catch (error) {
+      logSubscribeError(step, error)
+    }
   }
+
+  return sendJson(res, 200, { ok: true })
 }

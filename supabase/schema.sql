@@ -5,6 +5,7 @@ create table if not exists calculator_results (
   created_at timestamptz default now(),
   email text,
   dog_name text,
+  dog_gender text,
   calculator_type text not null,
   input_data jsonb,
   result_data jsonb not null,
@@ -14,6 +15,9 @@ create table if not exists calculator_results (
   analytics_consent boolean default false,
   public_token uuid default gen_random_uuid()
 );
+
+alter table calculator_results
+  add column if not exists dog_gender text;
 
 create table if not exists newsletter_signups (
   id uuid primary key default gen_random_uuid(),
