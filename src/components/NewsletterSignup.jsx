@@ -100,6 +100,9 @@ export default function NewsletterSignup({
   interests = ['resource_hub'],
   variant = 'full',
   className = '',
+  compactTitle,
+  compactBody,
+  compactButton,
 }) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('idle')
@@ -189,7 +192,11 @@ export default function NewsletterSignup({
           />
         </div>
         <button type="submit" className="btn-primary sm:px-7" disabled={status === 'loading'}>
-          {status === 'loading' ? 'Joining...' : status === 'success' ? "You're in" : 'Join now'}
+          {status === 'loading'
+            ? 'Sending...'
+            : status === 'success'
+              ? "You're in"
+              : compactButton || 'Join now'}
         </button>
       </form>
 
@@ -208,12 +215,20 @@ export default function NewsletterSignup({
 
   if (variant === 'compact') {
     return (
-      <div className={`rounded-2xl bg-cream border border-navy/5 p-5 ${className}`}>
-        <p className="font-display text-xl text-navy">Get more practical ideas</p>
+      <div
+        className={`rounded-2xl bg-cream border border-navy/5 p-5 sm:p-6 ${className}`}
+      >
+        <p className="font-display text-xl text-navy">
+          {compactTitle || 'Get more practical ideas'}
+        </p>
         <p className="mt-1 text-sm text-muted">
-          Join the Pawzzles Pack for dog-friendly tips and new resource updates.
+          {compactBody ||
+            'Join the Pawzzles Pack for dog-friendly tips and new resource updates.'}
         </p>
         {form}
+        <p className="mt-3 text-[11px] text-muted">
+          No spam. Just useful dog care tips, tools and Pawzzles updates.
+        </p>
       </div>
     )
   }

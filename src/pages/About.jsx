@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import SEOHead from '../components/SEOHead.jsx'
+import NewsletterSignup from '../components/NewsletterSignup.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { SITE, absoluteUrl } from '../data/site.js'
@@ -150,6 +151,11 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      <NewsletterSignup
+        sourceComponent="about_page"
+        interests={['resource_hub']}
+      />
     </>
   )
 }

@@ -59,10 +59,12 @@ function calculate({ weight, stageId, activityId, goalId, kcalPer100g }) {
 
 function FormGroup({ label, hint, children }) {
   return (
-    <label className="block">
-      <span className="block text-sm font-extrabold text-navy">{label}</span>
-      {hint && <span className="block text-xs text-muted mt-0.5">{hint}</span>}
-      <div className="mt-2">{children}</div>
+    <label className="flex flex-col h-full">
+      <span className="text-sm font-extrabold text-navy">{label}</span>
+      <span className="text-xs text-muted mt-0.5 min-h-[1.25rem] leading-snug">
+        {hint || ' '}
+      </span>
+      <div className="mt-2 flex-1 flex flex-col justify-end">{children}</div>
     </label>
   )
 }
@@ -135,7 +137,7 @@ export default function DogFeedingCalculator() {
       <PageHero
         eyebrow="Calculator"
         title="Dog Feeding Calculator"
-        intro="A practical starting point for daily portions. Pop in your dog's details below and we'll suggest daily calories, plus grams per day if you know your food's energy density."
+        intro="A practical starting point for daily portions. Pop in your dog's details below and we'll suggest daily calories. Add calories per 100g of food and we'll also estimate grams per day."
         crumbs={[
           { label: 'Home', to: '/' },
           { label: 'Resources', to: '/resources' },
@@ -164,7 +166,7 @@ export default function DogFeedingCalculator() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <FormGroup label="Dog name" hint="Optional, just for friendlier results">
+                  <FormGroup label="Dog name" hint="Optional. Just for friendlier results.">
                     <input
                       type="text"
                       value={dogName}
@@ -174,7 +176,7 @@ export default function DogFeedingCalculator() {
                     />
                   </FormGroup>
 
-                  <FormGroup label="Weight (kg)" hint="Your dog's current weight">
+                  <FormGroup label="Weight (kg)" hint="Your dog's current weight in kilograms.">
                     <input
                       type="number"
                       min="0"
@@ -224,8 +226,8 @@ export default function DogFeedingCalculator() {
                   </FormGroup>
 
                   <FormGroup
-                    label="Food kcal per 100g"
-                    hint="Optional, check the food packaging. Adds grams per day to your result."
+                    label="Calories per 100g of food"
+                    hint="Optional. Find this on your dog food packaging."
                   >
                     <input
                       type="number"
@@ -281,7 +283,7 @@ export default function DogFeedingCalculator() {
                 <ol className="mt-3 space-y-2 text-sm text-navy/85 list-decimal pl-5">
                   <li>We estimate resting energy from weight.</li>
                   <li>We adjust for life stage, activity and goal.</li>
-                  <li>If you add food kcal/100g, we convert to grams per day.</li>
+                  <li>If you add calories per 100g, we estimate grams per day as well as daily calories.</li>
                 </ol>
                 <Disclaimer className="mt-5" />
               </div>
@@ -308,7 +310,7 @@ export default function DogFeedingCalculator() {
                   <div className="rounded-2xl bg-teal/10 p-5">
                     <p className="text-xs font-extrabold uppercase tracking-wide text-teal">Grams per day</p>
                     <p className="mt-1 font-display text-3xl text-navy">
-                      {result.grams ? <>{result.grams} <span className="text-base font-body font-bold text-muted">g</span></> : <span className="text-base font-body text-muted">Add food kcal/100g</span>}
+                      {result.grams ? <>{result.grams} <span className="text-base font-body font-bold text-muted">g</span></> : <span className="text-base font-body text-muted">Add calories per 100g</span>}
                     </p>
                   </div>
                   <div className="rounded-2xl bg-cream p-5 border border-navy/5">
@@ -341,8 +343,11 @@ export default function DogFeedingCalculator() {
                 <NewsletterSignup
                   variant="compact"
                   sourceComponent="feeding_calculator_result"
-                  interests={['feeding', 'calculator']}
+                  interests={['feeding', 'mealtime_routines']}
                   className="mt-8"
+                  compactTitle="Email me this result"
+                  compactBody="We'll send your portion estimate to your inbox so you can come back to it later, with a few feeding tips along the way."
+                  compactButton="Email me my result"
                 />
               </div>
             ) : submitted ? (

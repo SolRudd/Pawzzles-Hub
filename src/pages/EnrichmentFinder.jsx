@@ -376,8 +376,11 @@ export default function EnrichmentFinder() {
                 <NewsletterSignup
                   variant="compact"
                   sourceComponent="enrichment_finder_result"
-                  interests={['enrichment', 'calculator']}
+                  interests={['enrichment', 'toy_safety']}
                   className="mt-8"
+                  compactTitle="Save my enrichment plan"
+                  compactBody="Pop in your email and we'll send your plan over, plus simple enrichment ideas you can try this week."
+                  compactButton="Save my plan"
                 />
               </div>
             )}

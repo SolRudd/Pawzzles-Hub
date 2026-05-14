@@ -69,11 +69,12 @@ export default function HubCards() {
         <div className="text-center max-w-2xl mx-auto">
           <p className="eyebrow">Explore the hub</p>
           <h2 className="mt-2 font-display text-3xl sm:text-4xl lg:text-5xl text-navy inline-flex items-center justify-center gap-3">
-            Where would you like to start
+            Choose a helpful starting point
             <PawMark size={26} color="#f58232" />
           </h2>
           <p className="mt-3 text-muted text-base sm:text-lg">
-            Three simple ways into the hub. Pick what feels most useful today.
+            Three simple ways into the hub. Pick a guide, calculator or
+            routine that fits today.
           </p>
         </div>
 
