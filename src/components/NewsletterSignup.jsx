@@ -146,7 +146,7 @@ export default function NewsletterSignup({
       }
 
       setStatus('success')
-      setMessage("You're in. We'll send useful Pawzzles tips and guides your way.")
+      setMessage("You’re in. We’ll send useful Pawzzles tips and guides your way.")
       setEmail('')
       trackAppEvent('newsletter_signup_success', {
         source_component: sourceComponent,

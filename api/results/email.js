@@ -109,13 +109,7 @@ export default async function handler(req, res) {
     const siteUrl = process.env.SITE_URL || 'https://resources.pawzzles.co.uk'
     const resultUrl = `${siteUrl.replace(/\/$/, '')}/results/${saved.public_token}`
 
-    await sendCalculatorResultEmail({
-      email,
-      dogName,
-      calculatorType,
-      resultData: body.resultData,
-      resultUrl,
-    })
+    await sendCalculatorResultEmail({ email })
 
     if (marketingConsent) {
       try {

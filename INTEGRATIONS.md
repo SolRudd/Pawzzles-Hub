@@ -36,6 +36,8 @@ The schema creates:
 
 The frontend never imports Supabase directly. Server code uses `api/_lib/supabase.js` with `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
+`SUPABASE_SERVICE_ROLE_KEY` must be the `service_role` API key from Supabase Project Settings > API. It is not the database password, JWT secret or anon key. If Vercel logs show `Invalid API key`, replace the Vercel Production value with the `service_role` key from the same Supabase project as `SUPABASE_URL`.
+
 ## Brevo
 
 Create one Brevo contact list for now:
@@ -44,7 +46,11 @@ Create one Brevo contact list for now:
 
 Newsletter signups and calculator form submitters only sync to Brevo when the user opts in to marketing emails.
 
-Calculator result emails are sent through `api/results/email.js`. If `BREVO_RESULT_TEMPLATE_ID` is set, Brevo sends that template with `dogName`, `calculatorType`, `resultData` and `resultUrl` params. If no template ID is set, `api/_lib/brevo.js` sends the fallback HTML email from `buildFallbackResultEmail`.
+Calculator result emails are sent through `api/results/email.js`. Brevo contact storage is deliberately minimal. Marketing sync only receives the email address and list ID 8 when the user opts in.
+
+If `BREVO_RESULT_TEMPLATE_ID` is set, Brevo sends that template with only lightweight template params such as `shopUrl`. If no template ID is set, `api/_lib/brevo.js` sends the fallback HTML email from `buildFallbackResultEmail`.
+
+Full calculator inputs, dog details, result summaries and saved result tokens stay in Supabase only.
 
 ## Newsletter Flow
 

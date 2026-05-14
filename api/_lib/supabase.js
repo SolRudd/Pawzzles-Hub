@@ -2,15 +2,69 @@ import { createClient } from '@supabase/supabase-js'
 
 let supabaseAdmin
 
+function createSupabaseConfigError(message, details, hint) {
+  const error = new Error(message)
+  error.status = 500
+  error.details = details
+  error.hint = hint
+  return error
+}
+
+function logSupabaseServerError(step, error) {
+  console.error('Supabase server error', {
+    step,
+    message: error?.message,
+    status: error?.status || error?.code,
+    details: error?.details,
+    hint: error?.hint,
+  })
+}
+
+function throwSupabaseError(step, error) {
+  const normalisedError = normaliseSupabaseError(error)
+  logSupabaseServerError(step, normalisedError)
+  throw normalisedError
+}
+
+export function validateSupabaseEnv() {
+  const missing = []
+  if (!process.env.SUPABASE_URL) missing.push('SUPABASE_URL')
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) missing.push('SUPABASE_SERVICE_ROLE_KEY')
+
+  if (missing.length > 0) {
+    const error = createSupabaseConfigError(
+      'Supabase environment is not configured.',
+      `Missing required Supabase env vars: ${missing.join(', ')}`,
+      'Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to the Vercel Production environment.',
+    )
+    logSupabaseServerError('supabase_env', error)
+    throw error
+  }
+}
+
+function normaliseSupabaseError(error) {
+  const message = String(error?.message || '')
+
+  if (/invalid api key/i.test(message)) {
+    const invalidKeyError = new Error('Invalid Supabase API key from Supabase response.')
+    invalidKeyError.status = error?.status || error?.code || 401
+    invalidKeyError.details =
+      'Supabase returned: Invalid API key. Double check your Supabase anon or service_role API key.'
+    invalidKeyError.hint =
+      'SUPABASE_SERVICE_ROLE_KEY must be the service_role key from Supabase Project Settings > API. Do not use the database password, JWT secret or anon key.'
+    return invalidKeyError
+  }
+
+  return error
+}
+
 export function getSupabaseAdmin() {
   if (supabaseAdmin) return supabaseAdmin
 
+  validateSupabaseEnv()
+
   const url = process.env.SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  if (!url || !serviceRoleKey) {
-    throw new Error('Supabase is not configured.')
-  }
 
   supabaseAdmin = createClient(url, serviceRoleKey, {
     auth: {
@@ -29,13 +83,13 @@ export async function insertNewsletterSignup(payload) {
     .select('id')
     .single()
 
-  if (error) throw error
+  if (error) throwSupabaseError('newsletter_signups_insert', error)
   return data
 }
 
 export async function insertConsentEvent(payload) {
   const { error } = await getSupabaseAdmin().from('consent_events').insert(payload)
-  if (error) throw error
+  if (error) throwSupabaseError('consent_events_insert', error)
 }
 
 export async function insertCalculatorResult(payload) {
@@ -59,11 +113,11 @@ export async function insertCalculatorResult(payload) {
         .select('public_token')
         .single()
 
-      if (retry.error) throw retry.error
+      if (retry.error) throwSupabaseError('calculator_results_insert_retry', retry.error)
       return retry.data
     }
 
-    throw error
+    throwSupabaseError('calculator_results_insert', error)
   }
 
   return data
@@ -76,6 +130,6 @@ export async function getPublicCalculatorResult(publicToken) {
     .eq('public_token', publicToken)
     .single()
 
-  if (error) throw error
+  if (error) throwSupabaseError('calculator_results_public_get', error)
   return data
 }

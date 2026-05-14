@@ -40,14 +40,6 @@ const GOAL = [
   { id: 'gain', label: 'Gain weight gently', mult: 1.15 },
 ]
 
-const DOG_GENDERS = [
-  { id: '', label: 'Not specified' },
-  { id: 'female', label: 'Female' },
-  { id: 'male', label: 'Male' },
-  { id: 'unknown', label: 'Unknown' },
-  { id: 'prefer_not_to_say', label: 'Prefer not to say' },
-]
-
 function calculate({ weight, stageId, activityId, goalId, kcalPer100g }) {
   const w = parseFloat(weight)
   if (!w || w <= 0) return null
@@ -74,7 +66,6 @@ function calculate({ weight, stageId, activityId, goalId, kcalPer100g }) {
 export default function DogFeedingCalculator() {
   const location = useLocation()
   const [dogName, setDogName] = useState('')
-  const [dogGender, setDogGender] = useState('')
   const [weight, setWeight] = useState('')
   const [stageId, setStageId] = useState('adult-neutered')
   const [activityId, setActivityId] = useState('medium')
@@ -147,11 +138,9 @@ export default function DogFeedingCalculator() {
     const response = await emailCalculatorResult({
       email,
       dogName,
-      dogGender,
       calculatorType: 'dog_feeding',
       inputData: {
         dogName,
-        dogGender,
         weight,
         stageId,
         activityId,
@@ -246,19 +235,6 @@ export default function DogFeedingCalculator() {
                     placeholder="e.g. Cooper"
                     disabled={submitStatus === 'loading'}
                   />
-
-                  <SelectField
-                    id="feeding-dog-gender"
-                    label="Dog gender"
-                    helper="Optional. Only used to make the saved result more complete."
-                    value={dogGender}
-                    onChange={(e) => setDogGender(e.target.value)}
-                    disabled={submitStatus === 'loading'}
-                  >
-                    {DOG_GENDERS.map((item) => (
-                      <option key={item.id || 'blank'} value={item.id}>{item.label}</option>
-                    ))}
-                  </SelectField>
 
                   <InputField
                     id="feeding-weight"
@@ -368,7 +344,6 @@ export default function DogFeedingCalculator() {
                     type="button"
                     onClick={() => {
                       setDogName('')
-                      setDogGender('')
                       setWeight('')
                       setStageId('adult-neutered')
                       setActivityId('medium')

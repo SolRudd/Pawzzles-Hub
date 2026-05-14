@@ -62,7 +62,7 @@ export default function ResourceLeadCapture({
 
     setStatus('success')
     setEmail('')
-    setMessage("You're in. We'll send useful Pawzzles tips and guides your way.")
+    setMessage("You’re in. We’ll send useful Pawzzles tips and guides your way.")
     trackAppEvent('newsletter_signup_success', {
       source_component: sourceComponent,
     })

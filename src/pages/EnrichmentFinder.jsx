@@ -47,14 +47,6 @@ const STYLES = [
   { id: 'solver', label: 'Problem-solver' },
 ]
 
-const DOG_GENDERS = [
-  { id: '', label: 'Not specified' },
-  { id: 'female', label: 'Female' },
-  { id: 'male', label: 'Male' },
-  { id: 'unknown', label: 'Unknown' },
-  { id: 'prefer_not_to_say', label: 'Prefer not to say' },
-]
-
 const PLAN = {
   chewer: {
     primary: 'Long-lasting chews & lickmats',
@@ -134,7 +126,6 @@ function recommend({ stage, energy, goal, style }) {
 export default function EnrichmentFinder() {
   const location = useLocation()
   const [dogName, setDogName] = useState('')
-  const [dogGender, setDogGender] = useState('')
   const [stage, setStage] = useState('adult')
   const [energy, setEnergy] = useState('medium')
   const [goal, setGoal] = useState('boredom')
@@ -204,11 +195,9 @@ export default function EnrichmentFinder() {
     const response = await emailCalculatorResult({
       email,
       dogName,
-      dogGender,
       calculatorType: 'enrichment_finder',
       inputData: {
         dogName,
-        dogGender,
         stage,
         energy,
         goal,
@@ -301,19 +290,6 @@ export default function EnrichmentFinder() {
                     placeholder="e.g. Cooper"
                     disabled={submitStatus === 'loading'}
                   />
-
-                  <SelectField
-                    id="enrichment-dog-gender"
-                    label="Dog gender"
-                    helper="Optional. Only used to make the saved plan more complete."
-                    value={dogGender}
-                    onChange={(event) => setDogGender(event.target.value)}
-                    disabled={submitStatus === 'loading'}
-                  >
-                    {DOG_GENDERS.map((item) => (
-                      <option key={item.id || 'blank'} value={item.id}>{item.label}</option>
-                    ))}
-                  </SelectField>
 
                   <SelectField
                     id="enrichment-stage"

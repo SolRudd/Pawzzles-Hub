@@ -76,7 +76,7 @@ export default function About() {
       <PageHero
         eyebrow="About Pawzzles"
         title="About Pawzzles"
-        intro="Pawzzles was created to make everyday dog care more playful, practical and enriching. From toys and slow feeders to helpful guides and calculators, we are building simple ways to help owners support their dogs' routines, play and wellbeing."
+        intro="Pawzzles was created to make everyday dog care more playful, practical and enriching. From enrichment toys and slow feeders to useful guides and calculators, we help owners build better routines for their dogs."
         crumbs={[{ label: 'Home', to: '/' }, { label: 'About' }]}
       />
 
@@ -99,6 +99,11 @@ export default function About() {
               <h2 className="mt-2 font-display text-3xl sm:text-4xl text-navy">
                 Practical ideas for real dog days.
               </h2>
+              <p className="mt-3 text-muted leading-relaxed">
+                We focus on toys, slow feeders, mealtime routines, enrichment
+                and safe play, with practical guidance that is easy to use at
+                home.
+              </p>
               <div className="mt-7 grid sm:grid-cols-2 gap-4">
                 {VALUES.map((value) => (
                   <article key={value.title} className="rounded-2xl bg-white ring-1 ring-navy/5 p-5 shadow-soft">
@@ -164,6 +169,9 @@ export default function About() {
                   The Pawzzles Resource Hub is here to help dog owners find
                   useful guides, calculators and simple ideas for feeding,
                   enrichment, puppy routines, slow feeders and safe play.
+                </p>
+                <p className="mt-3 text-sm font-bold text-teal">
+                  Resource hub created and run by BuzzBoost Digital.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
