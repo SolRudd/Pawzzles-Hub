@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Icon } from './icons/Icons.jsx'
 import { PawMark } from './PawAccent.jsx'
+import { getConsentPreferences, trackAppEvent } from '../lib/tracking.js'
+import { isValidEmail, subscribeToNewsletter } from '../lib/newsletter.js'
 
 const POINTS = [
   { icon: 'paw', label: 'Helpful tips you can use' },
@@ -92,11 +95,131 @@ function DogPeek() {
   )
 }
 
-export default function NewsletterSignup() {
+export default function NewsletterSignup({
+  sourceComponent = 'newsletter_block',
+  interests = ['resource_hub'],
+  variant = 'full',
+  className = '',
+}) {
   const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState('idle')
+  const [message, setMessage] = useState('')
+  const location = useLocation()
+  const inputId = `newsletter-email-${sourceComponent}`
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+
+    const cleanEmail = email.trim()
+    if (!isValidEmail(cleanEmail)) {
+      setStatus('error')
+      setMessage('Please enter a valid email address.')
+      return
+    }
+
+    const preferences = getConsentPreferences()
+    const payload = {
+      email: cleanEmail,
+      sourcePage: location.pathname,
+      sourceComponent,
+      consentAnalytics: Boolean(preferences.analytics),
+      consentMarketing: Boolean(preferences.marketing),
+      interests,
+    }
+
+    trackAppEvent('newsletter_signup_submit', {
+      source_component: sourceComponent,
+    })
+
+    setStatus('loading')
+    setMessage('')
+
+    try {
+      const data = await subscribeToNewsletter(payload)
+
+      if (!data.ok) {
+        throw new Error(data.error || 'Newsletter signup failed.')
+      }
+
+      setStatus('success')
+      setMessage('Thanks, you are on the list.')
+      setEmail('')
+      trackAppEvent('newsletter_signup_success', {
+        source_component: sourceComponent,
+      })
+    } catch (error) {
+      setStatus('error')
+      setMessage('Sorry, we could not sign you up just now. Please try again.')
+      trackAppEvent('newsletter_signup_error', {
+        source_component: sourceComponent,
+        error_message: error.message,
+      })
+    }
+  }
+
+  const form = (
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className={`mt-5 flex flex-col items-stretch gap-2 max-w-xl ${
+          variant === 'compact' ? '' : 'sm:flex-row'
+        }`}
+      >
+        <label htmlFor={inputId} className="sr-only">
+          Email address
+        </label>
+        <div className="relative flex-1">
+          <Icon
+            name="mail"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40 pointer-events-none"
+          />
+          <input
+            id={inputId}
+            type="email"
+            required
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value)
+              if (status !== 'loading') setStatus('idle')
+              setMessage('')
+            }}
+            placeholder="Enter your email address"
+            className="w-full pl-11 pr-4 py-3.5 rounded-full bg-white shadow-soft border border-navy/5 placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40 text-sm"
+            disabled={status === 'loading'}
+          />
+        </div>
+        <button type="submit" className="btn-primary sm:px-7" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Joining...' : status === 'success' ? "You're in" : 'Join now'}
+        </button>
+      </form>
+
+      {message && (
+        <p
+          className={`mt-3 text-sm font-bold ${
+            status === 'error' ? 'text-orange' : 'text-teal'
+          }`}
+          aria-live="polite"
+        >
+          {message}
+        </p>
+      )}
+    </>
+  )
+
+  if (variant === 'compact') {
+    return (
+      <div className={`rounded-2xl bg-cream border border-navy/5 p-5 ${className}`}>
+        <p className="font-display text-xl text-navy">Get more practical ideas</p>
+        <p className="mt-1 text-sm text-muted">
+          Join the Pawzzles Pack for dog-friendly tips and new resource updates.
+        </p>
+        {form}
+      </div>
+    )
+  }
+
   return (
-    <section id="newsletter" className="py-16 sm:py-20 bg-cream">
+    <section id="newsletter" className="scroll-mt-28 py-16 sm:py-20 bg-cream">
       <div className="max-w-7xl mx-auto container-px">
         <div className="relative rounded-[2.25rem] bg-beige overflow-hidden ring-1 ring-orange/10 shadow-card">
           <PawMark className="absolute top-6 right-10 opacity-15 rotate-[10deg]" color="#f58232" size={28} />
@@ -121,35 +244,7 @@ export default function NewsletterSignup() {
                 tools straight to your inbox.
               </p>
 
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  if (email) setSent(true)
-                }}
-                className="mt-5 flex flex-col sm:flex-row items-stretch gap-2 max-w-xl"
-              >
-                <label htmlFor="email" className="sr-only">
-                  Email address
-                </label>
-                <div className="relative flex-1">
-                  <Icon
-                    name="mail"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40 pointer-events-none"
-                  />
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    className="w-full pl-11 pr-4 py-3.5 rounded-full bg-white shadow-soft border border-navy/5 placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40 text-sm"
-                  />
-                </div>
-                <button type="submit" className="btn-primary sm:px-7">
-                  {sent ? 'Welcome aboard!' : 'Join now'}
-                </button>
-              </form>
+              {form}
 
               <ul className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3 max-w-2xl">
                 {POINTS.map((p) => (

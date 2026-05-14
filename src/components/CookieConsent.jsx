@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Icon } from './icons/Icons.jsx'
 import { SITE } from '../data/site.js'
 import {
+  applyCookieConsent,
   defaultCookieConsent,
   readCookieConsent,
   saveCookieConsent,
 } from '../lib/cookieConsent.js'
+import { trackEvent } from '../lib/googleTagManager.js'
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false)
@@ -16,6 +17,7 @@ export default function CookieConsent() {
   useEffect(() => {
     const saved = readCookieConsent()
     if (saved) {
+      applyCookieConsent(saved)
       setPreferences(saved)
       return
     }
@@ -36,28 +38,36 @@ export default function CookieConsent() {
     }
   }, [])
 
-  function commit(next) {
-    setPreferences(saveCookieConsent(next))
+  function commit(next, eventName) {
+    const saved = saveCookieConsent(next)
+    setPreferences(saved)
     setVisible(false)
     setManageOpen(false)
+
+    trackEvent(eventName, {
+      source_page: window.location.pathname,
+      source_component: 'cookie_banner',
+      consent_analytics: Boolean(saved.analytics),
+      consent_marketing: Boolean(saved.marketing),
+    })
   }
 
   if (!visible) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[80] px-4 pb-4 sm:px-6 sm:pb-6">
-      <div className="max-w-4xl mx-auto rounded-3xl bg-white shadow-card ring-1 ring-navy/10 overflow-hidden">
-        <div className="grid md:grid-cols-[1fr_auto] gap-5 p-5 sm:p-6">
-          <div>
+    <div className="fixed inset-x-0 bottom-0 z-[80] px-3 pb-3 sm:px-6 sm:pb-6 pointer-events-none">
+      <div className="pointer-events-auto max-w-5xl mx-auto rounded-[1.75rem] bg-cream shadow-card ring-1 ring-navy/10 overflow-hidden">
+        <div className="grid md:grid-cols-[1fr_auto] gap-5 p-4 sm:p-6">
+          <div className="min-w-0">
             <div className="flex items-center gap-3">
-              <span className="inline-flex w-10 h-10 items-center justify-center rounded-2xl bg-teal text-white">
+              <span className="inline-flex w-10 h-10 items-center justify-center rounded-2xl bg-teal text-white shadow-soft shrink-0">
                 <Icon name="paw" className="w-5 h-5" />
               </span>
               <div>
                 <p className="font-display text-xl text-navy">Cookie choices</p>
                 <p className="text-sm text-muted">
-                  We use necessary cookies to keep the site working. Analytics
-                  and marketing cookies stay off unless you allow them.
+                  Necessary cookies keep the site working. Analytics and
+                  marketing stay off unless you allow them.
                 </p>
               </div>
             </div>
@@ -91,9 +101,9 @@ export default function CookieConsent() {
 
             <p className="mt-4 text-xs text-muted">
               Read more in the{' '}
-              <Link to={SITE.privacyPolicyUrl} className="font-bold text-teal hover:text-teal-deep">
+              <a href={SITE.privacyPolicyUrl} className="font-bold text-teal hover:text-teal-deep">
                 privacy policy
-              </Link>
+              </a>
               .
             </p>
           </div>
@@ -102,14 +112,24 @@ export default function CookieConsent() {
             <button
               type="button"
               className="btn-primary whitespace-nowrap"
-              onClick={() => commit({ analytics: true, marketing: true })}
+              onClick={() =>
+                commit(
+                  { analytics: true, marketing: true },
+                  'cookie_consent_accept_all',
+                )
+              }
             >
               Accept all
             </button>
             <button
               type="button"
               className="btn-secondary whitespace-nowrap"
-              onClick={() => commit({ analytics: false, marketing: false })}
+              onClick={() =>
+                commit(
+                  { analytics: false, marketing: false },
+                  'cookie_consent_reject',
+                )
+              }
             >
               Reject non-essential
             </button>
@@ -117,7 +137,7 @@ export default function CookieConsent() {
               <button
                 type="button"
                 className="btn-ghost whitespace-nowrap"
-                onClick={() => commit(preferences)}
+                onClick={() => commit(preferences, 'cookie_consent_update')}
               >
                 Save preferences
               </button>
@@ -140,8 +160,8 @@ export default function CookieConsent() {
 function CookieToggle({ title, copy, checked, disabled = false, onChange }) {
   return (
     <label
-      className={`rounded-2xl border p-4 ${
-        checked ? 'bg-teal/5 border-teal/25' : 'bg-cream border-navy/10'
+      className={`rounded-2xl border bg-white p-4 shadow-soft ${
+        checked ? 'border-teal/25' : 'border-navy/10'
       } ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
     >
       <span className="flex items-center justify-between gap-3">

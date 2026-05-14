@@ -4,12 +4,14 @@ import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
+import NewsletterSignup from '../components/NewsletterSignup.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResource } from '../data/resources.js'
 import { resourceHubImages } from '../data/imageAssets.js'
 import { SITE, absoluteUrl } from '../data/site.js'
+import { trackAppEvent, trackVisitShop } from '../lib/tracking.js'
 
 const STAGES = [
   { id: 'puppy', label: 'Puppy' },
@@ -25,7 +27,7 @@ const ENERGY = [
 ]
 
 const GOALS = [
-  { id: 'boredom', label: 'Stop boredom' },
+  { id: 'boredom', label: 'Ease boredom' },
   { id: 'calming', label: 'Calmer evenings' },
   { id: 'training', label: 'Build training & focus' },
   { id: 'exercise', label: 'Burn energy' },
@@ -64,15 +66,15 @@ const PLAN = {
     ideas: [
       'Scatter feeding in the garden or kitchen',
       'A slow “sniffari” walk with no destination',
-      'Hide-and-find treat games inside boxes',
+      'Hide-and-find food games inside boxes',
     ],
   },
   solver: {
     primary: 'Puzzles and problem-solving',
-    toy: 'Puzzle feeders & treat-dispensers',
+    toy: 'Puzzle feeders & food dispensers',
     ideas: [
       'Stacked cardboard puzzles (start easy)',
-      'Treat-dispensing balls during quiet time',
+      'Food-dispensing balls during quiet time',
       'Trick training in 2-minute bursts',
     ],
   },
@@ -100,8 +102,8 @@ function recommend({ stage, energy, goal, style }) {
 
   const stageNote =
     stage === 'puppy' ? 'Stick to brief, easy activities and reward calm.' :
-    stage === 'senior' ? 'Choose low-impact options — sniffing and soft chewing are excellent.' :
-    stage === 'adolescent' ? 'Predictable routine helps — variety inside the same time slots.' :
+    stage === 'senior' ? 'Choose low-impact options. Sniffing and soft chewing are excellent.' :
+    stage === 'adolescent' ? 'Predictable routine helps. Keep variety inside the same time slots.' :
     'Mix things up to keep activities feeling fresh.'
 
   return {
@@ -142,9 +144,9 @@ export default function EnrichmentFinder() {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    document.title = 'Enrichment Finder — Pawzzles'
+    document.title = 'Enrichment Finder | Pawzzles'
     return () => {
-      document.title = 'Pawzzles Resource Hub — Practical Tools for Dog Owners'
+      document.title = 'Pawzzles Resource Hub | Practical Tools for Dog Owners'
     }
   }, [])
 
@@ -156,6 +158,12 @@ export default function EnrichmentFinder() {
   function onSubmit(e) {
     e.preventDefault()
     setSubmitted(true)
+    if (plan) {
+      trackAppEvent('enrichment_finder_completed', {
+        source_component: 'enrichment_finder_form',
+        calculator_type: 'enrichment_finder',
+      })
+    }
     setTimeout(() => {
       document.getElementById('result')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 50)
@@ -302,7 +310,7 @@ export default function EnrichmentFinder() {
           </div>
 
           {/* result */}
-          <div id="result" className="mt-12">
+          <div id="result" className="scroll-mt-28 mt-12">
             {submitted && plan && (
               <div className="rounded-[2rem] bg-white ring-1 ring-navy/5 shadow-card p-7 sm:p-10">
                 <p className="eyebrow">Your enrichment plan</p>
@@ -356,10 +364,21 @@ export default function EnrichmentFinder() {
                   <Link to="/resources?category=feeding" className="btn-secondary">
                     Explore feeding guides
                   </Link>
-                  <a href={SITE.shopUrl} className="btn-ghost">
-                    Visit shop
+                  <a
+                    href={SITE.shopUrl}
+                    className="btn-ghost"
+                    onClick={() => trackVisitShop('enrichment_finder_result')}
+                  >
+                    Visit Shop
                   </a>
                 </div>
+
+                <NewsletterSignup
+                  variant="compact"
+                  sourceComponent="enrichment_finder_result"
+                  interests={['enrichment', 'calculator']}
+                  className="mt-8"
+                />
               </div>
             )}
           </div>

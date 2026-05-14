@@ -140,8 +140,8 @@ export const resources = [
   {
     id: 'boredom-behaviours',
     type: 'Guide',
-    title: 'Stop Boredom Behaviours',
-    description: 'Reduce boredom and build calm, positive habits.',
+    title: 'Boredom Behaviour Ideas',
+    description: 'Support calmer routines with simple enrichment ideas.',
     time: '6 min read',
     image: 'resource-boredom-behaviour',
     imageSrc: resourceHubImages['resource-boredom-behaviour'],

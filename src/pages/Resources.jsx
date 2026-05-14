@@ -66,7 +66,7 @@ export default function Resources() {
       <PageHero
         eyebrow="Resources"
         title="Browse the Pawzzles Resource Hub"
-        intro="Practical calculators, easy-to-follow guides and helpful checklists — all in one place."
+        intro="Practical calculators, easy-to-follow guides and helpful checklists, all in one place."
         crumbs={[{ label: 'Home', to: '/' }, { label: 'Resources' }]}
       >
         <div className="w-full max-w-2xl">

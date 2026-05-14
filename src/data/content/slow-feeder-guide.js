@@ -12,7 +12,7 @@ export default {
   image: 'resource-small-dog-slow-feeder',
   imageSrc: resourceHubImages['resource-small-dog-slow-feeder'],
   imageAlt: 'Dog-friendly slow feeder setup placeholder',
-  metaTitle: 'Slow Feeder Guide — Pawzzles',
+  metaTitle: 'Slow Feeder Guide | Pawzzles',
   metaDescription:
     'A practical Pawzzles guide to slow feeders, calmer mealtimes and everyday feeding enrichment.',
   sections: [
@@ -22,7 +22,7 @@ export default {
     },
     {
       heading: 'When it can be useful',
-      body: 'Slow feeders are best treated as part of a practical routine, not a cure-all.',
+      body: 'Slow feeders are best used as part of a practical routine, not a complete answer on their own.',
       list: [
         'Dogs who finish meals very quickly',
         'Dogs who enjoy sniffing and problem-solving',

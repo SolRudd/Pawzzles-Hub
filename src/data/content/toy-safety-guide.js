@@ -12,13 +12,13 @@ export default {
   image: 'resource-toy-safety',
   imageSrc: resourceHubImages['resource-toy-safety'],
   imageAlt: 'Dog lying beside clean teal and orange toys',
-  metaTitle: 'Dog Toy Safety Guide — Pawzzles',
+  metaTitle: 'Dog Toy Safety Guide | Pawzzles',
   metaDescription:
     'A practical, dog-friendly guide to choosing safe toys, recognising wear and tear, and supervising play sessions.',
   sections: [
     {
       heading: 'Match toys to your dog',
-      body: 'Size, chewing strength and play style all matter. A toy that suits a small, gentle chewer might not last five minutes with a strong chewer — and a toy that’s too small can be a choking hazard for a larger dog.',
+      body: 'Size, chewing strength and play style all matter. A toy that suits a small, gentle chewer might not last five minutes with a strong chewer. A toy that’s too small can be a choking hazard for a larger dog.',
       list: [
         'Pick a size your dog can’t swallow',
         'Match toughness to chewing style',
@@ -42,7 +42,7 @@ export default {
     },
     {
       heading: 'Rotate to keep play fresh',
-      body: 'Putting some toys away for a week and bringing them back later often makes them feel brand new — and reduces wear at the same time.',
+      body: 'Putting some toys away for a week and bringing them back later often makes them feel brand new. It can reduce wear at the same time.',
     },
     {
       heading: 'When to stop play',

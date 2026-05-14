@@ -7,12 +7,12 @@ export default {
   category: 'Puppy',
   title: 'Puppy Socialisation Checklist',
   intro:
-    'Use this simple checklist to help your puppy build positive associations with the everyday world — calmly, safely and at their own pace.',
+    'Use this simple checklist to help your puppy build positive associations with the everyday world, calmly, safely and at their own pace.',
   time: '5 min checklist',
   image: 'resource-puppy-checklist',
   imageSrc: resourceHubImages['resource-puppy-checklist'],
   imageAlt: 'Puppy in a calm training scene with a blank checklist',
-  metaTitle: 'Puppy Socialisation Checklist — Pawzzles',
+  metaTitle: 'Puppy Socialisation Checklist | Pawzzles',
   metaDescription:
     'A practical, behaviour-led puppy socialisation checklist covering people, places, sounds, surfaces and handling for the first few months.',
   sections: [

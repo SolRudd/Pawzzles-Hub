@@ -2,7 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../icons/Icons.jsx'
 import { PawMark } from '../PawAccent.jsx'
+import NewsletterSignup from '../NewsletterSignup.jsx'
 import { SITE } from '../../data/site.js'
+import { trackVisitShop } from '../../lib/tracking.js'
 
 const COLUMNS = [
   {
@@ -41,7 +43,7 @@ const COLUMNS = [
   {
     title: 'Shop',
     links: [
-      { label: 'Visit shop', external: SITE.shopUrl },
+      { label: 'Visit Shop', external: SITE.shopUrl },
     ],
   },
 ]
@@ -116,7 +118,11 @@ export default function Footer() {
                   {col.links.map((l) =>
                     l.external ? (
                       <li key={l.label}>
-                        <a href={l.external} className="text-sm text-white/80 hover:text-white">
+                        <a
+                          href={l.external}
+                          className="text-sm text-white/80 hover:text-white"
+                          onClick={() => trackVisitShop('footer_link')}
+                        >
                           {l.label}
                         </a>
                       </li>
@@ -134,7 +140,13 @@ export default function Footer() {
           </div>
 
           <div className="lg:col-span-3">
-            <h3 className="font-display text-lg">Questions about your dog?</h3>
+            <NewsletterSignup
+              variant="compact"
+              sourceComponent="footer_signup"
+              interests={['footer', 'resource_hub']}
+              className="bg-white text-navy"
+            />
+            <h3 className="mt-6 font-display text-lg">Questions about your dog?</h3>
             <p className="text-sm text-white/80 mt-1">We&apos;re building this hub for owners like you.</p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link
@@ -147,6 +159,7 @@ export default function Footer() {
               <a
                 href={SITE.shopUrl}
                 className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-white text-teal-deep font-bold text-sm transition-colors hover:bg-cream"
+                onClick={() => trackVisitShop('footer_cta')}
               >
                 Visit Shop
               </a>

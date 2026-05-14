@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from './icons/Icons.jsx'
 import { SITE } from '../data/site.js'
+import { trackVisitShop } from '../lib/tracking.js'
 
 export default function ChoiceCta({ className = '' }) {
   return (
@@ -21,7 +22,11 @@ export default function ChoiceCta({ className = '' }) {
           <Link to="/resources" className="btn-secondary">
             Browse resources
           </Link>
-          <a href={SITE.shopUrl} className="btn-primary">
+          <a
+            href={SITE.shopUrl}
+            className="btn-primary"
+            onClick={() => trackVisitShop('choice_cta')}
+          >
             Visit Shop
             <Icon name="arrowRight" className="w-4 h-4" />
           </a>

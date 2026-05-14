@@ -7,18 +7,18 @@ export default {
   category: 'Enrichment',
   title: 'Best Dog Enrichment Ideas',
   intro:
-    'Enrichment isn’t about doing more — it’s about doing the right things for your dog. Here are simple, low-cost ideas to keep your dog happily occupied.',
+    'Enrichment isn’t about doing more. It’s about doing the right things for your dog. Here are simple, low-cost ideas to keep your dog happily occupied.',
   time: '4 min read',
   image: 'resource-enrichment-ideas',
   imageSrc: resourceHubImages['resource-enrichment-ideas'],
   imageAlt: 'Dog with puzzle, snuffle and chew enrichment toys',
-  metaTitle: 'Best Dog Enrichment Ideas — Pawzzles',
+  metaTitle: 'Best Dog Enrichment Ideas | Pawzzles',
   metaDescription:
-    'Simple, low-cost dog enrichment ideas covering sniffing, puzzles, calming, training and play — designed to support enrichment, routine and wellbeing.',
+    'Simple, low-cost dog enrichment ideas covering sniffing, puzzles, calming, training and play, designed to support enrichment, routine and wellbeing.',
   sections: [
     {
       heading: 'What enrichment actually means',
-      body: 'Enrichment is anything that lets your dog use their natural behaviours in a constructive, safe way — sniffing, chewing, problem-solving, foraging and social play. The right mix depends on your dog’s age, energy and play style.',
+      body: 'Enrichment is anything that lets your dog use their natural behaviours in a constructive, safe way. That might include sniffing, chewing, problem-solving, foraging and social play. The right mix depends on your dog’s age, energy and play style.',
     },
     {
       heading: 'Sniffing activities',
@@ -27,7 +27,7 @@ export default {
         'Scatter feeding in grass or a snuffle mat',
         'Find-it games around the kitchen',
         'Slow “sniffari” walks where your dog leads',
-        'Hiding treats inside cardboard boxes',
+        'Hiding food pieces inside cardboard boxes',
       ],
     },
     {
@@ -35,7 +35,7 @@ export default {
       body: 'Start easy and gradually increase difficulty so your dog stays confident.',
       list: [
         'Lickmats with soft food',
-        'Treat-dispensing toys with kibble',
+        'Food-dispensing toys with kibble',
         'Cardboard puzzles you can make at home',
         'Frozen toys for hot days or teething',
       ],
@@ -56,7 +56,7 @@ export default {
       list: [
         'Two-minute trick training bursts',
         'Hand-target games',
-        'Name recognition with treats',
+        'Name recognition with food rewards',
         'Settle on a mat with calm praise',
       ],
     },

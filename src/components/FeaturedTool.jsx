@@ -16,11 +16,11 @@ export default function FeaturedTool() {
   return (
     <section id="feeding-calculator" className="py-24 sm:py-28 bg-cream">
       <div className="max-w-7xl mx-auto container-px">
-        <div className="relative rounded-[2.25rem] bg-gradient-to-br from-soft-blue via-white to-orange-soft/60 overflow-hidden ring-1 ring-teal/10 shadow-card">
+        <div className="relative isolate rounded-[2.25rem] bg-gradient-to-br from-soft-blue via-white to-orange-soft/60 overflow-hidden ring-1 ring-teal/10 shadow-card">
           <PawMark className="absolute top-6 left-8 opacity-20 rotate-[-12deg]" color="#138fa1" size={26} />
           <PawMark className="absolute bottom-8 right-10 opacity-20 rotate-[18deg]" color="#138fa1" size={32} />
 
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center p-7 sm:p-10 lg:p-16">
+          <div className="relative z-10 grid lg:grid-cols-12 gap-10 lg:gap-14 items-center p-7 sm:p-10 lg:p-16">
             <div className="lg:col-span-5">
               <p className="eyebrow inline-flex items-center gap-2">
                 <Icon name="sparkle" className="w-3.5 h-3.5" />
@@ -72,7 +72,7 @@ export default function FeaturedTool() {
                   />
                 </div>
 
-                <div className="absolute z-20 -left-2 sm:-left-6 -top-5 sm:top-7 bg-white rounded-3xl shadow-card px-5 py-4 ring-4 ring-soft-blue max-w-[205px]">
+                <div className="absolute z-40 -left-2 sm:-left-6 -top-5 sm:top-7 bg-white rounded-3xl shadow-card px-5 py-4 ring-4 ring-soft-blue max-w-[205px]">
                   <p className="text-[11px] font-extrabold uppercase tracking-wider text-teal">
                     What you get
                   </p>
@@ -81,7 +81,7 @@ export default function FeaturedTool() {
                   </p>
                 </div>
 
-                <div className="relative z-20 -mt-8 lg:mt-0 lg:absolute lg:right-4 lg:-bottom-9 bg-white rounded-2xl shadow-card p-5 max-w-sm lg:max-w-xs mx-auto lg:mx-0">
+                <div className="relative z-40 -mt-8 lg:mt-0 lg:absolute lg:right-4 lg:-bottom-9 bg-white rounded-2xl shadow-card p-5 max-w-sm lg:max-w-xs mx-auto lg:mx-0">
                   <p className="text-[11px] font-extrabold uppercase tracking-wider text-orange">
                     Owner tip
                   </p>

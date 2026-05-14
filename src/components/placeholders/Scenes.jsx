@@ -267,7 +267,7 @@ const SCENES = {
       <>
         <circle cx="105" cy="100" r="62" fill="#fff" opacity="0.7" />
         <SidePup x={100} y={120} scale={1.1} />
-        {/* hand giving treat */}
+        {/* hand giving food reward */}
         <g transform="translate(150 80)">
           <circle cx="0" cy="0" r="6" fill={PALETTE.orange} />
           <path d="M-2 -22c0 8 -2 14 -6 18" stroke={PALETTE.orange} strokeWidth="6" strokeLinecap="round" fill="none" />

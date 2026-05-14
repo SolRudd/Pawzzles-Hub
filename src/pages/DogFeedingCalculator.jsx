@@ -4,26 +4,28 @@ import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
+import NewsletterSignup from '../components/NewsletterSignup.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResource } from '../data/resources.js'
 import { resourceHubImages } from '../data/imageAssets.js'
 import { SITE, absoluteUrl } from '../data/site.js'
+import { trackAppEvent, trackVisitShop } from '../lib/tracking.js'
 
 const LIFE_STAGES = [
   { id: 'puppy-young', label: 'Puppy (under 4 months)', factor: 3.0 },
-  { id: 'puppy-old', label: 'Puppy (4–12 months)', factor: 2.0 },
-  { id: 'adult-neutered', label: 'Adult — neutered', factor: 1.6 },
-  { id: 'adult-intact', label: 'Adult — intact', factor: 1.8 },
+  { id: 'puppy-old', label: 'Puppy (4 to 12 months)', factor: 2.0 },
+  { id: 'adult-neutered', label: 'Adult, neutered', factor: 1.6 },
+  { id: 'adult-intact', label: 'Adult, intact', factor: 1.8 },
   { id: 'senior', label: 'Senior (7+ years)', factor: 1.4 },
 ]
 
 const ACTIVITY = [
-  { id: 'low', label: 'Low — mostly indoors', mult: 0.9 },
-  { id: 'medium', label: 'Medium — daily walks', mult: 1.0 },
-  { id: 'high', label: 'High — long walks or runs', mult: 1.2 },
-  { id: 'very-high', label: 'Very high — sports or working', mult: 1.4 },
+  { id: 'low', label: 'Low, mostly indoors', mult: 0.9 },
+  { id: 'medium', label: 'Medium, daily walks', mult: 1.0 },
+  { id: 'high', label: 'High, long walks or runs', mult: 1.2 },
+  { id: 'very-high', label: 'Very high, sports or working', mult: 1.4 },
 ]
 
 const GOAL = [
@@ -78,9 +80,9 @@ export default function DogFeedingCalculator() {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    document.title = 'Dog Feeding Calculator — Pawzzles'
+    document.title = 'Dog Feeding Calculator | Pawzzles'
     return () => {
-      document.title = 'Pawzzles Resource Hub — Practical Tools for Dog Owners'
+      document.title = 'Pawzzles Resource Hub | Practical Tools for Dog Owners'
     }
   }, [])
 
@@ -92,6 +94,12 @@ export default function DogFeedingCalculator() {
   function onSubmit(e) {
     e.preventDefault()
     setSubmitted(true)
+    if (result) {
+      trackAppEvent('feeding_calculator_completed', {
+        source_component: 'feeding_calculator_form',
+        calculator_type: 'dog_feeding',
+      })
+    }
     setTimeout(() => {
       document.getElementById('result')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 50)
@@ -127,7 +135,7 @@ export default function DogFeedingCalculator() {
       <PageHero
         eyebrow="Calculator"
         title="Dog Feeding Calculator"
-        intro="A practical starting point for daily portions. Pop in your dog's details below and we'll suggest daily calories — and grams per day if you know your food's energy density."
+        intro="A practical starting point for daily portions. Pop in your dog's details below and we'll suggest daily calories, plus grams per day if you know your food's energy density."
         crumbs={[
           { label: 'Home', to: '/' },
           { label: 'Resources', to: '/resources' },
@@ -156,7 +164,7 @@ export default function DogFeedingCalculator() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-5">
-                  <FormGroup label="Dog name" hint="Optional — just for friendlier results">
+                  <FormGroup label="Dog name" hint="Optional, just for friendlier results">
                     <input
                       type="text"
                       value={dogName}
@@ -217,7 +225,7 @@ export default function DogFeedingCalculator() {
 
                   <FormGroup
                     label="Food kcal per 100g"
-                    hint="Optional — check the food packaging. Adds grams per day to your result."
+                    hint="Optional, check the food packaging. Adds grams per day to your result."
                   >
                     <input
                       type="number"
@@ -281,7 +289,7 @@ export default function DogFeedingCalculator() {
           </div>
 
           {/* result */}
-          <div id="result" className="mt-12">
+          <div id="result" className="scroll-mt-28 mt-12">
             {submitted && result ? (
               <div className="rounded-[2rem] bg-white ring-1 ring-navy/5 shadow-card p-7 sm:p-10">
                 <p className="eyebrow">Your result</p>
@@ -321,10 +329,21 @@ export default function DogFeedingCalculator() {
                   <Link to="/resources?category=enrichment" className="btn-secondary">
                     Browse enrichment ideas
                   </Link>
-                  <a href={SITE.shopUrl} className="btn-ghost">
-                    Visit shop
+                  <a
+                    href={SITE.shopUrl}
+                    className="btn-ghost"
+                    onClick={() => trackVisitShop('feeding_calculator_result')}
+                  >
+                    Visit Shop
                   </a>
                 </div>
+
+                <NewsletterSignup
+                  variant="compact"
+                  sourceComponent="feeding_calculator_result"
+                  interests={['feeding', 'calculator']}
+                  className="mt-8"
+                />
               </div>
             ) : submitted ? (
               <div className="rounded-2xl bg-white ring-1 ring-navy/5 p-6 text-center text-muted">

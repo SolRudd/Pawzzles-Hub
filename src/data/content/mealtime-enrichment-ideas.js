@@ -12,13 +12,13 @@ export default {
   image: 'card-feeding-nutrition',
   imageSrc: resourceHubImages['card-feeding-nutrition'],
   imageAlt: 'Happy dog beside a teal food bowl in a warm kitchen',
-  metaTitle: 'Mealtime Enrichment Ideas — Pawzzles',
+  metaTitle: 'Mealtime Enrichment Ideas | Pawzzles',
   metaDescription:
     'Simple Pawzzles mealtime enrichment ideas using slow feeders, scatter feeding and practical daily routines.',
   sections: [
     {
       heading: 'Make meals do more',
-      body: 'Mealtime enrichment uses your dog’s normal food in a slightly more interesting way. It can make feeding feel more engaging without adding lots of extra treats or complicated prep.',
+      body: 'Mealtime enrichment uses your dog’s normal food in a slightly more interesting way. It can make feeding feel more engaging without adding lots of extra preparation.',
     },
     {
       heading: 'Easy ideas to try',

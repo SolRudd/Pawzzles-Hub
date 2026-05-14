@@ -19,7 +19,7 @@ export default function ResourceDetail() {
   useEffect(() => {
     if (content?.metaTitle) document.title = content.metaTitle
     return () => {
-      document.title = 'Pawzzles Resource Hub — Practical Tools for Dog Owners'
+      document.title = 'Pawzzles Resource Hub | Practical Tools for Dog Owners'
     }
   }, [content])
 
@@ -160,7 +160,10 @@ export default function ResourceDetail() {
         </div>
       </section>
 
-      <NewsletterSignup />
+      <NewsletterSignup
+        sourceComponent="resource_article"
+        interests={[content.category.toLowerCase(), content.slug]}
+      />
     </>
   )
 }

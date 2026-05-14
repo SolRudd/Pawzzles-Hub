@@ -22,7 +22,7 @@ export default function TrustSection() {
               <PawMark size={24} color="#f58232" />
             </h2>
             <p className="mt-2 text-muted">
-              Built by dog people, for dog people — with care, simplicity and a
+              Built by dog people, for dog people, with care, simplicity and a
               lot of love.
             </p>
           </div>

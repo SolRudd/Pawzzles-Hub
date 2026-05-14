@@ -16,10 +16,10 @@ function HubCard({ hub }) {
   return (
     <Link
       to={hub.href}
-      className="group card hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-orange/30 flex flex-col"
+      className="group card relative isolate hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-orange/30 flex flex-col"
     >
-      <div className="relative z-20">
-        <div className="aspect-[5/3] overflow-hidden">
+      <div className="relative z-30">
+        <div className="relative z-0 aspect-[5/3] overflow-hidden">
           <ImagePlaceholder
             name={hub.image}
             src={hub.imageSrc}
@@ -28,12 +28,12 @@ function HubCard({ hub }) {
           />
         </div>
         <span
-          className={`absolute z-30 -bottom-6 left-6 inline-flex w-14 h-14 items-center justify-center rounded-2xl shadow-card ring-4 ring-white ${accent.badge}`}
+          className={`absolute z-50 -bottom-6 left-6 inline-flex w-14 h-14 items-center justify-center rounded-2xl shadow-card ring-4 ring-white ${accent.badge}`}
         >
-          <Icon name={hub.icon} className="w-5 h-5" />
+          <Icon name={hub.icon} className="w-5 h-5 opacity-100" />
         </span>
       </div>
-      <div className="relative z-10 px-6 pt-11 pb-7 flex flex-col flex-1">
+      <div className="relative z-20 px-6 pt-11 pb-7 flex flex-col flex-1">
         <p className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-muted">
           {hub.eyebrow}
         </p>

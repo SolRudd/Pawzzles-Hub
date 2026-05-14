@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { Icon } from '../icons/Icons.jsx'
 import { SITE } from '../../data/site.js'
+import { trackVisitShop } from '../../lib/tracking.js'
 
 const NAV = [
   { label: 'Resources', to: '/resources' },
@@ -13,13 +14,17 @@ const NAV = [
 export default function Header() {
   const [open, setOpen] = useState(false)
   return (
-    <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur supports-[backdrop-filter]:bg-cream/75 border-b border-navy/5">
-      <div className="max-w-7xl mx-auto container-px py-3 sm:py-4 flex items-center gap-4">
-        <Link to="/" className="flex items-center shrink-0" aria-label="Pawzzles home">
+    <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/80 border-b border-navy/5">
+      <div className="max-w-7xl mx-auto container-px h-[68px] sm:h-[80px] flex items-center gap-3 sm:gap-4">
+        <Link
+          to="/"
+          className="flex items-center shrink-0"
+          aria-label="Pawzzles Resource Hub home"
+        >
           <img
             src="/pawzzles-logo.svg"
             alt="Pawzzles"
-            className="h-12 sm:h-14 w-auto"
+            className="h-11 sm:h-12 w-auto"
             draggable="false"
           />
         </Link>
@@ -50,7 +55,12 @@ export default function Header() {
           >
             <Icon name="search" className="w-5 h-5" />
           </Link>
-          <a href={SITE.shopUrl} className="btn-primary shadow-glow">
+          <a
+            href={SITE.shopUrl}
+            rel="noopener"
+            className="hidden sm:inline-flex btn-primary shadow-glow"
+            onClick={() => trackVisitShop('header')}
+          >
             Visit Shop
           </a>
           <button
@@ -73,7 +83,10 @@ export default function Header() {
 
       {open && (
         <div className="lg:hidden border-t border-navy/5 bg-cream">
-          <nav className="max-w-7xl mx-auto container-px py-3 flex flex-col" aria-label="Mobile">
+          <nav
+            className="max-w-7xl mx-auto container-px py-3 flex flex-col"
+            aria-label="Mobile"
+          >
             {NAV.map((item) => (
               <Link
                 key={item.label}
@@ -84,6 +97,17 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+            <a
+              href={SITE.shopUrl}
+              rel="noopener"
+              className="mt-2 py-2.5 text-base font-bold text-orange"
+              onClick={() => {
+                setOpen(false)
+                trackVisitShop('header_mobile')
+              }}
+            >
+              Visit Shop
+            </a>
           </nav>
         </div>
       )}

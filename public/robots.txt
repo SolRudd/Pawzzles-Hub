@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pawzzles.co.uk/sitemap.xml
+Sitemap: https://resources.pawzzles.co.uk/sitemap.xml

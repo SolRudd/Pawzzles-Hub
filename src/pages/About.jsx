@@ -6,6 +6,7 @@ import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { SITE, absoluteUrl } from '../data/site.js'
 import { resourceHubImages } from '../data/imageAssets.js'
+import { trackVisitShop } from '../lib/tracking.js'
 
 const BELIEFS = [
   'Dogs thrive with enrichment.',
@@ -59,14 +60,18 @@ export default function About() {
       <PageHero
         eyebrow="About Pawzzles"
         title="Playful tools for everyday dog care"
-        intro="Pawzzles was created to make everyday dog care more playful, practical and enriching — from toys and slow feeders to helpful guides, calculators and routines."
+        intro="Pawzzles was created to make everyday dog care more playful, practical and enriching, from toys and slow feeders to helpful guides, calculators and routines."
         crumbs={[{ label: 'Home', to: '/' }, { label: 'About' }]}
       >
         <div className="flex flex-wrap gap-3">
           <Link to="/resources" className="btn-primary">
             Explore the Resource Hub
           </Link>
-          <a href={SITE.shopUrl} className="btn-secondary">
+          <a
+            href={SITE.shopUrl}
+            className="btn-secondary"
+            onClick={() => trackVisitShop('about_hero')}
+          >
             Visit Shop
           </a>
         </div>
