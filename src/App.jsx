@@ -8,6 +8,7 @@ import ResourceDetail from './pages/ResourceDetail.jsx'
 import DogFeedingCalculator from './pages/DogFeedingCalculator.jsx'
 import EnrichmentFinder from './pages/EnrichmentFinder.jsx'
 import About from './pages/About.jsx'
+import SavedResult from './pages/SavedResult.jsx'
 import NotFound from './pages/NotFound.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
 import { readCookieConsent } from './lib/cookieConsent.js'
@@ -63,6 +64,7 @@ export default function App() {
               path="/calculators/enrichment-finder"
               element={<EnrichmentFinder />}
             />
+            <Route path="/results/:token" element={<SavedResult />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

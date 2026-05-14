@@ -1,7 +1,7 @@
 /**
  * Frontend newsletter helper.
  *
- * Talks to /api/newsletter/subscribe, which is the only place the SendGrid API
+ * Talks to /api/newsletter/subscribe, which is the only place the Brevo API
  * key is allowed to live. Returns a plain { ok, error? } object so UI states
  * stay simple.
  */

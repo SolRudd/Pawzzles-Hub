@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
-import NewsletterSignup from '../components/NewsletterSignup.jsx'
+import ResultEmailCapture from '../components/ResultEmailCapture.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
@@ -373,14 +373,20 @@ export default function EnrichmentFinder() {
                   </a>
                 </div>
 
-                <NewsletterSignup
-                  variant="compact"
+                <ResultEmailCapture
                   sourceComponent="enrichment_finder_result"
+                  calculatorType="enrichment_finder"
+                  inputData={{
+                    stage,
+                    energy,
+                    goal,
+                    style,
+                  }}
+                  resultData={plan}
                   interests={['enrichment', 'toy_safety']}
-                  className="mt-8"
-                  compactTitle="Save my enrichment plan"
-                  compactBody="Pop in your email and we'll send your plan over, plus simple enrichment ideas you can try this week."
-                  compactButton="Save my plan"
+                  title="Save my enrichment plan"
+                  body="Pop in your email and we'll send your plan over so you can come back to it later."
+                  buttonLabel="Save my plan"
                 />
               </div>
             )}

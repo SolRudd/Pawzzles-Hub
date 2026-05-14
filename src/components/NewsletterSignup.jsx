@@ -97,7 +97,7 @@ function DogPeek() {
 
 export default function NewsletterSignup({
   sourceComponent = 'newsletter_block',
-  interests = ['resource_hub'],
+  interests = ['feeding', 'enrichment'],
   variant = 'full',
   className = '',
   compactTitle,
@@ -105,6 +105,7 @@ export default function NewsletterSignup({
   compactButton,
 }) {
   const [email, setEmail] = useState('')
+  const [marketingConsent, setMarketingConsent] = useState(false)
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
   const location = useLocation()
@@ -126,7 +127,7 @@ export default function NewsletterSignup({
       sourcePage: location.pathname,
       sourceComponent,
       consentAnalytics: Boolean(preferences.analytics),
-      consentMarketing: Boolean(preferences.marketing),
+      consentMarketing: marketingConsent,
       interests,
     }
 
@@ -162,42 +163,60 @@ export default function NewsletterSignup({
 
   const form = (
     <>
-      <form
-        onSubmit={handleSubmit}
-        className={`mt-5 flex flex-col items-stretch gap-2 max-w-xl ${
-          variant === 'compact' ? '' : 'sm:flex-row'
-        }`}
-      >
+      <form onSubmit={handleSubmit} className="mt-5 max-w-xl space-y-3">
         <label htmlFor={inputId} className="sr-only">
           Email address
         </label>
-        <div className="relative flex-1">
-          <Icon
-            name="mail"
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40 pointer-events-none"
-          />
-          <input
-            id={inputId}
-            type="email"
-            required
-            value={email}
-            onChange={(event) => {
-              setEmail(event.target.value)
-              if (status !== 'loading') setStatus('idle')
-              setMessage('')
-            }}
-            placeholder="Enter your email address"
-            className="w-full pl-11 pr-4 py-3.5 rounded-full bg-white shadow-soft border border-navy/5 placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40 text-sm"
-            disabled={status === 'loading'}
-          />
+        <div
+          className={`flex flex-col items-stretch gap-2 ${
+            variant === 'compact' ? '' : 'sm:flex-row'
+          }`}
+        >
+          <div className="relative flex-1">
+            <Icon
+              name="mail"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40 pointer-events-none"
+            />
+            <input
+              id={inputId}
+              type="email"
+              required
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value)
+                if (status !== 'loading') setStatus('idle')
+                setMessage('')
+              }}
+              placeholder="Enter your email address"
+              className="w-full pl-11 pr-4 py-3.5 rounded-full bg-white shadow-soft border border-navy/5 placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40 text-sm"
+              disabled={status === 'loading'}
+            />
+          </div>
+          <button type="submit" className="btn-primary sm:px-7" disabled={status === 'loading'}>
+            {status === 'loading'
+              ? 'Sending...'
+              : status === 'success'
+                ? "You're in"
+                : compactButton || 'Join now'}
+          </button>
         </div>
-        <button type="submit" className="btn-primary sm:px-7" disabled={status === 'loading'}>
-          {status === 'loading'
-            ? 'Sending...'
-            : status === 'success'
-              ? "You're in"
-              : compactButton || 'Join now'}
-        </button>
+
+        <label className="flex items-start gap-3 rounded-2xl bg-white/70 border border-navy/5 p-3 text-left">
+          <input
+            type="checkbox"
+            className="mt-1 h-4 w-4 accent-teal shrink-0"
+            checked={marketingConsent}
+            onChange={(event) => setMarketingConsent(event.target.checked)}
+          />
+          <span className="text-xs text-navy/80">
+            Yes, send me Pawzzles tips, guides and product updates.
+          </span>
+        </label>
+
+        <p className="text-[11px] leading-relaxed text-muted">
+          By submitting, you agree we can email this to you. Marketing emails
+          are only sent if you opt in.
+        </p>
       </form>
 
       {message && (
@@ -226,9 +245,6 @@ export default function NewsletterSignup({
             'Join the Pawzzles Pack for dog-friendly tips and new resource updates.'}
         </p>
         {form}
-        <p className="mt-3 text-[11px] text-muted">
-          No spam. Just useful dog care tips, tools and Pawzzles updates.
-        </p>
       </div>
     )
   }

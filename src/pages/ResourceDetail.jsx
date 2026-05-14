@@ -11,6 +11,7 @@ import { PawMark } from '../components/PawAccent.jsx'
 import { getResourceContent } from '../data/content/index.js'
 import { getResource } from '../data/resources.js'
 import { SITE, absoluteUrl } from '../data/site.js'
+import { trackVisitShop } from '../lib/tracking.js'
 
 export default function ResourceDetail() {
   const { slug } = useParams()
@@ -32,6 +33,13 @@ export default function ResourceDetail() {
     .filter(Boolean)
 
   const canonical = `/resources/${content.slug}`
+  const newsletterInterests = [
+    content.category.toLowerCase(),
+    ...(content.slug.includes('slow-feeder') ? ['slow_feeders'] : []),
+    ...(content.slug.includes('mealtime') ? ['mealtime_routines'] : []),
+    ...(content.slug.includes('toy-safety') ? ['toy_safety'] : []),
+    ...(content.slug.includes('puppy') ? ['puppy', 'training'] : []),
+  ]
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -132,10 +140,19 @@ export default function ResourceDetail() {
                     {content.cta.title}
                   </h3>
                   <p className="mt-2 text-muted">{content.cta.body}</p>
-                  <Link to={content.cta.href} className="btn-primary mt-5">
-                    {content.cta.button}
-                    <Icon name="arrowRight" className="w-4 h-4" />
-                  </Link>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <Link to={content.cta.href} className="btn-primary">
+                      {content.cta.button}
+                      <Icon name="arrowRight" className="w-4 h-4" />
+                    </Link>
+                    <a
+                      href={SITE.shopUrl}
+                      className="btn-ghost"
+                      onClick={() => trackVisitShop('resource_article_cta')}
+                    >
+                      Visit Shop
+                    </a>
+                  </div>
                 </div>
               )}
             </article>
@@ -162,7 +179,7 @@ export default function ResourceDetail() {
 
       <NewsletterSignup
         sourceComponent="resource_article"
-        interests={[content.category.toLowerCase(), content.slug]}
+        interests={[...new Set(newsletterInterests)]}
       />
     </>
   )

@@ -1,15 +1,11 @@
-import { getBrevoListIds, upsertBrevoContact } from '../_lib/brevo.js'
-import { insertConsentEvent, insertNewsletterSignup } from '../_lib/supabase.js'
+import { getBrevoListIds, sendCalculatorResultEmail, upsertBrevoContact } from '../_lib/brevo.js'
+import { insertCalculatorResult, insertConsentEvent } from '../_lib/supabase.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const ALLOWED_CALCULATORS = new Set(['dog_feeding', 'enrichment_finder'])
 const CONSENT_VERSION = 'resource-hub-forms-v1'
 const CONSENT_TEXT =
   'By submitting, you agree we can email this to you. Marketing emails are only sent if you opt in.'
-
-function newsletterProviderIsBrevo() {
-  const provider = String(process.env.NEWSLETTER_PROVIDER || 'brevo').trim().toLowerCase()
-  return provider === 'brevo'
-}
 
 function sendJson(res, statusCode, payload) {
   res.statusCode = statusCode
@@ -36,6 +32,10 @@ function cleanInterests(interests) {
     .slice(0, 12)
 }
 
+function isPlainObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -54,18 +54,31 @@ export default async function handler(req, res) {
     return sendJson(res, 400, { ok: false, error: 'Please enter a valid email address.' })
   }
 
+  const calculatorType = String(body.calculatorType || '').trim()
+  if (!ALLOWED_CALCULATORS.has(calculatorType)) {
+    return sendJson(res, 400, { ok: false, error: 'Invalid calculator type.' })
+  }
+
+  if (!isPlainObject(body.resultData) || Object.keys(body.resultData).length === 0) {
+    return sendJson(res, 400, { ok: false, error: 'Missing result data.' })
+  }
+
   const interests = cleanInterests(body.interests)
   const analyticsConsent = Boolean(body.consentAnalytics)
   const marketingConsent = Boolean(body.consentMarketing)
   const sourcePage = String(body.sourcePage || '').slice(0, 300)
   const sourceComponent = String(body.sourceComponent || '').slice(0, 120)
+  const dogName = String(body.dogName || '').slice(0, 120)
 
   try {
-    await insertNewsletterSignup({
+    const saved = await insertCalculatorResult({
       email,
+      dog_name: dogName || null,
+      calculator_type: calculatorType,
+      input_data: isPlainObject(body.inputData) ? body.inputData : {},
+      result_data: body.resultData,
       source_page: sourcePage,
       source_component: sourceComponent,
-      interests,
       analytics_consent: analyticsConsent,
       marketing_consent: marketingConsent,
     })
@@ -80,23 +93,36 @@ export default async function handler(req, res) {
       consent_version: CONSENT_VERSION,
     })
 
+    const siteUrl = process.env.SITE_URL || 'https://resources.pawzzles.co.uk'
+    const resultUrl = `${siteUrl.replace(/\/$/, '')}/results/${saved.public_token}`
+
+    await sendCalculatorResultEmail({
+      email,
+      dogName,
+      calculatorType,
+      resultData: body.resultData,
+      resultUrl,
+    })
+
     if (marketingConsent) {
-      if (!newsletterProviderIsBrevo()) {
-        return sendJson(res, 500, {
-          ok: false,
-          error: 'Newsletter provider is not configured.',
+      try {
+        const listIds = getBrevoListIds({
+          interests,
+          includeMarketing: true,
+          includeCalculator: true,
         })
+        await upsertBrevoContact({ email, listIds })
+      } catch (marketingError) {
+        console.error('Brevo marketing sync failed after result email', marketingError)
       }
-      const listIds = getBrevoListIds({ interests, includeMarketing: true })
-      await upsertBrevoContact({ email, listIds })
     }
 
-    return sendJson(res, 200, { ok: true })
+    return sendJson(res, 200, { ok: true, resultUrl })
   } catch (error) {
-    console.error('Newsletter signup failed', error)
+    console.error('Calculator result email failed', error)
     return sendJson(res, 500, {
       ok: false,
-      error: 'Could not save newsletter signup. Please try again.',
+      error: 'Could not email your result. Please try again.',
     })
   }
 }

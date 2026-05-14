@@ -164,7 +164,7 @@ export const resources = [
     comingSoon: true,
   },
   {
-    id: 'indoor-enrichment-rainy-days',
+    id: 'indoor-enrichment-ideas',
     type: 'Guide',
     title: 'Indoor Enrichment Ideas for Rainy Days',
     description: 'Low-fuss enrichment for days when walks are shorter.',
@@ -172,9 +172,8 @@ export const resources = [
     image: 'resource-enrichment-ideas',
     imageSrc: resourceHubImages['resource-enrichment-ideas'],
     imageAlt: 'Dog with puzzle, snuffle and chew enrichment toys',
-    href: '/resources',
+    href: '/resources/indoor-enrichment-ideas',
     categories: ['guides', 'enrichment'],
-    comingSoon: true,
   },
   {
     id: 'puppy-enrichment-basics',
@@ -185,9 +184,8 @@ export const resources = [
     image: 'card-puppy-training',
     imageSrc: resourceHubImages['card-puppy-training'],
     imageAlt: 'Puppy sitting in a warm home training scene',
-    href: '/resources',
+    href: '/resources/puppy-enrichment-basics',
     categories: ['guides', 'puppy', 'enrichment'],
-    comingSoon: true,
   },
   {
     id: 'small-dog-enrichment-ideas',
@@ -198,9 +196,8 @@ export const resources = [
     image: 'resource-frenchie-enrichment',
     imageSrc: resourceHubImages['resource-frenchie-enrichment'],
     imageAlt: 'Small dog enrichment placeholder',
-    href: '/resources',
+    href: '/resources/small-dog-enrichment-ideas',
     categories: ['guides', 'enrichment'],
-    comingSoon: true,
   },
   {
     id: 'choosing-enrichment-toys-by-play-style',
@@ -211,9 +208,8 @@ export const resources = [
     image: 'card-enrichment-play',
     imageSrc: resourceHubImages['card-enrichment-play'],
     imageAlt: 'Dog playing with a colourful puzzle enrichment toy',
-    href: '/resources',
+    href: '/resources/choosing-enrichment-toys-by-play-style',
     categories: ['guides', 'enrichment'],
-    comingSoon: true,
   },
   {
     id: 'body-condition-check-in',

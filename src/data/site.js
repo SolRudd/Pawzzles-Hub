@@ -1,15 +1,35 @@
+const siteUrl =
+  typeof __PAWZZLES_SITE_URL__ !== 'undefined'
+    ? __PAWZZLES_SITE_URL__
+    : 'https://resources.pawzzles.co.uk'
+
+const shopUrl =
+  typeof __PAWZZLES_SHOP_URL__ !== 'undefined'
+    ? __PAWZZLES_SHOP_URL__
+    : 'https://pawzzles.co.uk'
+
+const privacyPolicyUrl =
+  typeof __PAWZZLES_PRIVACY_URL__ !== 'undefined'
+    ? __PAWZZLES_PRIVACY_URL__
+    : 'https://pawzzles.co.uk/privacy-policy'
+
+const gtmContainerId =
+  typeof __PAWZZLES_GTM_CONTAINER_ID__ !== 'undefined'
+    ? __PAWZZLES_GTM_CONTAINER_ID__
+    : 'GTM-TBF7XNZ2'
+
 export const SITE = {
   name: 'Pawzzles Resource Hub',
   brandName: 'Pawzzles',
-  url: 'https://resources.pawzzles.co.uk',
-  shopUrl: 'https://pawzzles.co.uk',
-  privacyPolicyUrl: 'https://pawzzles.co.uk/privacy-policy',
+  url: siteUrl,
+  shopUrl,
+  privacyPolicyUrl,
   defaultTitle:
     'Pawzzles Resource Hub | Dog Enrichment, Feeding Tools and Practical Guides',
   defaultDescription:
     'Practical Pawzzles dog enrichment guides, feeding calculators, slow feeder advice and dog-friendly tools built for everyday dog care.',
   defaultOgImage: '/images/resource-hub/hero-resource-hub.jpg',
-  gtmContainerId: 'GTM-TBF7XNZ2',
+  gtmContainerId,
 }
 
 export function absoluteUrl(path = '/') {

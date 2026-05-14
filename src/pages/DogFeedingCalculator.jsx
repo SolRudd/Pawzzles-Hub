@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
-import NewsletterSignup from '../components/NewsletterSignup.jsx'
+import ResultEmailCapture from '../components/ResultEmailCapture.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
@@ -340,14 +340,22 @@ export default function DogFeedingCalculator() {
                   </a>
                 </div>
 
-                <NewsletterSignup
-                  variant="compact"
+                <ResultEmailCapture
                   sourceComponent="feeding_calculator_result"
+                  calculatorType="dog_feeding"
+                  dogName={dogName}
+                  inputData={{
+                    weight,
+                    stageId,
+                    activityId,
+                    goalId,
+                    kcalPer100g,
+                  }}
+                  resultData={result}
                   interests={['feeding', 'mealtime_routines']}
-                  className="mt-8"
-                  compactTitle="Email me this result"
-                  compactBody="We'll send your portion estimate to your inbox so you can come back to it later, with a few feeding tips along the way."
-                  compactButton="Email me my result"
+                  title="Email me this result"
+                  body="We'll send your portion estimate to your inbox so you can come back to it later."
+                  buttonLabel="Email my result"
                 />
               </div>
             ) : submitted ? (

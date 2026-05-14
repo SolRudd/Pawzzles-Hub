@@ -1,5 +1,10 @@
 node_modules
 dist
 .DS_Store
+.env
+.env.*
 *.local
+local.env
+local.ennv
+!.env.example
 .vite
