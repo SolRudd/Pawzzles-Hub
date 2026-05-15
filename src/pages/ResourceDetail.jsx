@@ -1,21 +1,23 @@
 import React, { useEffect } from 'react'
-import { useParams, Link, Navigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import PageHero from '../components/PageHero.jsx'
 import ResourceCard from '../components/ResourceCard.jsx'
 import ResourceLeadCapture from '../components/ResourceLeadCapture.jsx'
 import Disclaimer from '../components/Disclaimer.jsx'
 import SEOHead from '../components/SEOHead.jsx'
+import NotFound from './NotFound.jsx'
 import { Icon } from '../components/icons/Icons.jsx'
 import { ImagePlaceholder } from '../components/placeholders/Scenes.jsx'
 import { PawMark } from '../components/PawAccent.jsx'
 import { getResourceContent } from '../data/content/index.js'
-import { getResource } from '../data/resources.js'
+import { getResource, getResourceBySlug, isPublishedResource } from '../data/resources.js'
 import { SITE, absoluteUrl } from '../data/site.js'
 import { trackVisitShop } from '../lib/tracking.js'
 
 export default function ResourceDetail() {
   const { slug } = useParams()
   const content = getResourceContent(slug)
+  const resource = content ? getResourceBySlug(content.slug || slug) : null
 
   useEffect(() => {
     if (content?.metaTitle) document.title = content.metaTitle
@@ -24,20 +26,21 @@ export default function ResourceDetail() {
     }
   }, [content])
 
-  if (!content) {
-    return <Navigate to="/resources" replace />
+  if (!content || !resource || !isPublishedResource(resource)) {
+    return <NotFound />
   }
 
   const related = (content.related || [])
     .map((id) => getResource(id))
-    .filter(Boolean)
+    .filter(isPublishedResource)
 
-  const canonical = `/resources/${content.slug}`
+  const canonical = resource.href
   const newsletterInterests = [
-    content.category.toLowerCase(),
+    content.category.toLowerCase().replace(/\s+/g, '_'),
     ...(content.slug.includes('slow-feeder') ? ['slow_feeders'] : []),
     ...(content.slug.includes('mealtime') ? ['mealtime_routines'] : []),
     ...(content.slug.includes('toy-safety') ? ['toy_safety'] : []),
+    ...(content.category === 'Toy Safety' ? ['toy_safety'] : []),
     ...(content.slug.includes('puppy') ? ['puppy', 'training'] : []),
   ]
   const schema = {
@@ -47,6 +50,7 @@ export default function ResourceDetail() {
     description: content.metaDescription || content.intro,
     image: content.imageSrc ? absoluteUrl(content.imageSrc) : undefined,
     mainEntityOfPage: absoluteUrl(canonical),
+    dateModified: resource.lastmod,
     author: {
       '@type': 'Organization',
       name: SITE.brandName,
@@ -69,6 +73,7 @@ export default function ResourceDetail() {
         canonical={canonical}
         ogType="article"
         ogImage={content.imageSrc || SITE.defaultOgImage}
+        noindex={resource.noindex}
         structuredData={schema}
       />
       <PageHero
@@ -96,7 +101,7 @@ export default function ResourceDetail() {
                   <ImagePlaceholder
                     name={content.image}
                     src={content.imageSrc}
-                    alt={content.imageAlt}
+                    alt={content.alt || content.imageAlt}
                     label={content.title}
                   />
                 </div>

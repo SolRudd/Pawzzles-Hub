@@ -5,7 +5,7 @@ import ResourceCard from '../components/ResourceCard.jsx'
 import NewsletterSignup from '../components/NewsletterSignup.jsx'
 import SearchBar from '../components/SearchBar.jsx'
 import SEOHead from '../components/SEOHead.jsx'
-import { resources, categories, filterResources } from '../data/resources.js'
+import { categories, filterResources } from '../data/resources.js'
 import { SITE, absoluteUrl } from '../data/site.js'
 
 export default function Resources() {

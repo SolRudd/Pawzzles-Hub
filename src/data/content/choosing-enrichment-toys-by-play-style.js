@@ -39,5 +39,5 @@ export default {
     button: 'Open Enrichment Finder',
     href: '/calculators/enrichment-finder',
   },
-  related: ['best-dog-enrichment-ideas', 'small-dog-enrichment-ideas', 'toy-safety-guide'],
+  related: ['enrichment-ideas-by-play-style', 'introducing-a-new-dog-toy', 'toy-safety-guide'],
 }

@@ -228,17 +228,34 @@ export function formatCalculatorResultSummary({ calculatorType, resultData = {} 
     }
   }
 
+  const gramsValue = resultData.grams ?? resultData.gramsPerDay
+
   return {
     rows: [
       ['Estimated daily calories', resultData.daily ? `${resultData.daily} kcal` : ''],
-      ['Estimated grams per day', resultData.grams ? `${resultData.grams} g` : 'Add calories per 100g for this estimate'],
+      gramsValue !== null && gramsValue !== undefined
+        ? [resultData.gramsLabel || 'Estimated grams per day', `${gramsValue} g`]
+        : null,
+      ['Food type', resultData.foodTypeLabel],
+      [
+        'Kcal per 100g used',
+        resultData.kcalPer100gUsed
+          ? `${resultData.kcalPer100gUsed} kcal/100g (${resultData.kcalSourceLabel || 'From food label'})`
+          : resultData.kcalSourceLabel || 'No single value used',
+      ],
       ['Life stage', resultData.stage],
       ['Activity level', resultData.activity],
       ['Goal', resultData.goal],
-    ].filter(([, value]) => cleanValue(value)),
+    ].filter((row) => row && cleanValue(row[1])),
     activities: [],
     supportIdeas: [],
-    reminder: 'Check your dog food packaging for calorie information and use this as general guidance only.',
+    reminder: [
+      resultData.gramsMessage,
+      resultData.foodEnergyNote ||
+        'Food energy varies by brand and recipe. For the most accurate result, use the kcal per 100g from your dog food packaging or the manufacturer’s website.',
+    ]
+      .filter(Boolean)
+      .join(' '),
   }
 }
 
@@ -346,7 +363,7 @@ export function buildResultEmailHtml({
                 ${
                   calculatorType === 'enrichment_finder'
                     ? `${buildListItems(summary.activities)}${summary.supportIdeas.length ? `<p style="margin:14px 0 0;color:#5d6878;font-size:14px;font-weight:700;">Add a little of:</p>${buildListItems(summary.supportIdeas)}` : ''}`
-                    : '<p style="margin:10px 0 0;color:#5d6878;font-size:14px;line-height:1.55;">Use the calories per 100g on your dog food packaging for the most useful gram estimate.</p>'
+                    : '<p style="margin:10px 0 0;color:#5d6878;font-size:14px;line-height:1.55;">Use the kcal per 100g on your dog food packaging for the most useful gram estimate.</p>'
                 }
               </td>
             </tr>

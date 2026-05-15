@@ -51,5 +51,9 @@ export default {
     button: 'Read mealtime ideas',
     href: '/resources/mealtime-enrichment-ideas',
   },
-  related: ['mealtime-enrichment-ideas', 'choosing-the-right-slow-feeder', 'dog-feeding-calculator'],
+  related: [
+    'slow-feeders-and-mealtime-routines',
+    'choosing-the-right-slow-feeder',
+    'enrichment-for-fast-eaters',
+  ],
 }

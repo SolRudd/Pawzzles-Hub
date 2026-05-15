@@ -47,26 +47,104 @@ const GOAL = [
   { id: 'gain', label: 'Gain weight gently', mult: 1.15 },
 ]
 
-function calculate({ weight, stageId, activityId, goalId, kcalPer100g }) {
+const FOOD_TYPES = [
+  { id: 'dry_kibble', label: 'Dry food / kibble', fallbackKcalPer100g: 360 },
+  { id: 'wet_pouch_tray', label: 'Wet food / pouches / trays', fallbackKcalPer100g: 100 },
+  { id: 'complete_raw', label: 'Complete raw food', fallbackKcalPer100g: 150 },
+  { id: 'mixed_feeding', label: 'Mixed feeding' },
+  { id: 'known_kcal', label: 'I know the kcal per 100g' },
+]
+
+const FOOD_ENERGY_NOTE =
+  'Food energy varies by brand and recipe. For the most accurate result, use the kcal per 100g from your dog food packaging or the manufacturer’s website.'
+
+const MIXED_FEEDING_MESSAGE =
+  'Mixed feeding varies too much for a single grams/day estimate. Use the kcal per 100g from your products, or calculate each food separately.'
+
+function getManualKcal(value) {
+  const parsed = Number.parseFloat(value)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null
+}
+
+function resolveFoodEnergy({ foodTypeId, kcalPer100g }) {
+  const foodType = FOOD_TYPES.find((item) => item.id === foodTypeId) || FOOD_TYPES[0]
+  const manualKcal = getManualKcal(kcalPer100g)
+
+  if (manualKcal) {
+    return {
+      foodTypeId: foodType.id,
+      foodTypeLabel: foodType.label,
+      kcalPer100gUsed: manualKcal,
+      kcalSource: 'food_label',
+      kcalSourceLabel: 'From food label',
+      gramsLabel: 'Estimated grams per day using your food’s kcal value',
+      gramsMessage: '',
+      kcalIsEstimated: false,
+    }
+  }
+
+  if (foodType.fallbackKcalPer100g) {
+    return {
+      foodTypeId: foodType.id,
+      foodTypeLabel: foodType.label,
+      kcalPer100gUsed: foodType.fallbackKcalPer100g,
+      kcalSource: 'estimated_fallback',
+      kcalSourceLabel: 'Estimated fallback',
+      gramsLabel: 'Estimated grams per day',
+      gramsMessage: '',
+      kcalIsEstimated: true,
+    }
+  }
+
+  return {
+    foodTypeId: foodType.id,
+    foodTypeLabel: foodType.label,
+    kcalPer100gUsed: null,
+    kcalSource: foodType.id === 'mixed_feeding' ? 'mixed_feeding' : 'not_provided',
+    kcalSourceLabel: foodType.id === 'mixed_feeding' ? 'Mixed feeding' : 'Not provided',
+    gramsLabel: 'Estimated grams per day',
+    gramsMessage:
+      foodType.id === 'mixed_feeding'
+        ? MIXED_FEEDING_MESSAGE
+        : 'Add the kcal per 100g from your dog food label to estimate grams per day.',
+    kcalIsEstimated: false,
+  }
+}
+
+function calculate({ weight, stageId, activityId, goalId, foodTypeId, kcalPer100g }) {
   const w = parseFloat(weight)
   if (!w || w <= 0) return null
   const stage = LIFE_STAGES.find((s) => s.id === stageId) || LIFE_STAGES[2]
   const activity = ACTIVITY.find((a) => a.id === activityId) || ACTIVITY[1]
   const goal = GOAL.find((g) => g.id === goalId) || GOAL[0]
+  const foodEnergy = resolveFoodEnergy({ foodTypeId, kcalPer100g })
 
   const rer = 70 * Math.pow(w, 0.75)
   const mer = rer * stage.factor * activity.mult * goal.mult
+  const dailyCalories = Math.round(mer)
 
-  const kcal = parseFloat(kcalPer100g)
-  const grams = kcal > 0 ? Math.round((mer / kcal) * 100) : null
+  const grams =
+    foodEnergy.kcalPer100gUsed > 0
+      ? Math.round((dailyCalories / foodEnergy.kcalPer100gUsed) * 100)
+      : null
 
   return {
     rer: Math.round(rer),
-    daily: Math.round(mer),
+    daily: dailyCalories,
     grams,
+    gramsPerDay: grams,
     stage: stage.label,
     activity: activity.label,
     goal: goal.label,
+    foodTypeId: foodEnergy.foodTypeId,
+    foodTypeLabel: foodEnergy.foodTypeLabel,
+    kcalPer100gUsed: foodEnergy.kcalPer100gUsed,
+    kcalSource: foodEnergy.kcalSource,
+    kcalSourceLabel: foodEnergy.kcalSourceLabel,
+    kcalIsEstimated: foodEnergy.kcalIsEstimated,
+    gramsLabel: foodEnergy.gramsLabel,
+    gramsMessage: foodEnergy.gramsMessage,
+    foodEnergyNote: FOOD_ENERGY_NOTE,
   }
 }
 
@@ -77,6 +155,7 @@ export default function DogFeedingCalculator() {
   const [stageId, setStageId] = useState('adult-neutered')
   const [activityId, setActivityId] = useState('medium')
   const [goalId, setGoalId] = useState('maintain')
+  const [foodTypeId, setFoodTypeId] = useState('dry_kibble')
   const [kcalPer100g, setKcalPer100g] = useState('')
   const [email, setEmail] = useState('')
   const [resultEmailConsent, setResultEmailConsent] = useState(false)
@@ -95,8 +174,8 @@ export default function DogFeedingCalculator() {
   }, [])
 
   const result = useMemo(
-    () => calculate({ weight, stageId, activityId, goalId, kcalPer100g }),
-    [weight, stageId, activityId, goalId, kcalPer100g],
+    () => calculate({ weight, stageId, activityId, goalId, foodTypeId, kcalPer100g }),
+    [weight, stageId, activityId, goalId, foodTypeId, kcalPer100g],
   )
 
   function validateForm(calculatedResult) {
@@ -157,6 +236,7 @@ export default function DogFeedingCalculator() {
         stageId,
         activityId,
         goalId,
+        foodTypeId,
         kcalPer100g,
       },
       resultData: result,
@@ -188,7 +268,7 @@ export default function DogFeedingCalculator() {
     setSubmitMessage('Your result is shown below, but we could not email it. Please try again.')
   }
 
-  const next = ['best-dog-enrichment-ideas', 'puppy-socialisation-checklist', 'toy-safety-guide']
+  const next = ['how-to-read-dog-food-feeding-labels', 'slow-feeder-guide', 'mealtime-enrichment-ideas']
     .map((id) => getResource(id))
     .filter(Boolean)
 
@@ -218,7 +298,7 @@ export default function DogFeedingCalculator() {
       <PageHero
         eyebrow="Calculator"
         title="Dog Feeding Calculator"
-        intro="A practical starting point for daily portions. Pop in your dog's details below and we'll suggest daily calories. Add calories per 100g of food and we'll also estimate grams per day."
+        intro="A practical starting point for daily portions. Food type matters because dry, wet, pouch, tray and raw foods have different moisture levels and calorie density."
         crumbs={[
           { label: 'Home', to: '/' },
           { label: 'Resources', to: '/resources' },
@@ -315,10 +395,27 @@ export default function DogFeedingCalculator() {
                     ))}
                   </SelectField>
 
+                  <SelectField
+                    id="feeding-food-type"
+                    label="Food type"
+                    helper="Choose the closest food type. A food label kcal value overrides the fallback estimate."
+                    value={foodTypeId}
+                    onChange={(e) => setFoodTypeId(e.target.value)}
+                    disabled={submitStatus === 'loading'}
+                  >
+                    {FOOD_TYPES.map((item) => (
+                      <option key={item.id} value={item.id}>{item.label}</option>
+                    ))}
+                  </SelectField>
+
                   <InputField
                     id="feeding-calories"
-                    label="Calories per 100g of food"
-                    helper="Optional. Find this on your dog food packaging."
+                    label="Kcal per 100g from food label"
+                    helper={
+                      foodTypeId === 'mixed_feeding'
+                        ? 'For mixed feeding, enter a kcal value from your products if you want a grams/day estimate.'
+                        : 'Optional. Manual kcal is used before any food type fallback.'
+                    }
                     type="number"
                     min="0"
                     step="1"
@@ -398,6 +495,7 @@ export default function DogFeedingCalculator() {
                       setStageId('adult-neutered')
                       setActivityId('medium')
                       setGoalId('maintain')
+                      setFoodTypeId('dry_kibble')
                       setKcalPer100g('')
                       setEmail('')
                       setResultEmailConsent(false)
@@ -440,7 +538,9 @@ export default function DogFeedingCalculator() {
                 <ol className="mt-3 space-y-2 text-sm text-navy/85 list-decimal pl-5">
                   <li>We estimate resting energy from weight.</li>
                   <li>We adjust for life stage, activity and goal.</li>
-                  <li>If you add calories per 100g, we estimate grams per day as well as daily calories.</li>
+                  <li>Food type changes the grams estimate because moisture levels and calorie density vary.</li>
+                  <li>If you enter kcal per 100g, we use that before any fallback estimate.</li>
+                  <li>Mixed feeding shows daily calories only unless you enter a custom kcal per 100g.</li>
                 </ol>
                 <Disclaimer className="mt-5" />
               </div>
@@ -456,7 +556,7 @@ export default function DogFeedingCalculator() {
                   {dogName ? `${dogName}'s daily portion` : 'Daily portion estimate'}
                 </h2>
                 <p className="mt-2 text-muted max-w-2xl">
-                  Based on {result.stage.toLowerCase()}, {result.activity.toLowerCase()}, goal: {result.goal.toLowerCase()}.
+                  Based on {result.stage.toLowerCase()}, {result.activity.toLowerCase()}, goal: {result.goal.toLowerCase()}, food type: {result.foodTypeLabel.toLowerCase()}.
                 </p>
 
                 {submitMessage && (
@@ -480,22 +580,42 @@ export default function DogFeedingCalculator() {
                   </div>
                 )}
 
-                <div className="mt-6 grid sm:grid-cols-3 gap-4">
+                <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="rounded-2xl bg-orange/10 p-5">
                     <p className="text-xs font-extrabold uppercase tracking-wide text-orange">Daily calories</p>
                     <p className="mt-1 font-display text-3xl text-navy">{result.daily} <span className="text-base font-body font-bold text-muted">kcal</span></p>
                   </div>
-                  <div className="rounded-2xl bg-teal/10 p-5">
-                    <p className="text-xs font-extrabold uppercase tracking-wide text-teal">Grams per day</p>
-                    <p className="mt-1 font-display text-3xl text-navy">
-                      {result.grams ? <>{result.grams} <span className="text-base font-body font-bold text-muted">g</span></> : <span className="text-base font-body text-muted">Add calories per 100g</span>}
+                  {result.grams !== null && (
+                    <div className="rounded-2xl bg-teal/10 p-5">
+                      <p className="text-xs font-extrabold uppercase tracking-wide text-teal">{result.gramsLabel}</p>
+                      <p className="mt-1 font-display text-3xl text-navy">{result.grams} <span className="text-base font-body font-bold text-muted">g</span></p>
+                    </div>
+                  )}
+                  <div className="rounded-2xl bg-soft-blue p-5 border border-teal/10">
+                    <p className="text-xs font-extrabold uppercase tracking-wide text-teal">Kcal per 100g used</p>
+                    <p className="mt-1 font-display text-2xl text-navy">
+                      {result.kcalPer100gUsed ? `${result.kcalPer100gUsed} kcal` : 'No single value'}
                     </p>
+                    <p className="mt-1 text-xs font-bold text-muted">{result.kcalSourceLabel}</p>
                   </div>
                   <div className="rounded-2xl bg-cream p-5 border border-navy/5">
                     <p className="text-xs font-extrabold uppercase tracking-wide text-muted">Resting energy</p>
                     <p className="mt-1 font-display text-3xl text-navy">{result.rer} <span className="text-base font-body font-bold text-muted">kcal</span></p>
                   </div>
                 </div>
+
+                {result.gramsMessage && (
+                  <div className="mt-5 rounded-2xl border border-orange/20 bg-orange/10 p-4 text-sm font-bold text-orange">
+                    {result.gramsMessage}
+                  </div>
+                )}
+
+                <p className="mt-5 rounded-2xl bg-cream border border-navy/5 p-4 text-sm leading-relaxed text-navy/85">
+                  {result.foodEnergyNote}{' '}
+                  <Link to="/resources/how-to-read-dog-food-feeding-labels" className="font-bold text-teal hover:text-teal-deep">
+                    Read the food label guide
+                  </Link>
+                </p>
 
                 <div className="mt-7">
                   <Disclaimer />

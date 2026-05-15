@@ -13,6 +13,7 @@ const TYPE_STYLES = {
 
 export default function ResourceCard({ resource }) {
   const typeClass = TYPE_STYLES[resource.type] || 'bg-navy text-white'
+  const isComingSoon = resource.status === 'coming_soon' || resource.comingSoon
   const onResourceClick = () => {
     trackAppEvent('resource_card_clicked', {
       source_component: 'resource_card',
@@ -25,7 +26,7 @@ export default function ResourceCard({ resource }) {
         <ImagePlaceholder
           name={resource.image}
           src={resource.imageSrc}
-          alt={resource.imageAlt}
+          alt={resource.alt || resource.imageAlt}
           label={resource.title}
         />
         <span
@@ -33,7 +34,7 @@ export default function ResourceCard({ resource }) {
         >
           {resource.type}
         </span>
-        {resource.comingSoon && (
+        {isComingSoon && (
           <span className="absolute z-40 top-3 right-3 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-white text-navy border border-navy/10 shadow-soft">
             Coming soon
           </span>
@@ -62,7 +63,7 @@ export default function ResourceCard({ resource }) {
   const baseClass =
     'group card relative isolate hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-orange/30 flex flex-col'
 
-  if (resource.comingSoon) {
+  if (isComingSoon) {
     return (
       <div className={`${baseClass} opacity-95`} aria-disabled>
         {inner}

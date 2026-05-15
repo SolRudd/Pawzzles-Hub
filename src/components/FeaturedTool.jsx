@@ -8,7 +8,7 @@ import { resourceHubImages } from '../data/imageAssets.js'
 const BULLETS = [
   'Helpful starting portion estimate',
   'Adjusts for life stage and activity',
-  'Optional calories per 100g for grams per day',
+  'Uses food type or label kcal for grams per day',
   'General guidance only',
 ]
 
@@ -86,8 +86,8 @@ export default function FeaturedTool() {
                     Owner tip
                   </p>
                   <p className="mt-2 text-sm text-navy leading-relaxed">
-                    Pop in your dog food's calories per 100g for an even more
-                    useful grams-per-day estimate.
+                    Food type changes the estimate. Use your dog food's kcal
+                    per 100g when you have it.
                   </p>
                   <Link
                     to="/calculators/dog-feeding-calculator"

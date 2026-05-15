@@ -55,5 +55,5 @@ export default {
     button: 'Open Enrichment Finder',
     href: '/calculators/enrichment-finder',
   },
-  related: ['best-dog-enrichment-ideas', 'puppy-socialisation-checklist'],
+  related: ['introducing-a-new-dog-toy', 'enrichment-ideas-by-play-style', 'best-dog-enrichment-ideas'],
 }

@@ -45,5 +45,5 @@ export default {
     button: 'Read the slow feeder guide',
     href: '/resources/choosing-the-right-slow-feeder',
   },
-  related: ['slow-feeder-guide', 'best-dog-enrichment-ideas', 'toy-safety-guide'],
+  related: ['slow-feeders-and-mealtime-routines', 'enrichment-for-fast-eaters', 'calmer-mealtime-routine'],
 }

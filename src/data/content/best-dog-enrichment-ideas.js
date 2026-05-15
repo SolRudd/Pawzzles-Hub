@@ -71,5 +71,5 @@ export default {
     button: 'Open Enrichment Finder',
     href: '/calculators/enrichment-finder',
   },
-  related: ['puppy-socialisation-checklist', 'toy-safety-guide'],
+  related: ['enrichment-ideas-by-play-style', 'toy-safety-guide', 'enrichment-for-fast-eaters'],
 }

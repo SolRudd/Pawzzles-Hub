@@ -16,18 +16,47 @@ function formatDate(value) {
   }).format(new Date(value))
 }
 
+const FOOD_ENERGY_NOTE =
+  'Food energy varies by brand and recipe. For the most accurate result, use the kcal per 100g from your dog food packaging or the manufacturer’s website.'
+
 function FeedingSummary({ result }) {
+  const gramsValue = result.grams ?? result.gramsPerDay
+  const hasGrams = gramsValue !== null && gramsValue !== undefined
+  const gramsLabel = result.gramsLabel || 'Grams per day'
+  const kcalValue = result.kcalPer100gUsed ? `${result.kcalPer100gUsed} kcal` : 'No single value'
+  const kcalSource = result.kcalSourceLabel || (result.kcalPer100gUsed ? 'From food label' : 'Not provided')
+
   return (
-    <div className="grid sm:grid-cols-3 gap-4">
-      <SummaryTile label="Daily calories" value={result.daily} suffix="kcal" tone="orange" />
-      <SummaryTile
-        label="Grams per day"
-        value={result.grams || 'Add food calories'}
-        suffix={result.grams ? 'g' : ''}
-        tone="teal"
-      />
-      <SummaryTile label="Resting energy" value={result.rer} suffix="kcal" tone="cream" />
-    </div>
+    <>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <SummaryTile label="Daily calories" value={result.daily} suffix="kcal" tone="orange" />
+        {hasGrams && (
+          <SummaryTile
+            label={gramsLabel}
+            value={gramsValue}
+            suffix="g"
+            tone="teal"
+          />
+        )}
+        <SummaryTile
+          label="Kcal per 100g used"
+          value={kcalValue}
+          helper={kcalSource}
+          tone="soft-blue"
+        />
+        <SummaryTile label="Resting energy" value={result.rer} suffix="kcal" tone="cream" />
+      </div>
+
+      {result.gramsMessage && (
+        <div className="mt-5 rounded-2xl border border-orange/20 bg-orange/10 p-4 text-sm font-bold text-orange">
+          {result.gramsMessage}
+        </div>
+      )}
+
+      <p className="mt-5 rounded-2xl bg-cream border border-navy/5 p-4 text-sm leading-relaxed text-navy/85">
+        {result.foodEnergyNote || FOOD_ENERGY_NOTE}
+      </p>
+    </>
   )
 }
 
@@ -66,10 +95,12 @@ function EnrichmentSummary({ result }) {
   )
 }
 
-function SummaryTile({ label, value, suffix, tone }) {
+function SummaryTile({ label, value, suffix, helper, tone }) {
   const toneClass =
     tone === 'teal'
       ? 'bg-teal/10 text-teal'
+      : tone === 'soft-blue'
+        ? 'bg-soft-blue text-teal'
       : tone === 'cream'
         ? 'bg-cream text-muted'
         : 'bg-orange/10 text-orange'
@@ -81,6 +112,7 @@ function SummaryTile({ label, value, suffix, tone }) {
         {value}{' '}
         {suffix && <span className="text-base font-body font-bold text-muted">{suffix}</span>}
       </p>
+      {helper && <p className="mt-1 text-xs font-bold text-muted">{helper}</p>}
     </div>
   )
 }

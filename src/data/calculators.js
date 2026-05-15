@@ -4,7 +4,7 @@ export const calculators = [
   {
     id: 'dog-feeding-calculator',
     title: 'Dog Feeding Calculator',
-    short: 'Estimate the right daily portion for your dog.',
+    short: 'Estimate a starting daily portion for your dog.',
     description:
       'A practical starting point for working out daily calories and food amounts based on your dog’s weight, life stage and activity.',
     image: 'calculator-feeding',
@@ -17,7 +17,7 @@ export const calculators = [
     bullets: [
       'Helpful starting portion estimate',
       'Adjusts for life stage and activity',
-      'Optional food kcal for grams-per-day',
+      'Uses food type or label kcal for grams per day',
       'General guidance only',
     ],
   },
