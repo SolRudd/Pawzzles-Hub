@@ -51,4 +51,33 @@
     background-image: radial-gradient(rgba(19, 143, 161, 0.10) 1.5px, transparent 1.5px);
     background-size: 22px 22px;
   }
+  .site-header {
+    @apply sticky top-0 z-40 bg-cream/95 backdrop-blur border-b border-navy/5;
+  }
+  @supports ((-webkit-backdrop-filter: blur(0)) or (backdrop-filter: blur(0))) {
+    .site-header {
+      background-color: rgb(255 248 239 / 0.8);
+    }
+  }
+  .site-header__inner {
+    @apply max-w-7xl mx-auto container-px h-[68px] sm:h-[80px] grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4;
+  }
+  .site-header__logo {
+    @apply flex items-center justify-start min-w-0;
+  }
+  .site-header__nav {
+    @apply hidden lg:flex items-center justify-center gap-1;
+  }
+  .site-header__actions {
+    @apply flex items-center justify-end gap-2 min-w-0;
+  }
+  .site-header__menu-toggle {
+    @apply inline-flex lg:hidden w-11 h-11 items-center justify-center rounded-full bg-white border border-navy/10 text-navy shadow-soft;
+  }
+  .site-header__mobile-panel {
+    @apply static hidden border-t border-navy/5 bg-cream shadow-soft;
+  }
+  .site-header__mobile-panel.is-open {
+    @apply block lg:hidden;
+  }
 }

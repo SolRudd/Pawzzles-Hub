@@ -40,7 +40,7 @@ export default function Home() {
           <ChoiceCta />
         </div>
       </section>
-      <NewsletterSignup />
+      <NewsletterSignup sourceComponent="homepage_newsletter" />
       <TrustSection />
     </>
   )

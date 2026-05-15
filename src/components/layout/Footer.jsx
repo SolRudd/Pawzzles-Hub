@@ -33,6 +33,7 @@ const FOOTER_GROUPS = [
       { label: 'Visit Shop', external: SITE.shopUrl, track: 'footer_shop_link' },
       { label: 'Main Website', external: SITE.shopUrl, track: 'footer_home_link' },
       { label: 'Privacy Policy', external: SITE.privacyPolicyUrl },
+      { label: 'Terms', external: SITE.termsUrl },
     ],
   },
 ]

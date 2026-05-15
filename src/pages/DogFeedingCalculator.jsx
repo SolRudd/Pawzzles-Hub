@@ -18,6 +18,13 @@ import { resourceHubImages } from '../data/imageAssets.js'
 import { SITE, absoluteUrl } from '../data/site.js'
 import { getConsentPreferences, trackAppEvent, trackVisitShop } from '../lib/tracking.js'
 import { emailCalculatorResult, isValidResultEmail } from '../lib/results.js'
+import {
+  CONSENT_METHOD,
+  CONSENT_VERSION,
+  MARKETING_CONSENT_TEXT,
+  RESULT_EMAIL_CONSENT_ERROR,
+  RESULT_EMAIL_CONSENT_TEXT,
+} from '../lib/consent.js'
 
 const LIFE_STAGES = [
   { id: 'puppy-young', label: 'Puppy (under 4 months)', factor: 3.0 },
@@ -72,6 +79,7 @@ export default function DogFeedingCalculator() {
   const [goalId, setGoalId] = useState('maintain')
   const [kcalPer100g, setKcalPer100g] = useState('')
   const [email, setEmail] = useState('')
+  const [resultEmailConsent, setResultEmailConsent] = useState(false)
   const [marketingConsent, setMarketingConsent] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [fieldErrors, setFieldErrors] = useState({})
@@ -103,6 +111,10 @@ export default function DogFeedingCalculator() {
       nextErrors.email = 'Please enter a valid email address.'
     }
 
+    if (!resultEmailConsent) {
+      nextErrors.resultEmailConsent = RESULT_EMAIL_CONSENT_ERROR
+    }
+
     if (!calculatedResult) {
       nextErrors.form = 'Please check the details above to calculate a result.'
     }
@@ -130,7 +142,7 @@ export default function DogFeedingCalculator() {
     }, 50)
 
     trackAppEvent('feeding_calculator_completed', {
-      source_component: 'feeding_calculator_form',
+      source_component: 'feeding_calculator_result',
       calculator_type: 'dog_feeding',
     })
 
@@ -149,10 +161,20 @@ export default function DogFeedingCalculator() {
       },
       resultData: result,
       sourcePage: location.pathname,
-      sourceComponent: 'feeding_calculator_form',
+      sourceComponent: 'feeding_calculator_result',
       consentAnalytics: Boolean(preferences.analytics),
       consentMarketing: marketingConsent,
+      privacyAccepted: resultEmailConsent,
+      termsAccepted: resultEmailConsent,
+      resultEmailConsent,
+      consentText: RESULT_EMAIL_CONSENT_TEXT,
+      marketingConsentText: MARKETING_CONSENT_TEXT,
+      consentVersion: CONSENT_VERSION,
+      consentMethod: CONSENT_METHOD,
+      privacyUrl: SITE.privacyPolicyUrl,
+      termsUrl: SITE.termsUrl,
       interests: ['feeding', 'mealtime_routines'],
+      timestamp: new Date().toISOString(),
     })
 
     if (response.ok) {
@@ -323,10 +345,38 @@ export default function DogFeedingCalculator() {
                     wrapperClassName="sm:col-span-2"
                   />
 
+                  <div className="sm:col-span-2">
+                    <CheckboxField
+                      id="feeding-result-email-consent"
+                      label={
+                        <>
+                          I agree to Pawzzles emailing this result to me and understand my details will be handled in line with the{' '}
+                          <a href={SITE.privacyPolicyUrl} className="font-bold text-teal hover:text-teal-deep" target="_blank" rel="noopener">
+                            Privacy Policy
+                          </a>{' '}
+                          and{' '}
+                          <a href={SITE.termsUrl} className="font-bold text-teal hover:text-teal-deep" target="_blank" rel="noopener">
+                            Terms
+                          </a>
+                          .
+                        </>
+                      }
+                      checked={resultEmailConsent}
+                      onChange={(checked) => {
+                        setResultEmailConsent(checked)
+                        setFieldErrors((current) => ({ ...current, resultEmailConsent: '' }))
+                      }}
+                      disabled={submitStatus === 'loading'}
+                    />
+                    <FormError id="feeding-result-email-consent-error">
+                      {fieldErrors.resultEmailConsent}
+                    </FormError>
+                  </div>
+
                   <CheckboxField
                     id="feeding-marketing"
                     label="Yes, send me Pawzzles tips, guides and product updates."
-                    helper="We will email your result. Marketing emails are only sent if you opt in."
+                    helper="Optional. Marketing emails are only sent if you opt in."
                     checked={marketingConsent}
                     onChange={setMarketingConsent}
                     disabled={submitStatus === 'loading'}
@@ -350,6 +400,7 @@ export default function DogFeedingCalculator() {
                       setGoalId('maintain')
                       setKcalPer100g('')
                       setEmail('')
+                      setResultEmailConsent(false)
                       setMarketingConsent(false)
                       setSubmitted(false)
                       setFieldErrors({})
@@ -365,8 +416,7 @@ export default function DogFeedingCalculator() {
                 </div>
 
                 <p className="mt-4 text-[11px] leading-relaxed text-muted">
-                  We will email your result. Marketing emails are only sent if
-                  you opt in.
+                  The result email is transactional. Marketing emails are only sent if you opt in.
                 </p>
               </form>
             </div>

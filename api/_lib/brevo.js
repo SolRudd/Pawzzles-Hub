@@ -10,26 +10,71 @@ function getApiKey() {
   return apiKey
 }
 
-function parseListId(value) {
+export function parseListId(value) {
   if (!value) return null
   const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : null
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null
 }
 
 function uniqueListIds(listIds) {
   return [...new Set(listIds.map(parseListId).filter(Boolean))]
 }
 
-export function getBrevoListIds({ includeMarketing = false } = {}) {
+export function getBrevoMarketingListId() {
+  return parseListId(process.env.BREVO_MARKETING_LIST_ID || 8)
+}
+
+function getInterestListIds(interests = []) {
+  const normalised = new Set(
+    (Array.isArray(interests) ? interests : [])
+      .map((item) => String(item || '').trim().toLowerCase())
+      .filter(Boolean),
+  )
   const listIds = []
 
-  if (includeMarketing) listIds.push(process.env.BREVO_MARKETING_LIST_ID || 8)
+  if (
+    normalised.has('feeding') ||
+    normalised.has('mealtime_routines') ||
+    normalised.has('slow_feeders')
+  ) {
+    listIds.push(process.env.BREVO_FEEDING_LIST_ID)
+  }
+
+  if (
+    normalised.has('enrichment') ||
+    normalised.has('toy_safety') ||
+    normalised.has('play')
+  ) {
+    listIds.push(process.env.BREVO_ENRICHMENT_LIST_ID)
+  }
+
+  if (normalised.has('puppy') || normalised.has('training')) {
+    listIds.push(process.env.BREVO_PUPPY_LIST_ID)
+  }
+
+  if (normalised.has('calculator_users')) {
+    listIds.push(process.env.BREVO_CALCULATOR_USERS_LIST_ID)
+  }
 
   return uniqueListIds(listIds)
 }
 
-export function getBrevoMarketingListIds() {
-  return uniqueListIds([process.env.BREVO_MARKETING_LIST_ID || 8])
+export function getBrevoListIds({
+  includeMarketing = false,
+  includeCalculatorUsers = false,
+  interests = [],
+} = {}) {
+  const listIds = []
+
+  if (includeMarketing) listIds.push(getBrevoMarketingListId())
+  if (includeCalculatorUsers) listIds.push(process.env.BREVO_CALCULATOR_USERS_LIST_ID)
+  listIds.push(...getInterestListIds(interests))
+
+  return uniqueListIds(listIds)
+}
+
+export function getBrevoMarketingListIds(options = {}) {
+  return getBrevoListIds({ includeMarketing: true, ...options })
 }
 
 async function brevoRequest(path, options = {}) {
@@ -54,7 +99,7 @@ async function brevoRequest(path, options = {}) {
   return response.json().catch(() => null)
 }
 
-export async function upsertBrevoContact({ email, listIds = [] }) {
+export async function upsertBrevoContact({ email, listIds = [], attributes = {} }) {
   const cleanListIds = uniqueListIds(listIds)
 
   if (cleanListIds.length === 0) {
@@ -68,14 +113,20 @@ export async function upsertBrevoContact({ email, listIds = [] }) {
     body: JSON.stringify({
       email,
       listIds: cleanListIds,
+      attributes,
       updateEnabled: true,
     }),
   })
 }
 
-export async function addOrUpdateContact(email) {
+export async function addOrUpdateMarketingContact({
+  email,
+  interests = [],
+  includeCalculatorUsers = false,
+  attributes = {},
+} = {}) {
   const cleanEmail = String(email || '').trim().toLowerCase()
-  const listIds = getBrevoMarketingListIds()
+  const listIds = getBrevoMarketingListIds({ interests, includeCalculatorUsers })
 
   if (!cleanEmail) {
     const error = new Error('Brevo contact email is required.')
@@ -83,7 +134,11 @@ export async function addOrUpdateContact(email) {
     throw error
   }
 
-  return upsertBrevoContact({ email: cleanEmail, listIds })
+  return upsertBrevoContact({ email: cleanEmail, listIds, attributes })
+}
+
+export async function addOrUpdateContact(email) {
+  return addOrUpdateMarketingContact({ email })
 }
 
 function escapeHtml(value = '') {
@@ -111,6 +166,17 @@ function getShopUrl() {
 
 function getPrivacyUrl() {
   return process.env.PRIVACY_URL || 'https://pawzzles.co.uk/privacy-policy'
+}
+
+function getTermsUrl() {
+  return process.env.TERMS_URL || 'https://pawzzles.co.uk/terms-and-conditions'
+}
+
+function getSender() {
+  return {
+    email: process.env.BREVO_SENDER_EMAIL || 'hello@pawzzles.co.uk',
+    name: process.env.BREVO_SENDER_NAME || 'Pawzzles',
+  }
 }
 
 function getCalculatorEmailMeta(calculatorType) {
@@ -222,6 +288,7 @@ export function buildResultEmailHtml({
   const shopUrl = getShopUrl()
   const resourcesUrl = `${siteUrl}/resources`
   const privacyUrl = getPrivacyUrl()
+  const termsUrl = getTermsUrl()
   const logoUrl = `${siteUrl}/pawzzles-logo.svg`
   const meta = getCalculatorEmailMeta(calculatorType)
   const summary = formatCalculatorResultSummary({ calculatorType, resultData })
@@ -299,7 +366,7 @@ export function buildResultEmailHtml({
               <td style="padding:18px 26px 28px;">
                 <p style="margin:0;color:#5d6878;font-size:12px;line-height:1.6;">General guidance only. Always supervise dogs with new toys or feeding products.</p>
                 <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;">This email was sent because you asked Pawzzles to email your result. ${escapeHtml(marketingLine)}</p>
-                <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;"><a href="${escapeHtml(privacyUrl)}" style="color:#087b86;font-weight:700;">Privacy Policy</a></p>
+                <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;"><a href="${escapeHtml(privacyUrl)}" style="color:#087b86;font-weight:700;">Privacy Policy</a> | <a href="${escapeHtml(termsUrl)}" style="color:#087b86;font-weight:700;">Terms</a></p>
               </td>
             </tr>
           </table>
@@ -322,6 +389,7 @@ export function buildResultEmailText({
   const shopUrl = getShopUrl()
   const resourcesUrl = `${siteUrl}/resources`
   const privacyUrl = getPrivacyUrl()
+  const termsUrl = getTermsUrl()
   const meta = getCalculatorEmailMeta(calculatorType)
   const summary = formatCalculatorResultSummary({ calculatorType, resultData })
   const rows = summary.rows.map(([label, value]) => `${label}: ${value}`).join('\n')
@@ -351,6 +419,7 @@ export function buildResultEmailText({
     'General guidance only. Always supervise dogs with new toys or feeding products.',
     `This email was sent because you asked Pawzzles to email your result. ${marketingLine}`,
     `Privacy Policy: ${privacyUrl}`,
+    `Terms: ${termsUrl}`,
   ]
     .filter(Boolean)
     .join('\n')
@@ -358,6 +427,114 @@ export function buildResultEmailText({
 
 export function buildFallbackResultEmail(options) {
   return buildResultEmailHtml(options)
+}
+
+export function buildNewsletterWelcomeHtml() {
+  const siteUrl = getSiteUrl()
+  const shopUrl = getShopUrl()
+  const privacyUrl = getPrivacyUrl()
+  const termsUrl = getTermsUrl()
+  const resourcesUrl = `${siteUrl}/resources`
+  const logoUrl = `${siteUrl}/pawzzles-logo.svg`
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to the Pawzzles Pack</title>
+  </head>
+  <body style="margin:0;padding:0;background:#fff8ef;color:#142033;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;background:#fff8ef;">
+      <tr>
+        <td align="center" style="padding:28px 14px;">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;max-width:640px;background:#ffffff;border:1px solid #f2dfcf;border-radius:24px;overflow:hidden;">
+            <tr>
+              <td style="background:#087b86;padding:22px 26px;">
+                <img src="${escapeHtml(logoUrl)}" width="138" alt="Pawzzles" style="display:block;max-width:138px;height:auto;border:0;color:#ffffff;font-size:24px;font-weight:700;">
+                <p style="margin:12px 0 0;color:#d8f4f7;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Newsletter signup</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:30px 26px 12px;">
+                <h1 style="margin:0;color:#142033;font-size:30px;line-height:1.15;font-weight:800;">Welcome to the Pawzzles Pack</h1>
+                <p style="margin:14px 0 0;color:#5d6878;font-size:16px;line-height:1.6;">Thanks for signing up. We will send practical dog care tips, enrichment ideas, feeding guidance and Pawzzles product updates.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:12px 26px 8px;">
+                <table role="presentation" cellspacing="0" cellpadding="0">
+                  <tr>
+                    ${buildButton('Browse resources', resourcesUrl, '#138fa1')}
+                    ${buildButton('Visit shop', shopUrl, '#f58232')}
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 26px 28px;">
+                <p style="margin:0;color:#5d6878;font-size:12px;line-height:1.6;">You are receiving this because you asked Pawzzles to send you emails. You can unsubscribe at any time using the link in our marketing emails.</p>
+                <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;"><a href="${escapeHtml(privacyUrl)}" style="color:#087b86;font-weight:700;">Privacy Policy</a> | <a href="${escapeHtml(termsUrl)}" style="color:#087b86;font-weight:700;">Terms</a></p>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:16px 0 0;color:#5d6878;font-size:11px;">Pawzzles Resource Hub</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
+}
+
+export function buildNewsletterWelcomeText() {
+  return [
+    'Welcome to the Pawzzles Pack',
+    '',
+    'Thanks for signing up. We will send practical dog care tips, enrichment ideas, feeding guidance and Pawzzles product updates.',
+    '',
+    `Browse resources: ${getSiteUrl()}/resources`,
+    `Visit shop: ${getShopUrl()}`,
+    '',
+    'You are receiving this because you asked Pawzzles to send you emails. You can unsubscribe at any time using the link in our marketing emails.',
+    `Privacy Policy: ${getPrivacyUrl()}`,
+    `Terms: ${getTermsUrl()}`,
+  ].join('\n')
+}
+
+export async function sendNewsletterWelcomeEmail({ email, interests = [] } = {}) {
+  const templateId = parseListId(process.env.BREVO_NEWSLETTER_TEMPLATE_ID)
+  const sender = getSender()
+  const siteUrl = getSiteUrl()
+  const shopUrl = getShopUrl()
+  const resourcesUrl = `${siteUrl}/resources`
+  const emailType = EMAIL_TYPES.NEWSLETTER_WELCOME
+
+  const body = templateId
+    ? {
+        sender: { name: sender.name, email: sender.email },
+        to: [{ email }],
+        templateId,
+        params: {
+          emailType,
+          interests,
+          resourcesUrl,
+          shopUrl,
+          privacyUrl: getPrivacyUrl(),
+          termsUrl: getTermsUrl(),
+        },
+      }
+    : {
+        sender: { name: sender.name, email: sender.email },
+        to: [{ email }],
+        subject: 'Welcome to the Pawzzles Pack',
+        htmlContent: buildNewsletterWelcomeHtml(),
+        textContent: buildNewsletterWelcomeText(),
+      }
+
+  return brevoRequest('/smtp/email', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
 }
 
 export async function sendCalculatorResultEmail({
@@ -369,8 +546,7 @@ export async function sendCalculatorResultEmail({
   marketingConsent = false,
 }) {
   const templateId = parseListId(process.env.BREVO_RESULT_TEMPLATE_ID)
-  const senderEmail = process.env.BREVO_SENDER_EMAIL || 'hello@pawzzles.co.uk'
-  const senderName = process.env.BREVO_SENDER_NAME || 'Pawzzles'
+  const sender = getSender()
   const shopUrl = getShopUrl()
   const resourcesUrl = `${getSiteUrl()}/resources`
   const meta = getCalculatorEmailMeta(calculatorType)
@@ -378,7 +554,7 @@ export async function sendCalculatorResultEmail({
 
   const body = templateId
     ? {
-        sender: { name: senderName, email: senderEmail },
+        sender: { name: sender.name, email: sender.email },
         to: [{ email }],
         templateId,
         params: {
@@ -389,10 +565,12 @@ export async function sendCalculatorResultEmail({
           resultUrl,
           resourcesUrl,
           shopUrl,
+          privacyUrl: getPrivacyUrl(),
+          termsUrl: getTermsUrl(),
         },
       }
     : {
-        sender: { name: senderName, email: senderEmail },
+        sender: { name: sender.name, email: sender.email },
         to: [{ email }],
         subject: meta.subject,
         htmlContent: buildResultEmailHtml({

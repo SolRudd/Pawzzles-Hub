@@ -126,7 +126,7 @@ export default function Resources() {
         </div>
       </section>
 
-      <NewsletterSignup />
+      <NewsletterSignup sourceComponent="resource_detail_cta" />
     </>
   )
 }

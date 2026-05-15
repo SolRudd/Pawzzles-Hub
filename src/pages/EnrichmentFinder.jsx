@@ -18,6 +18,13 @@ import { resourceHubImages } from '../data/imageAssets.js'
 import { SITE, absoluteUrl } from '../data/site.js'
 import { getConsentPreferences, trackAppEvent, trackVisitShop } from '../lib/tracking.js'
 import { emailCalculatorResult, isValidResultEmail } from '../lib/results.js'
+import {
+  CONSENT_METHOD,
+  CONSENT_VERSION,
+  MARKETING_CONSENT_TEXT,
+  RESULT_EMAIL_CONSENT_ERROR,
+  RESULT_EMAIL_CONSENT_TEXT,
+} from '../lib/consent.js'
 
 const STAGES = [
   { id: 'puppy', label: 'Puppy' },
@@ -131,6 +138,7 @@ export default function EnrichmentFinder() {
   const [goal, setGoal] = useState('boredom')
   const [style, setStyle] = useState('sniffer')
   const [email, setEmail] = useState('')
+  const [resultEmailConsent, setResultEmailConsent] = useState(false)
   const [marketingConsent, setMarketingConsent] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [fieldErrors, setFieldErrors] = useState({})
@@ -160,6 +168,9 @@ export default function EnrichmentFinder() {
     if (!isValidResultEmail(email)) {
       nextErrors.email = 'Please enter a valid email address.'
     }
+    if (!resultEmailConsent) {
+      nextErrors.resultEmailConsent = RESULT_EMAIL_CONSENT_ERROR
+    }
     if (!generatedPlan) {
       nextErrors.form = 'Please check the details above to create a plan.'
     }
@@ -187,7 +198,7 @@ export default function EnrichmentFinder() {
     }, 50)
 
     trackAppEvent('enrichment_finder_completed', {
-      source_component: 'enrichment_finder_form',
+      source_component: 'enrichment_finder_result',
       calculator_type: 'enrichment_finder',
     })
 
@@ -205,10 +216,20 @@ export default function EnrichmentFinder() {
       },
       resultData: plan,
       sourcePage: location.pathname,
-      sourceComponent: 'enrichment_finder_form',
+      sourceComponent: 'enrichment_finder_result',
       consentAnalytics: Boolean(preferences.analytics),
       consentMarketing: marketingConsent,
+      privacyAccepted: resultEmailConsent,
+      termsAccepted: resultEmailConsent,
+      resultEmailConsent,
+      consentText: RESULT_EMAIL_CONSENT_TEXT,
+      marketingConsentText: MARKETING_CONSENT_TEXT,
+      consentVersion: CONSENT_VERSION,
+      consentMethod: CONSENT_METHOD,
+      privacyUrl: SITE.privacyPolicyUrl,
+      termsUrl: SITE.termsUrl,
       interests: ['enrichment', 'toy_safety'],
+      timestamp: new Date().toISOString(),
     })
 
     if (response.ok) {
@@ -364,10 +385,38 @@ export default function EnrichmentFinder() {
                     wrapperClassName="sm:col-span-2"
                   />
 
+                  <div className="sm:col-span-2">
+                    <CheckboxField
+                      id="enrichment-result-email-consent"
+                      label={
+                        <>
+                          I agree to Pawzzles emailing this result to me and understand my details will be handled in line with the{' '}
+                          <a href={SITE.privacyPolicyUrl} className="font-bold text-teal hover:text-teal-deep" target="_blank" rel="noopener">
+                            Privacy Policy
+                          </a>{' '}
+                          and{' '}
+                          <a href={SITE.termsUrl} className="font-bold text-teal hover:text-teal-deep" target="_blank" rel="noopener">
+                            Terms
+                          </a>
+                          .
+                        </>
+                      }
+                      checked={resultEmailConsent}
+                      onChange={(checked) => {
+                        setResultEmailConsent(checked)
+                        setFieldErrors((current) => ({ ...current, resultEmailConsent: '' }))
+                      }}
+                      disabled={submitStatus === 'loading'}
+                    />
+                    <FormError id="enrichment-result-email-consent-error">
+                      {fieldErrors.resultEmailConsent}
+                    </FormError>
+                  </div>
+
                   <CheckboxField
                     id="enrichment-marketing"
                     label="Yes, send me Pawzzles tips, guides and product updates."
-                    helper="We will email your result. Marketing emails are only sent if you opt in."
+                    helper="Optional. Marketing emails are only sent if you opt in."
                     checked={marketingConsent}
                     onChange={setMarketingConsent}
                     disabled={submitStatus === 'loading'}
@@ -387,8 +436,7 @@ export default function EnrichmentFinder() {
                 </div>
 
                 <p className="text-[11px] leading-relaxed text-muted">
-                  We will email your result. Marketing emails are only sent if
-                  you opt in.
+                  The result email is transactional. Marketing emails are only sent if you opt in.
                 </p>
               </form>
             </div>

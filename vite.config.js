@@ -11,6 +11,9 @@ const publicEnv = {
   __PAWZZLES_PRIVACY_URL__: JSON.stringify(
     process.env.PRIVACY_URL || 'https://pawzzles.co.uk/privacy-policy',
   ),
+  __PAWZZLES_TERMS_URL__: JSON.stringify(
+    process.env.TERMS_URL || 'https://pawzzles.co.uk/terms-and-conditions',
+  ),
   __PAWZZLES_GTM_CONTAINER_ID__: JSON.stringify(
     process.env.GTM_CONTAINER_ID || 'GTM-TBF7XNZ2',
   ),

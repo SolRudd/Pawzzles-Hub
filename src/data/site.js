@@ -13,6 +13,11 @@ const privacyPolicyUrl =
     ? __PAWZZLES_PRIVACY_URL__
     : 'https://pawzzles.co.uk/privacy-policy'
 
+const termsUrl =
+  typeof __PAWZZLES_TERMS_URL__ !== 'undefined'
+    ? __PAWZZLES_TERMS_URL__
+    : 'https://pawzzles.co.uk/terms-and-conditions'
+
 const gtmContainerId =
   typeof __PAWZZLES_GTM_CONTAINER_ID__ !== 'undefined'
     ? __PAWZZLES_GTM_CONTAINER_ID__
@@ -24,6 +29,7 @@ export const SITE = {
   url: siteUrl,
   shopUrl,
   privacyPolicyUrl,
+  termsUrl,
   defaultTitle:
     'Pawzzles Resource Hub | Dog Enrichment, Feeding Tools and Practical Guides',
   defaultDescription:

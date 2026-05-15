@@ -25,7 +25,7 @@ export async function subscribeToNewsletter(payload) {
       body: JSON.stringify({
         ...payload,
         email: payload.email.trim(),
-        timestamp: new Date().toISOString(),
+        timestamp: payload.timestamp || new Date().toISOString(),
       }),
     })
 

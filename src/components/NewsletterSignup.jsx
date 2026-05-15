@@ -1,9 +1,16 @@
-import React, { useState } from 'react'
+import React, { useId, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Icon } from './icons/Icons.jsx'
 import { PawMark } from './PawAccent.jsx'
 import { getConsentPreferences, trackAppEvent } from '../lib/tracking.js'
 import { isValidEmail, subscribeToNewsletter } from '../lib/newsletter.js'
+import {
+  CONSENT_METHOD,
+  CONSENT_VERSION,
+  NEWSLETTER_CONSENT_ERROR,
+  NEWSLETTER_CONSENT_TEXT,
+  consentLinkProps,
+} from '../lib/consent.js'
 
 const POINTS = [
   { icon: 'paw', label: 'Helpful tips you can use' },
@@ -96,7 +103,7 @@ function DogPeek() {
 }
 
 export default function NewsletterSignup({
-  sourceComponent = 'newsletter_block',
+  sourceComponent = 'homepage_newsletter',
   interests = ['feeding', 'enrichment'],
   variant = 'full',
   className = '',
@@ -109,7 +116,10 @@ export default function NewsletterSignup({
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
   const location = useLocation()
-  const inputId = `newsletter-email-${sourceComponent}`
+  const formId = useId().replace(/:/g, '')
+  const inputId = `newsletter-email-${formId}`
+  const consentInputId = `newsletter-consent-${formId}`
+  const { privacyUrl, termsUrl } = consentLinkProps()
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -121,14 +131,28 @@ export default function NewsletterSignup({
       return
     }
 
+    if (!marketingConsent) {
+      setStatus('error')
+      setMessage(NEWSLETTER_CONSENT_ERROR)
+      return
+    }
+
     const preferences = getConsentPreferences()
     const payload = {
       email: cleanEmail,
       sourcePage: location.pathname,
       sourceComponent,
       consentAnalytics: Boolean(preferences.analytics),
-      consentMarketing: marketingConsent,
+      consentMarketing: true,
+      privacyAccepted: true,
+      termsAccepted: true,
+      consentText: NEWSLETTER_CONSENT_TEXT,
+      consentVersion: CONSENT_VERSION,
+      consentMethod: CONSENT_METHOD,
+      privacyUrl,
+      termsUrl,
       interests,
+      timestamp: new Date().toISOString(),
     }
 
     trackAppEvent('newsletter_signup_submit', {
@@ -153,7 +177,7 @@ export default function NewsletterSignup({
       })
     } catch (error) {
       setStatus('error')
-      setMessage('Something went wrong. Please try again in a moment.')
+      setMessage(error.message || 'Something went wrong. Please try again in a moment.')
       trackAppEvent('newsletter_signup_error', {
         source_component: sourceComponent,
         error_message: error.message,
@@ -201,21 +225,46 @@ export default function NewsletterSignup({
           </button>
         </div>
 
-        <label className="flex items-start gap-3 rounded-2xl bg-white/70 border border-navy/5 p-3 text-left">
+        <label
+          htmlFor={consentInputId}
+          className="flex items-start gap-3 rounded-2xl bg-white/70 border border-navy/5 p-3 text-left"
+        >
           <input
+            id={consentInputId}
             type="checkbox"
             className="mt-1 h-4 w-4 accent-teal shrink-0"
             checked={marketingConsent}
-            onChange={(event) => setMarketingConsent(event.target.checked)}
+            onChange={(event) => {
+              setMarketingConsent(event.target.checked)
+              if (status !== 'loading') setStatus('idle')
+              setMessage('')
+            }}
           />
           <span className="text-xs text-navy/80">
-            Yes, send me Pawzzles tips, guides and product updates.
+            Yes, send me Pawzzles tips, guides and product updates. I agree to the{' '}
+            <a
+              href={privacyUrl}
+              className="font-bold text-teal hover:text-teal-deep"
+              target="_blank"
+              rel="noopener"
+            >
+              Privacy Policy
+            </a>{' '}
+            and{' '}
+            <a
+              href={termsUrl}
+              className="font-bold text-teal hover:text-teal-deep"
+              target="_blank"
+              rel="noopener"
+            >
+              Terms
+            </a>
+            .
           </span>
         </label>
 
         <p className="text-[11px] leading-relaxed text-muted">
-          By submitting, you agree we can email this to you. Marketing emails
-          are only sent if you opt in.
+          Cookie preferences are separate from Pawzzles email consent.
         </p>
       </form>
 

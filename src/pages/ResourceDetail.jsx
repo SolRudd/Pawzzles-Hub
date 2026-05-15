@@ -137,7 +137,7 @@ export default function ResourceDetail() {
                 title="Get dog care tips by email"
                 body="Join the Pawzzles Pack for practical guides, routines and dog-friendly ideas linked to this topic."
                 buttonLabel="Join the pack"
-                sourceComponent="resource_article"
+                sourceComponent="resource_article_signup"
                 interests={[...new Set(newsletterInterests)]}
               />
 

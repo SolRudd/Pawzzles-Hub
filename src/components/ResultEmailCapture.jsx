@@ -1,27 +1,40 @@
-import React, { useState } from 'react'
+import React, { useId, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Icon } from './icons/Icons.jsx'
 import { getConsentPreferences, trackAppEvent } from '../lib/tracking.js'
 import { emailCalculatorResult, isValidResultEmail } from '../lib/results.js'
+import {
+  CONSENT_METHOD,
+  CONSENT_VERSION,
+  MARKETING_CONSENT_TEXT,
+  RESULT_EMAIL_CONSENT_ERROR,
+  RESULT_EMAIL_CONSENT_TEXT,
+  consentLinkProps,
+} from '../lib/consent.js'
 
 export default function ResultEmailCapture({
   calculatorType,
   dogName = '',
   inputData = {},
   resultData,
-  sourceComponent,
+  sourceComponent = 'feeding_calculator_result',
   interests = [],
   title = 'Email this result',
   body = 'Send a copy to your inbox so you can come back to it later.',
   buttonLabel = 'Email my result',
 }) {
   const [email, setEmail] = useState('')
+  const [resultEmailConsent, setResultEmailConsent] = useState(false)
   const [marketingConsent, setMarketingConsent] = useState(false)
   const [status, setStatus] = useState('idle')
   const [message, setMessage] = useState('')
   const [resultUrl, setResultUrl] = useState('')
   const location = useLocation()
-  const inputId = `result-email-${sourceComponent}`
+  const formId = useId().replace(/:/g, '')
+  const inputId = `result-email-${formId}`
+  const resultConsentInputId = `result-email-consent-${formId}`
+  const marketingInputId = `result-marketing-${formId}`
+  const { privacyUrl, termsUrl } = consentLinkProps()
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -30,6 +43,12 @@ export default function ResultEmailCapture({
     if (!isValidResultEmail(cleanEmail)) {
       setStatus('error')
       setMessage('Please enter a valid email address.')
+      return
+    }
+
+    if (!resultEmailConsent) {
+      setStatus('error')
+      setMessage(RESULT_EMAIL_CONSENT_ERROR)
       return
     }
 
@@ -44,7 +63,17 @@ export default function ResultEmailCapture({
       sourceComponent,
       consentAnalytics: Boolean(preferences.analytics),
       consentMarketing: marketingConsent,
+      privacyAccepted: resultEmailConsent,
+      termsAccepted: resultEmailConsent,
+      resultEmailConsent,
+      consentText: RESULT_EMAIL_CONSENT_TEXT,
+      marketingConsentText: MARKETING_CONSENT_TEXT,
+      consentVersion: CONSENT_VERSION,
+      consentMethod: CONSENT_METHOD,
+      privacyUrl,
+      termsUrl,
       interests,
+      timestamp: new Date().toISOString(),
     }
 
     setStatus('loading')
@@ -104,8 +133,40 @@ export default function ResultEmailCapture({
           className="w-full rounded-full bg-white border border-navy/10 px-4 py-3 text-sm text-navy placeholder:text-navy/40 focus:outline-none focus:ring-4 focus:ring-orange/20 focus:border-orange/40"
         />
 
-        <label className="flex items-start gap-3 rounded-2xl bg-white border border-navy/5 p-3 text-left">
+        <label
+          htmlFor={resultConsentInputId}
+          className="flex items-start gap-3 rounded-2xl bg-white border border-navy/5 p-3 text-left"
+        >
           <input
+            id={resultConsentInputId}
+            type="checkbox"
+            className="mt-1 h-4 w-4 accent-teal shrink-0"
+            checked={resultEmailConsent}
+            onChange={(event) => {
+              setResultEmailConsent(event.target.checked)
+              if (status !== 'loading') setStatus('idle')
+              setMessage('')
+            }}
+          />
+          <span className="text-xs text-navy/80">
+            I agree to Pawzzles emailing this result to me and understand my details will be handled in line with the{' '}
+            <a href={privacyUrl} className="font-bold text-teal hover:text-teal-deep" target="_blank" rel="noopener">
+              Privacy Policy
+            </a>{' '}
+            and{' '}
+            <a href={termsUrl} className="font-bold text-teal hover:text-teal-deep" target="_blank" rel="noopener">
+              Terms
+            </a>
+            .
+          </span>
+        </label>
+
+        <label
+          htmlFor={marketingInputId}
+          className="flex items-start gap-3 rounded-2xl bg-white border border-navy/5 p-3 text-left"
+        >
+          <input
+            id={marketingInputId}
             type="checkbox"
             className="mt-1 h-4 w-4 accent-teal shrink-0"
             checked={marketingConsent}
@@ -117,8 +178,7 @@ export default function ResultEmailCapture({
         </label>
 
         <p className="text-[11px] leading-relaxed text-muted">
-          By submitting, you agree we can email this to you. Marketing emails
-          are only sent if you opt in.
+          The result email is transactional. Marketing emails are only sent if you opt in.
         </p>
 
         <button type="submit" className="btn-primary w-full sm:w-auto" disabled={status === 'loading'}>

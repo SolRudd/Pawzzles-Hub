@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Icon } from '../icons/Icons.jsx'
 import { SITE } from '../../data/site.js'
 import { trackVisitShop } from '../../lib/tracking.js'
@@ -13,10 +13,17 @@ const NAV = [
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+  const mobileMenuId = 'site-header-mobile-menu'
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
+
   return (
-    <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/80 border-b border-navy/5">
-      <div className="max-w-7xl mx-auto container-px h-[68px] sm:h-[80px] grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4">
-        <div className="flex items-center justify-start min-w-0">
+    <header className="site-header">
+      <div className="site-header__inner">
+        <div className="site-header__logo">
           <Link
             to="/"
             className="inline-flex items-center shrink-0"
@@ -31,7 +38,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <nav className="hidden lg:flex items-center justify-center gap-1" aria-label="Primary">
+        <nav className="site-header__nav" aria-label="Primary">
           {NAV.map((item) => (
             <NavLink
               key={item.label}
@@ -49,27 +56,28 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center justify-end gap-2 min-w-0">
+        <div className="site-header__actions">
           <Link
             to="/resources"
             aria-label="Browse resources"
-            className="hidden sm:inline-flex w-11 h-11 items-center justify-center rounded-full bg-white border border-navy/10 hover:border-orange/40 hover:text-orange text-navy/70 shadow-soft transition-colors"
+            className="hidden lg:inline-flex w-11 h-11 items-center justify-center rounded-full bg-white border border-navy/10 hover:border-orange/40 hover:text-orange text-navy/70 shadow-soft transition-colors"
           >
             <Icon name="search" className="w-5 h-5" />
           </Link>
           <a
             href={SITE.shopUrl}
             rel="noopener"
-            className="hidden sm:inline-flex btn-primary shadow-glow"
+            className="hidden lg:inline-flex btn-primary shadow-glow"
             onClick={() => trackVisitShop('header')}
           >
             Visit Shop
           </a>
           <button
             type="button"
-            className="lg:hidden inline-flex w-11 h-11 items-center justify-center rounded-full bg-white border border-navy/10 text-navy"
-            aria-label="Toggle menu"
+            className="site-header__menu-toggle"
+            aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
+            aria-controls={mobileMenuId}
             onClick={() => setOpen((v) => !v)}
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -83,36 +91,38 @@ export default function Header() {
         </div>
       </div>
 
-      {open && (
-        <div className="lg:hidden border-t border-navy/5 bg-cream">
-          <nav
-            className="max-w-7xl mx-auto container-px py-3 flex flex-col"
-            aria-label="Mobile"
-          >
-            {NAV.map((item) => (
-              <Link
-                key={item.label}
-                to={item.to}
-                className="py-2.5 text-base font-bold text-navy/85 hover:text-orange"
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <a
-              href={SITE.shopUrl}
-              rel="noopener"
-              className="mt-2 py-2.5 text-base font-bold text-orange"
-              onClick={() => {
-                setOpen(false)
-                trackVisitShop('header_mobile')
-              }}
+      <div
+        id={mobileMenuId}
+        className={`site-header__mobile-panel ${open ? 'is-open' : ''}`}
+        hidden={!open}
+      >
+        <nav
+          className="max-w-7xl mx-auto container-px py-4 flex flex-col"
+          aria-label="Mobile"
+        >
+          {NAV.map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className="py-2.5 text-base font-bold text-navy/85 hover:text-orange"
+              onClick={() => setOpen(false)}
             >
-              Visit Shop
-            </a>
-          </nav>
-        </div>
-      )}
+              {item.label}
+            </Link>
+          ))}
+          <a
+            href={SITE.shopUrl}
+            rel="noopener"
+            className="mt-2 inline-flex items-center justify-center rounded-full bg-orange px-5 py-3 text-base font-bold text-white"
+            onClick={() => {
+              setOpen(false)
+              trackVisitShop('header_mobile')
+            }}
+          >
+            Visit Shop
+          </a>
+        </nav>
+      </div>
     </header>
   )
 }

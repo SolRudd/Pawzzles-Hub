@@ -87,6 +87,20 @@ export async function insertNewsletterSignup(payload) {
   return data
 }
 
+export async function updateNewsletterSignup(id, payload) {
+  if (!id) return null
+
+  const { data, error } = await getSupabaseAdmin()
+    .from('newsletter_signups')
+    .update(payload)
+    .eq('id', id)
+    .select('id')
+    .single()
+
+  if (error) throwSupabaseError('newsletter_signups_update', error)
+  return data
+}
+
 export async function insertConsentEvent(payload) {
   const { error } = await getSupabaseAdmin().from('consent_events').insert(payload)
   if (error) throwSupabaseError('consent_events_insert', error)
@@ -96,7 +110,7 @@ export async function insertCalculatorResult(payload) {
   const { data, error } = await getSupabaseAdmin()
     .from('calculator_results')
     .insert(payload)
-    .select('public_token')
+    .select('id,public_token')
     .single()
 
   if (error) {
@@ -110,7 +124,7 @@ export async function insertCalculatorResult(payload) {
       const retry = await getSupabaseAdmin()
         .from('calculator_results')
         .insert(fallbackPayload)
-        .select('public_token')
+        .select('id,public_token')
         .single()
 
       if (retry.error) throwSupabaseError('calculator_results_insert_retry', retry.error)
@@ -120,6 +134,20 @@ export async function insertCalculatorResult(payload) {
     throwSupabaseError('calculator_results_insert', error)
   }
 
+  return data
+}
+
+export async function updateCalculatorResult(id, payload) {
+  if (!id) return null
+
+  const { data, error } = await getSupabaseAdmin()
+    .from('calculator_results')
+    .update(payload)
+    .eq('id', id)
+    .select('id')
+    .single()
+
+  if (error) throwSupabaseError('calculator_results_update', error)
   return data
 }
 
