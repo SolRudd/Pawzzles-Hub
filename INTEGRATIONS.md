@@ -44,13 +44,13 @@ Create one Brevo contact list for now:
 
 - Main marketing list, configured as `BREVO_MARKETING_LIST_ID=8`.
 
-Newsletter signups and calculator form submitters only sync to Brevo when the user opts in to marketing emails.
+Newsletter signups and calculator form submitters sync to Brevo list 8 so captured emails are available in Brevo. Supabase still records the submitted `marketing_consent` value separately.
 
-Calculator result emails are sent through `api/results/email.js`. Brevo contact storage is deliberately minimal. Marketing sync only receives the email address and list ID 8 when the user opts in.
+Calculator result emails are sent through `api/results/email.js`. Brevo contact storage is deliberately minimal. Contact sync only receives the email address and list ID 8.
 
-If `BREVO_RESULT_TEMPLATE_ID` is set, Brevo sends that template with only lightweight template params such as `shopUrl`. If no template ID is set, `api/_lib/brevo.js` sends the fallback HTML email from `buildFallbackResultEmail`.
+If `BREVO_RESULT_TEMPLATE_ID` is set, Brevo can receive transactional template params for the result email, including the saved result link and result summary. These are used for that requested transactional email only and are not saved as Brevo contact attributes. If no template ID is set, `api/_lib/brevo.js` sends the fallback HTML email from `buildFallbackResultEmail`.
 
-Full calculator inputs, dog details, result summaries and saved result tokens stay in Supabase only.
+Supabase remains the source of truth for full calculator inputs, dog details, result summaries and saved result tokens.
 
 ## Newsletter Flow
 
@@ -61,7 +61,7 @@ The API route:
 - Validates the email address.
 - Saves the signup to Supabase.
 - Saves a consent event to Supabase when the consent table is available.
-- Adds or updates the Brevo contact only when marketing consent is true.
+- Adds or updates the Brevo contact in list 8.
 - Adds the contact to Brevo list 8 only.
 
 ## Calculator Result Flow
@@ -74,13 +74,13 @@ The API route:
 - Saves the result to Supabase.
 - Creates a saved result URL using `SITE_URL`.
 - Sends the Brevo transactional email.
-- Syncs to Brevo list 8 only when marketing consent is true.
+- Syncs the captured email to Brevo list 8.
 
 Saved public results are fetched through `/api/results/get?token=...` and rendered at `/results/:token`.
 
 ## Consent
 
-Cookie consent controls analytics and marketing tracking only. The marketing email checkbox is separate and must be checked before Brevo marketing contact sync runs.
+Cookie consent controls analytics and marketing tracking only. The marketing email checkbox is separate and is recorded in Supabase as `marketing_consent`.
 
 Form submissions include:
 

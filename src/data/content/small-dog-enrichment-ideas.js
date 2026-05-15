@@ -11,7 +11,7 @@ export default {
   time: '5 min read',
   image: 'resource-frenchie-enrichment',
   imageSrc: resourceHubImages['resource-frenchie-enrichment'],
-  imageAlt: 'Small dog enrichment placeholder',
+  imageAlt: 'Small dog enjoying a snuffle mat and puzzle enrichment toy',
   metaTitle: 'Small Dog Enrichment Ideas | Pawzzles',
   metaDescription:
     'Practical enrichment ideas for small dogs, including sniffing, puzzles, mealtime play and calm routines.',

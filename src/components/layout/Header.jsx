@@ -15,21 +15,23 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   return (
     <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/80 border-b border-navy/5">
-      <div className="max-w-7xl mx-auto container-px h-[68px] sm:h-[80px] flex items-center gap-3 sm:gap-4">
-        <Link
-          to="/"
-          className="flex items-center shrink-0"
-          aria-label="Pawzzles Resource Hub home"
-        >
-          <img
-            src="/pawzzles-logo.svg"
-            alt="Pawzzles"
-            className="h-11 sm:h-12 w-auto"
-            draggable="false"
-          />
-        </Link>
+      <div className="max-w-7xl mx-auto container-px h-[68px] sm:h-[80px] grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4">
+        <div className="flex items-center justify-start min-w-0">
+          <Link
+            to="/"
+            className="inline-flex items-center shrink-0"
+            aria-label="Pawzzles Resource Hub home"
+          >
+            <img
+              src="/pawzzles-logo.svg"
+              alt="Pawzzles"
+              className="h-11 sm:h-12 w-auto"
+              draggable="false"
+            />
+          </Link>
+        </div>
 
-        <nav className="hidden lg:flex items-center gap-1 mx-auto" aria-label="Primary">
+        <nav className="hidden lg:flex items-center justify-center gap-1" aria-label="Primary">
           {NAV.map((item) => (
             <NavLink
               key={item.label}
@@ -47,7 +49,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2 min-w-0">
           <Link
             to="/resources"
             aria-label="Browse resources"

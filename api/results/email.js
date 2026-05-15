@@ -1,4 +1,4 @@
-import { getBrevoListIds, sendCalculatorResultEmail, upsertBrevoContact } from '../_lib/brevo.js'
+import { addOrUpdateContact, sendCalculatorResultEmail } from '../_lib/brevo.js'
 import { insertCalculatorResult, insertConsentEvent } from '../_lib/supabase.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -33,10 +33,13 @@ function cleanDogGender(value) {
   return ['female', 'male', 'unknown', 'prefer_not_to_say'].includes(gender) ? gender : ''
 }
 
-function logResultMarketingError(error) {
-  console.error('Brevo marketing sync failed after result email', {
+function logResultEmailError(step, error) {
+  console.error('Calculator result email failed', {
+    step,
     message: error?.message,
     status: error?.status || error?.code,
+    details: error?.details,
+    hint: error?.hint,
   })
 }
 
@@ -46,18 +49,24 @@ export default async function handler(req, res) {
     return sendJson(res, 405, { ok: false, error: 'Method not allowed.' })
   }
 
+  let step = 'start'
   let body
+
   try {
+    step = 'parse_body'
     body = await readBody(req)
-  } catch {
+  } catch (error) {
+    logResultEmailError(step, error)
     return sendJson(res, 400, { ok: false, error: 'Invalid request body.' })
   }
 
+  step = 'validate_email'
   const email = String(body.email || '').trim().toLowerCase()
   if (!email || !EMAIL_PATTERN.test(email)) {
     return sendJson(res, 400, { ok: false, error: 'Please enter a valid email address.' })
   }
 
+  step = 'validate_result'
   const calculatorType = String(body.calculatorType || '').trim()
   if (!ALLOWED_CALCULATORS.has(calculatorType)) {
     return sendJson(res, 400, { ok: false, error: 'Invalid calculator type.' })
@@ -83,10 +92,10 @@ export default async function handler(req, res) {
       : {}
 
   try {
+    step = 'supabase_insert'
     const saved = await insertCalculatorResult({
       email,
       dog_name: dogName || null,
-      dog_gender: dogGender || null,
       calculator_type: calculatorType,
       input_data: inputData,
       result_data: body.resultData,
@@ -96,33 +105,47 @@ export default async function handler(req, res) {
       marketing_consent: marketingConsent,
     })
 
-    await insertConsentEvent({
-      email,
-      source_page: sourcePage,
-      source_component: sourceComponent,
-      analytics_consent: analyticsConsent,
-      marketing_consent: marketingConsent,
-      consent_text: CONSENT_TEXT,
-      consent_version: CONSENT_VERSION,
-    })
+    step = 'supabase_consent_event'
+    try {
+      await insertConsentEvent({
+        email,
+        source_page: sourcePage,
+        source_component: sourceComponent,
+        analytics_consent: analyticsConsent,
+        marketing_consent: marketingConsent,
+        consent_text: CONSENT_TEXT,
+        consent_version: CONSENT_VERSION,
+      })
+    } catch (consentError) {
+      logResultEmailError(step, consentError)
+    }
 
     const siteUrl = process.env.SITE_URL || 'https://resources.pawzzles.co.uk'
     const resultUrl = `${siteUrl.replace(/\/$/, '')}/results/${saved.public_token}`
 
-    await sendCalculatorResultEmail({ email })
+    step = 'brevo_send_email'
+    await sendCalculatorResultEmail({
+      email,
+      dogName,
+      calculatorType,
+      resultData: body.resultData,
+      resultUrl,
+      marketingConsent,
+    })
 
-    if (marketingConsent) {
-      try {
-        const listIds = getBrevoListIds({ includeMarketing: true })
-        await upsertBrevoContact({ email, listIds })
-      } catch (marketingError) {
-        logResultMarketingError(marketingError)
-      }
+    let warning
+    step = 'brevo_contact_sync'
+    try {
+      await addOrUpdateContact(email)
+    } catch (syncError) {
+      logResultEmailError(step, syncError)
+      warning = 'Saved and emailed, but Brevo sync failed.'
     }
 
-    return sendJson(res, 200, { ok: true, resultUrl })
+    step = 'response'
+    return sendJson(res, 200, warning ? { ok: true, resultUrl, warning } : { ok: true, resultUrl })
   } catch (error) {
-    console.error('Calculator result email failed', error)
+    logResultEmailError(step, error)
     return sendJson(res, 500, {
       ok: false,
       error: 'Could not email your result. Please try again.',

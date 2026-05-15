@@ -1,4 +1,4 @@
-import { getBrevoListIds, upsertBrevoContact } from '../_lib/brevo.js'
+import { addOrUpdateContact } from '../_lib/brevo.js'
 import {
   insertConsentEvent,
   insertNewsletterSignup,
@@ -9,11 +9,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const CONSENT_VERSION = 'resource-hub-forms-v1'
 const CONSENT_TEXT =
   'By submitting, you agree we can email this to you. Marketing emails are only sent if you opt in.'
-
-function newsletterProviderIsBrevo() {
-  const provider = String(process.env.NEWSLETTER_PROVIDER || 'brevo').trim().toLowerCase()
-  return provider === 'brevo'
-}
 
 function sendJson(res, statusCode, payload) {
   res.statusCode = statusCode
@@ -118,28 +113,18 @@ export default async function handler(req, res) {
     logSubscribeError(step, error)
   }
 
-  let marketingWarning = false
+  let brevoWarning = false
 
-  if (marketingConsent) {
-    if (!newsletterProviderIsBrevo()) {
-      const error = new Error('Newsletter provider is not configured.')
-      error.status = 500
-      logSubscribeError('brevo_provider', error)
-      marketingWarning = true
-    } else {
-      step = 'brevo_contact_sync'
-      try {
-        const listIds = getBrevoListIds({ includeMarketing: true })
-        await upsertBrevoContact({ email, listIds })
-      } catch (error) {
-        logSubscribeError(step, error)
-        marketingWarning = true
-      }
-    }
+  step = 'brevo_contact_sync'
+  try {
+    await addOrUpdateContact(email)
+  } catch (error) {
+    logSubscribeError(step, error)
+    brevoWarning = true
   }
 
-  if (marketingWarning) {
-    return sendJson(res, 200, { ok: true, warning: 'Saved, but marketing sync failed.' })
+  if (brevoWarning) {
+    return sendJson(res, 200, { ok: true, warning: 'Saved, but Brevo sync failed.' })
   }
 
   return sendJson(res, 200, { ok: true })

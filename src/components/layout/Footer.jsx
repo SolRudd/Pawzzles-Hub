@@ -58,12 +58,6 @@ export default function Footer() {
             <p className="mt-4 text-sm text-white/85 max-w-xs">
               Making every day better for dogs and their people.
             </p>
-            <a
-              href="https://buzzboost.co.uk"
-              className="mt-4 inline-flex text-xs font-bold uppercase tracking-wide text-orange hover:text-white transition-colors"
-            >
-              Built and maintained by BuzzBoost Digital
-            </a>
           </div>
 
           <nav className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4" aria-label="Footer">
@@ -123,7 +117,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <p>Always supervise dogs with new toys or feeding products.</p>
             <a href="https://buzzboost.co.uk" className="font-bold text-white/80 hover:text-white">
-              Built and maintained by BuzzBoost Digital
+              Built by BuzzBoost Digital
             </a>
           </div>
         </div>

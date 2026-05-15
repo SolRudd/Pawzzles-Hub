@@ -34,17 +34,17 @@ const VALUES = [
 const PACK = [
   {
     title: 'The Toy Tester',
-    copy: 'A placeholder slot for future real dog photos and play moments.',
+    copy: 'A cheerful small dog moment with an enrichment toy, showing the playful side of Pawzzles.',
     image: 'about-frenchie-1',
   },
   {
     title: 'The Snack Enthusiast',
-    copy: 'A warm image slot for future mealtime and slow feeder content.',
+    copy: 'A calm mealtime setup with slow feeder and routine cues for everyday dog care.',
     image: 'resource-frenchie-routine',
   },
   {
     title: 'The Puzzle Solver',
-    copy: 'A future home for puzzle toy, sniffing and enrichment photos.',
+    copy: 'A focused puzzle toy moment for dogs who enjoy sniffing, exploring and problem-solving.',
     image: 'about-frenchie-2',
   },
 ]
@@ -126,11 +126,11 @@ export default function About() {
             <div className="max-w-2xl">
               <p className="eyebrow">Meet the Pack</p>
               <h2 className="mt-2 font-display text-3xl sm:text-4xl text-navy">
-                Dog photo slots ready for the real pack.
+                Everyday moments from the Pawzzles pack.
               </h2>
               <p className="mt-3 text-muted">
-                These placeholders keep the page warm for now. Real dog photos
-                can be added later without inventing names or qualifications.
+                A small set of playful, practical dog moments showing toys,
+                slow feeders and simple routines in action.
               </p>
             </div>
 
@@ -141,7 +141,7 @@ export default function About() {
                     <ImagePlaceholder
                       name={member.image}
                       src={resourceHubImages[member.image]}
-                      alt={`${member.title} placeholder image slot`}
+                      alt={`${member.title} Pawzzles dog moment`}
                       label={member.title}
                     />
                   </div>

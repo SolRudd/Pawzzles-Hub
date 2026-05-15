@@ -11,7 +11,7 @@ export default {
   time: '5 min read',
   image: 'resource-small-dog-slow-feeder',
   imageSrc: resourceHubImages['resource-small-dog-slow-feeder'],
-  imageAlt: 'Dog-friendly slow feeder setup placeholder',
+  imageAlt: 'Small dog beside a teal slow feeder bowl in a warm home',
   metaTitle: 'Slow Feeder Guide | Pawzzles',
   metaDescription:
     'A practical Pawzzles guide to slow feeders, calmer mealtimes and everyday feeding enrichment.',
