@@ -66,7 +66,10 @@
     @apply flex items-center justify-start min-w-0;
   }
   .site-header__nav {
-    @apply hidden lg:flex items-center justify-center gap-1;
+    @apply hidden lg:flex items-center justify-center gap-1 font-display;
+  }
+  .site-header__nav a {
+    letter-spacing: 0.01em;
   }
   .site-header__actions {
     @apply flex items-center justify-end gap-2 min-w-0;
@@ -79,5 +82,9 @@
   }
   .site-header__mobile-panel.is-open {
     @apply block lg:hidden;
+  }
+  .site-header__mobile-panel nav {
+    @apply font-display;
+    letter-spacing: 0.01em;
   }
 }
