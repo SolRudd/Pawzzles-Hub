@@ -172,6 +172,10 @@ function getTermsUrl() {
   return process.env.TERMS_URL || 'https://pawzzles.co.uk/terms-and-conditions'
 }
 
+function getSignatureAssetBaseUrl() {
+  return `${getSiteUrl()}/email-signature/images`
+}
+
 function getSender() {
   return {
     email: process.env.BREVO_SENDER_EMAIL || 'hello@pawzzles.co.uk',
@@ -294,6 +298,130 @@ function buildButton(label, href, background = '#f58232') {
   `
 }
 
+export function buildEmailSignatureHtml() {
+  const shopUrl = getShopUrl()
+  const resourcesUrl = `${getSiteUrl()}/resources`
+  const privacyUrl = getPrivacyUrl()
+  const termsUrl = getTermsUrl()
+  const assetBaseUrl = getSignatureAssetBaseUrl()
+
+  return `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="width:520px;max-width:520px;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;color:#26313f;">
+      <tr>
+        <td style="padding:0;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="width:520px;border-collapse:separate;border-spacing:0;background:#fff8ee;border:1px solid #f1dfcf;border-radius:14px;">
+            <tr>
+              <td style="padding:18px 20px 12px 20px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="480" style="width:480px;border-collapse:collapse;">
+                  <tr>
+                    <td width="146" style="width:146px;padding:0 16px 0 0;vertical-align:middle;">
+                      <a href="${escapeHtml(shopUrl)}" style="text-decoration:none;border:0;">
+                        <img src="${escapeHtml(`${assetBaseUrl}/pawzzles-logo.png`)}" alt="Pawzzles" width="128" style="display:block;width:128px;max-width:128px;height:auto;border:0;outline:none;text-decoration:none;">
+                      </a>
+                    </td>
+                    <td width="2" style="width:2px;padding:0;vertical-align:middle;">
+                      <div style="width:2px;height:96px;background:#f39a5b;font-size:1px;line-height:1px;">&nbsp;</div>
+                    </td>
+                    <td width="288" style="width:288px;padding:0 14px 0 18px;vertical-align:middle;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;">
+                        <tr>
+                          <td style="padding:0;font-family:Arial,Helvetica,sans-serif;">
+                            <div style="font-size:20px;line-height:23px;font-weight:800;color:#d7834c;">Pawzzles Team</div>
+                            <div style="padding-top:2px;font-size:13px;line-height:17px;font-weight:800;color:#5b8fa2;">Enriching Play for Happier Pets</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:10px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#26313f;">
+                            <span style="color:#d7834c;font-weight:800;">E:</span>
+                            <a href="mailto:hello@pawzzles.co.uk" style="color:#26313f;text-decoration:none;font-weight:700;">hello@pawzzles.co.uk</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:1px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#26313f;">
+                            <span style="color:#d7834c;font-weight:800;">W:</span>
+                            <a href="${escapeHtml(shopUrl)}" style="color:#26313f;text-decoration:none;font-weight:700;">pawzzles.co.uk</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:5px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:16px;">
+                            <a href="${escapeHtml(resourcesUrl)}" style="color:#5bb6b2;text-decoration:none;font-weight:800;">Resource Hub</a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td width="30" style="width:30px;padding:0;vertical-align:middle;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="30" style="width:30px;border-collapse:collapse;">
+                        <tr>
+                          <td style="padding:0 0 6px 0;text-align:center;">
+                            <a href="https://www.instagram.com/pawzzlesuk/" style="text-decoration:none;border:0;">
+                              <img src="${escapeHtml(`${assetBaseUrl}/instagram.png`)}" alt="Instagram" width="30" style="display:block;width:30px;max-width:30px;height:auto;border:0;outline:none;text-decoration:none;">
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:0 0 6px 0;text-align:center;">
+                            <a href="https://www.facebook.com/people/pawzzlesuk/61550677147838/" style="text-decoration:none;border:0;">
+                              <img src="${escapeHtml(`${assetBaseUrl}/facebook.png`)}" alt="Facebook" width="30" style="display:block;width:30px;max-width:30px;height:auto;border:0;outline:none;text-decoration:none;">
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:0;text-align:center;">
+                            <a href="https://www.tiktok.com/@pawzzlesuk" style="text-decoration:none;border:0;">
+                              <img src="${escapeHtml(`${assetBaseUrl}/tiktok.png`)}" alt="TikTok" width="30" style="display:block;width:30px;max-width:30px;height:auto;border:0;outline:none;text-decoration:none;">
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 20px 14px 20px;">
+                <a href="${escapeHtml(shopUrl)}" style="text-decoration:none;border:0;">
+                  <img src="${escapeHtml(`${assetBaseUrl}/signature-banner.png`)}" alt="Shop Pawzzles enrichment toys" width="480" style="display:block;width:480px;max-width:480px;height:auto;border:0;outline:none;text-decoration:none;border-radius:12px;">
+                </a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:8px 4px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:9.5px;line-height:13px;color:#6f5a50;">
+          This email and any attachments are intended only for the person they are addressed to and may contain confidential information. If you have received this email in error, please delete it and let us know. Pawzzles respects your privacy. You can view our Privacy Policy at
+          <a href="${escapeHtml(privacyUrl)}" style="color:#5bb6b2;text-decoration:none;font-weight:700;">${escapeHtml(privacyUrl)}</a>.
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:5px 4px 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:9.5px;line-height:13px;color:#6f5a50;">
+          <a href="${escapeHtml(privacyUrl)}" style="color:#6f5a50;text-decoration:none;font-weight:700;">Privacy Policy</a>
+          <span style="color:#f39a5b;">&nbsp;|&nbsp;</span>
+          <a href="${escapeHtml(termsUrl)}" style="color:#6f5a50;text-decoration:none;font-weight:700;">Terms</a>
+        </td>
+      </tr>
+    </table>
+  `
+}
+
+export function buildEmailSignatureText() {
+  return [
+    'Pawzzles Team',
+    'Enriching Play for Happier Pets',
+    'E: hello@pawzzles.co.uk',
+    `W: ${getShopUrl()}`,
+    `Resource Hub: ${getSiteUrl()}/resources`,
+    'Instagram: https://www.instagram.com/pawzzlesuk/',
+    'Facebook: https://www.facebook.com/people/pawzzlesuk/61550677147838/',
+    'TikTok: https://www.tiktok.com/@pawzzlesuk',
+    '',
+    'This email and any attachments are intended only for the person they are addressed to and may contain confidential information. If you have received this email in error, please delete it and let us know. Pawzzles respects your privacy.',
+    `Privacy Policy: ${getPrivacyUrl()}`,
+    `Terms: ${getTermsUrl()}`,
+  ].join('\n')
+}
+
 export function buildResultEmailHtml({
   dogName,
   calculatorType,
@@ -304,8 +432,6 @@ export function buildResultEmailHtml({
   const siteUrl = getSiteUrl()
   const shopUrl = getShopUrl()
   const resourcesUrl = `${siteUrl}/resources`
-  const privacyUrl = getPrivacyUrl()
-  const termsUrl = getTermsUrl()
   const logoUrl = `${siteUrl}/pawzzles-logo.svg`
   const meta = getCalculatorEmailMeta(calculatorType)
   const summary = formatCalculatorResultSummary({ calculatorType, resultData })
@@ -383,11 +509,16 @@ export function buildResultEmailHtml({
               <td style="padding:18px 26px 28px;">
                 <p style="margin:0;color:#5d6878;font-size:12px;line-height:1.6;">General guidance only. Always supervise dogs with new toys or feeding products.</p>
                 <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;">This email was sent because you asked Pawzzles to email your result. ${escapeHtml(marketingLine)}</p>
-                <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;"><a href="${escapeHtml(privacyUrl)}" style="color:#087b86;font-weight:700;">Privacy Policy</a> | <a href="${escapeHtml(termsUrl)}" style="color:#087b86;font-weight:700;">Terms</a></p>
               </td>
             </tr>
           </table>
-          <p style="margin:16px 0 0;color:#5d6878;font-size:11px;">Pawzzles Resource Hub</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;max-width:640px;">
+            <tr>
+              <td align="center" style="padding:18px 0 0;">
+                ${buildEmailSignatureHtml()}
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
     </table>
@@ -405,8 +536,6 @@ export function buildResultEmailText({
   const siteUrl = getSiteUrl()
   const shopUrl = getShopUrl()
   const resourcesUrl = `${siteUrl}/resources`
-  const privacyUrl = getPrivacyUrl()
-  const termsUrl = getTermsUrl()
   const meta = getCalculatorEmailMeta(calculatorType)
   const summary = formatCalculatorResultSummary({ calculatorType, resultData })
   const rows = summary.rows.map(([label, value]) => `${label}: ${value}`).join('\n')
@@ -435,8 +564,8 @@ export function buildResultEmailText({
     '',
     'General guidance only. Always supervise dogs with new toys or feeding products.',
     `This email was sent because you asked Pawzzles to email your result. ${marketingLine}`,
-    `Privacy Policy: ${privacyUrl}`,
-    `Terms: ${termsUrl}`,
+    '',
+    buildEmailSignatureText(),
   ]
     .filter(Boolean)
     .join('\n')
@@ -449,8 +578,6 @@ export function buildFallbackResultEmail(options) {
 export function buildNewsletterWelcomeHtml() {
   const siteUrl = getSiteUrl()
   const shopUrl = getShopUrl()
-  const privacyUrl = getPrivacyUrl()
-  const termsUrl = getTermsUrl()
   const resourcesUrl = `${siteUrl}/resources`
   const logoUrl = `${siteUrl}/pawzzles-logo.svg`
 
@@ -491,11 +618,16 @@ export function buildNewsletterWelcomeHtml() {
             <tr>
               <td style="padding:18px 26px 28px;">
                 <p style="margin:0;color:#5d6878;font-size:12px;line-height:1.6;">You are receiving this because you asked Pawzzles to send you emails. You can unsubscribe at any time using the link in our marketing emails.</p>
-                <p style="margin:10px 0 0;color:#5d6878;font-size:12px;line-height:1.6;"><a href="${escapeHtml(privacyUrl)}" style="color:#087b86;font-weight:700;">Privacy Policy</a> | <a href="${escapeHtml(termsUrl)}" style="color:#087b86;font-weight:700;">Terms</a></p>
               </td>
             </tr>
           </table>
-          <p style="margin:16px 0 0;color:#5d6878;font-size:11px;">Pawzzles Resource Hub</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;max-width:640px;">
+            <tr>
+              <td align="center" style="padding:18px 0 0;">
+                ${buildEmailSignatureHtml()}
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
     </table>
@@ -513,8 +645,8 @@ export function buildNewsletterWelcomeText() {
     `Visit shop: ${getShopUrl()}`,
     '',
     'You are receiving this because you asked Pawzzles to send you emails. You can unsubscribe at any time using the link in our marketing emails.',
-    `Privacy Policy: ${getPrivacyUrl()}`,
-    `Terms: ${getTermsUrl()}`,
+    '',
+    buildEmailSignatureText(),
   ].join('\n')
 }
 
@@ -538,6 +670,8 @@ export async function sendNewsletterWelcomeEmail({ email, interests = [] } = {})
           shopUrl,
           privacyUrl: getPrivacyUrl(),
           termsUrl: getTermsUrl(),
+          emailSignatureHtml: buildEmailSignatureHtml(),
+          emailSignatureText: buildEmailSignatureText(),
         },
       }
     : {
@@ -584,6 +718,8 @@ export async function sendCalculatorResultEmail({
           shopUrl,
           privacyUrl: getPrivacyUrl(),
           termsUrl: getTermsUrl(),
+          emailSignatureHtml: buildEmailSignatureHtml(),
+          emailSignatureText: buildEmailSignatureText(),
         },
       }
     : {
