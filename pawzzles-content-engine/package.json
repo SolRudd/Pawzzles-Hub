@@ -1,0 +1,21 @@
+{
+  "name": "pawzzles-content-engine",
+  "version": "1.0.0",
+  "description": "Lightweight local content generator for Pawzzles social posts.",
+  "main": "scripts/generate-posts.js",
+  "scripts": {
+    "generate": "node scripts/generate-posts.js",
+    "generate:images": "node scripts/generate-images.js",
+    "review": "node scripts/review-posts.js",
+    "export:meta": "node scripts/export-meta-csv.js",
+    "clean": "node -e \"const fs=require('fs'); const path=require('path'); const dirs=['output/briefs','output/captions','output/prompts','output/images','output/approved','output/rejected','output/scheduled']; for (const dir of dirs) { fs.mkdirSync(dir,{recursive:true}); for (const file of fs.readdirSync(dir)) fs.rmSync(path.join(dir,file),{recursive:true,force:true}); } for (const file of ['output/meta-schedule.csv','output/image-generation-queue.md']) fs.rmSync(file,{force:true}); console.log('Cleaned generated output.');\""
+  },
+  "keywords": [
+    "pawzzles",
+    "content",
+    "social-media",
+    "prompts"
+  ],
+  "author": "Pawzzles",
+  "license": "UNLICENSED"
+}

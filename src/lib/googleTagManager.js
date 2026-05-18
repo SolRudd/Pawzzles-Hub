@@ -26,6 +26,17 @@ function ensureDataLayer() {
   return window.dataLayer
 }
 
+function hasGoogleTagManagerScript(containerId) {
+  if (!canUseDom()) return false
+
+  return Array.from(document.scripts).some((script) => {
+    const src = script.getAttribute('src') || ''
+    const marker = script.dataset.pawzzlesGtm === containerId
+
+    return marker || src.includes(`googletagmanager.com/gtm.js?id=${containerId}`)
+  })
+}
+
 export function initialiseConsentDefaults() {
   if (!canUseDom() || consentDefaultsInitialised) return
 
@@ -45,7 +56,7 @@ export function loadGoogleTagManager(containerId = GTM_CONTAINER_ID) {
   if (!canUseDom() || !containerId) return false
 
   const dataLayer = ensureDataLayer()
-  const existing = document.querySelector(`script[data-pawzzles-gtm="${containerId}"]`)
+  const existing = hasGoogleTagManagerScript(containerId)
 
   if (googleTagManagerLoaded || existing) {
     googleTagManagerLoaded = true
