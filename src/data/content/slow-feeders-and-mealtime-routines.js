@@ -9,9 +9,9 @@ export default {
   intro:
     'Simple ways to use slow feeders as part of a calmer, more engaging mealtime routine.',
   time: '4 min read',
-  image: 'resource-small-dog-slow-feeder',
-  imageSrc: resourceHubImages['resource-small-dog-slow-feeder'],
-  imageAlt: 'Small dog beside a teal slow feeder bowl in a warm home',
+  image: 'resource-slow-feeders-and-mealtime-routines',
+  imageSrc: resourceHubImages['resource-slow-feeders-and-mealtime-routines'],
+  imageAlt: 'Shih tzu waiting beside a tidy slow feeder mealtime station',
   metaTitle: 'Slow Feeders and Mealtime Routines | Pawzzles',
   metaDescription:
     'Simple Pawzzles tips for using slow feeders as part of a calmer, more engaging dog mealtime routine.',

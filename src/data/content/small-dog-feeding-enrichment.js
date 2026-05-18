@@ -9,9 +9,9 @@ export default {
   intro:
     'Useful feeding and enrichment ideas for smaller dogs, with simple routine tips.',
   time: '5 min read',
-  image: 'resource-frenchie-enrichment',
-  imageSrc: resourceHubImages['resource-frenchie-enrichment'],
-  imageAlt: 'Small dog enjoying a snuffle mat and puzzle enrichment toy',
+  image: 'resource-small-dog-feeding-enrichment',
+  imageSrc: resourceHubImages['resource-small-dog-feeding-enrichment'],
+  imageAlt: 'Papillon exploring a small teal food puzzle in a kitchen',
   metaTitle: 'Small Dog Feeding and Enrichment Tips | Pawzzles',
   metaDescription:
     'Simple Pawzzles feeding and enrichment tips for smaller dogs, including portion estimates, slow feeders and toy choice.',

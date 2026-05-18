@@ -9,9 +9,9 @@ export default {
   intro:
     'Simple ways to make mealtimes feel calmer, slower and easier to manage.',
   time: '4 min read',
-  image: 'resource-frenchie-routine',
-  imageSrc: resourceHubImages['resource-frenchie-routine'],
-  imageAlt: 'Small dog beside a mealtime routine setup with slow feeder and toys',
+  image: 'resource-calmer-mealtime-routine',
+  imageSrc: resourceHubImages['resource-calmer-mealtime-routine'],
+  imageAlt: 'Cavalier spaniel sitting beside a calm mealtime setup',
   metaTitle: 'How to Build a Calmer Mealtime Routine | Pawzzles',
   metaDescription:
     'Simple Pawzzles tips for a calmer dog mealtime routine using predictable setup, portion estimates and gentle enrichment.',

@@ -9,9 +9,9 @@ export default {
   intro:
     'A simple way to choose enrichment toys based on whether your dog loves sniffing, chewing, chasing or solving puzzles.',
   time: '6 min read',
-  image: 'card-enrichment-play',
-  imageSrc: resourceHubImages['card-enrichment-play'],
-  imageAlt: 'Dog playing with a colourful puzzle enrichment toy',
+  image: 'resource-choosing-enrichment-toys-by-play-style',
+  imageSrc: resourceHubImages['resource-choosing-enrichment-toys-by-play-style'],
+  imageAlt: 'Australian shepherd sitting between different enrichment toy types',
   metaTitle: 'Choosing Enrichment Toys by Play Style | Pawzzles',
   metaDescription:
     'Choose dog enrichment toys by play style with practical ideas for sniffers, chewers, chasers and problem-solvers.',

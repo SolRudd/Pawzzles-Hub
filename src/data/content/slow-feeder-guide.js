@@ -9,9 +9,9 @@ export default {
   intro:
     'How slow feeders can help make mealtimes calmer, slower and more enriching.',
   time: '5 min read',
-  image: 'resource-small-dog-slow-feeder',
-  imageSrc: resourceHubImages['resource-small-dog-slow-feeder'],
-  imageAlt: 'Small dog beside a teal slow feeder bowl in a warm home',
+  image: 'resource-slow-feeder-guide',
+  imageSrc: resourceHubImages['resource-slow-feeder-guide'],
+  imageAlt: 'Dachshund sniffing a teal slow feeder bowl in a warm kitchen',
   metaTitle: 'Slow Feeder Guide | Pawzzles',
   metaDescription:
     'A practical Pawzzles guide to slow feeders, calmer mealtimes and everyday feeding enrichment.',

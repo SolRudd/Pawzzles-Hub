@@ -9,9 +9,9 @@ export default {
   intro:
     'Enrichment ideas scaled for smaller dogs, smaller spaces and shorter sessions.',
   time: '5 min read',
-  image: 'resource-frenchie-enrichment',
-  imageSrc: resourceHubImages['resource-frenchie-enrichment'],
-  imageAlt: 'Small dog enjoying a snuffle mat and puzzle enrichment toy',
+  image: 'resource-small-dog-enrichment-ideas',
+  imageSrc: resourceHubImages['resource-small-dog-enrichment-ideas'],
+  imageAlt: 'Chihuahua using a small wooden enrichment puzzle',
   metaTitle: 'Small Dog Enrichment Ideas | Pawzzles',
   metaDescription:
     'Practical enrichment ideas for small dogs, including sniffing, puzzles, mealtime play and calm routines.',

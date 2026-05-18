@@ -9,9 +9,9 @@ export default {
   intro:
     'How different food types can change estimated feeding amounts and why packet calories matter.',
   time: '5 min read',
-  image: 'card-feeding-nutrition',
-  imageSrc: resourceHubImages['card-feeding-nutrition'],
-  imageAlt: 'Happy dog beside a teal food bowl in a warm kitchen',
+  image: 'resource-dry-wet-raw-dog-food-calculator',
+  imageSrc: resourceHubImages['resource-dry-wet-raw-dog-food-calculator'],
+  imageAlt: 'Whippet beside three plain bowls of different dog food types',
   metaTitle: 'Dry, Wet or Raw Dog Food Calculator Guide | Pawzzles',
   metaDescription:
     'Understand why dry, wet and raw foods can produce different grams estimates in the Pawzzles feeding calculator.',

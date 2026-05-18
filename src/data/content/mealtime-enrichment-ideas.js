@@ -9,9 +9,9 @@ export default {
   intro:
     'Simple ways to turn everyday feeding into a more engaging routine.',
   time: '4 min read',
-  image: 'card-feeding-nutrition',
-  imageSrc: resourceHubImages['card-feeding-nutrition'],
-  imageAlt: 'Happy dog beside a teal food bowl in a warm kitchen',
+  image: 'resource-mealtime-enrichment-ideas',
+  imageSrc: resourceHubImages['resource-mealtime-enrichment-ideas'],
+  imageAlt: 'Cocker spaniel exploring a teal snuffle mat at mealtime',
   metaTitle: 'Mealtime Enrichment Ideas | Pawzzles',
   metaDescription:
     'Simple Pawzzles mealtime enrichment ideas using slow feeders, scatter feeding and practical daily routines.',

@@ -9,9 +9,9 @@ export default {
   intro:
     'Simple indoor enrichment ideas for days when walks are shorter and your dog still needs something useful to do.',
   time: '5 min read',
-  image: 'resource-enrichment-ideas',
-  imageSrc: resourceHubImages['resource-enrichment-ideas'],
-  imageAlt: 'Dog with puzzle, snuffle and chew enrichment toys',
+  image: 'resource-indoor-enrichment-ideas',
+  imageSrc: resourceHubImages['resource-indoor-enrichment-ideas'],
+  imageAlt: 'Beagle using a wooden treat puzzle indoors on a rainy day',
   metaTitle: 'Indoor Enrichment Ideas for Rainy Days | Pawzzles',
   metaDescription:
     'Low-fuss indoor dog enrichment ideas for rainy days, shorter walks and calmer home routines.',

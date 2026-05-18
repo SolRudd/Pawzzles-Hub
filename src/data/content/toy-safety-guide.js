@@ -9,9 +9,9 @@ export default {
   intro:
     'A practical guide to choosing safe toys and supervising play, so your dog can enjoy enrichment with fewer risks.',
   time: '4 min read',
-  image: 'resource-toy-safety',
-  imageSrc: resourceHubImages['resource-toy-safety'],
-  imageAlt: 'Dog lying beside clean teal and orange toys',
+  image: 'resource-toy-safety-guide',
+  imageSrc: resourceHubImages['resource-toy-safety-guide'],
+  imageAlt: 'Border collie beside safe dog toys on a cream rug',
   metaTitle: 'Dog Toy Safety Guide | Pawzzles',
   metaDescription:
     'A practical, dog-friendly guide to choosing safe toys, recognising wear and tear, and supervising play sessions.',

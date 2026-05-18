@@ -9,9 +9,9 @@ export default {
   intro:
     'What to look for when choosing a slow feeder based on your dog’s size, eating style and routine.',
   time: '6 min read',
-  image: 'resource-small-dog-slow-feeder',
-  imageSrc: resourceHubImages['resource-small-dog-slow-feeder'],
-  imageAlt: 'Small dog beside a teal slow feeder bowl in a tidy kitchen',
+  image: 'resource-choosing-the-right-slow-feeder',
+  imageSrc: resourceHubImages['resource-choosing-the-right-slow-feeder'],
+  imageAlt: 'Corgi beside several plain slow feeder bowls',
   metaTitle: 'Choosing the Right Slow Feeder | Pawzzles',
   metaDescription:
     'Practical, dog-friendly advice for choosing a slow feeder by size, eating style, material and routine.',

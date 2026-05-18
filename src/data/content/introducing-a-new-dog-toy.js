@@ -9,9 +9,9 @@ export default {
   intro:
     'A practical guide to introducing new toys safely and making playtime easier to supervise.',
   time: '4 min read',
-  image: 'resource-toy-safety',
-  imageSrc: resourceHubImages['resource-toy-safety'],
-  imageAlt: 'Dog lying beside clean teal and orange toys',
+  image: 'resource-introducing-a-new-dog-toy',
+  imageSrc: resourceHubImages['resource-introducing-a-new-dog-toy'],
+  imageAlt: 'Staffordshire bull terrier calmly sniffing a new toy',
   metaTitle: 'Safe Ways to Introduce a New Dog Toy | Pawzzles',
   metaDescription:
     'A practical Pawzzles guide to introducing a new dog toy safely, checking fit and supervising play.',

@@ -9,9 +9,9 @@ export default {
   intro:
     'Practical enrichment ideas for dogs who rush their meals, with safe everyday routine tips.',
   time: '5 min read',
-  image: 'resource-enrichment-ideas',
-  imageSrc: resourceHubImages['resource-enrichment-ideas'],
-  imageAlt: 'Dog with puzzle, snuffle and chew enrichment toys',
+  image: 'resource-enrichment-for-fast-eaters',
+  imageSrc: resourceHubImages['resource-enrichment-for-fast-eaters'],
+  imageAlt: 'Boxer calmly eating from a teal slow feeder bowl',
   metaTitle: 'Enrichment for Dogs Who Eat Too Quickly | Pawzzles',
   metaDescription:
     'Practical Pawzzles enrichment ideas for dogs who rush meals, including slow feeders, scatter feeding and calm routines.',

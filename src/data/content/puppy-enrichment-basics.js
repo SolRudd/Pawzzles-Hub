@@ -9,9 +9,9 @@ export default {
   intro:
     'A starter guide to simple puppy enrichment that supports curiosity, calm focus and everyday routines.',
   time: '6 min read',
-  image: 'card-puppy-training',
-  imageSrc: resourceHubImages['card-puppy-training'],
-  imageAlt: 'Puppy sitting in a warm home training scene',
+  image: 'resource-puppy-enrichment-basics',
+  imageSrc: resourceHubImages['resource-puppy-enrichment-basics'],
+  imageAlt: 'Cockapoo puppy pawing at an easy teal treat puzzle',
   metaTitle: 'Puppy Enrichment Basics | Pawzzles',
   metaDescription:
     'Simple puppy enrichment ideas for calm focus, confidence and practical everyday routines.',

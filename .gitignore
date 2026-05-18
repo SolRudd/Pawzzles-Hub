@@ -8,3 +8,7 @@ local.env
 local.ennv
 !.env.example
 .vite
+
+# Internal tools - do not commit
+pawzzles-content-engine/
+

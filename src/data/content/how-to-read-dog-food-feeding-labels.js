@@ -9,9 +9,9 @@ export default {
   intro:
     'A simple guide to finding kcal per 100g, understanding feeding guides and using packet information more confidently.',
   time: '5 min read',
-  image: 'card-feeding-nutrition',
-  imageSrc: resourceHubImages['card-feeding-nutrition'],
-  imageAlt: 'Happy dog beside a teal food bowl in a warm kitchen',
+  image: 'resource-how-to-read-dog-food-feeding-labels',
+  imageSrc: resourceHubImages['resource-how-to-read-dog-food-feeding-labels'],
+  imageAlt: 'Beagle beside a blank dog food bag, teal bowl and orange scoop',
   metaTitle: 'How to Read Dog Food Feeding Labels | Pawzzles',
   metaDescription:
     'A simple Pawzzles guide to finding kcal per 100g, reading dog food feeding guides and using packet information as a practical starting point.',

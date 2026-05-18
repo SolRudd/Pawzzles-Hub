@@ -9,9 +9,9 @@ export default {
   intro:
     'How to match enrichment ideas to dogs who like sniffing, chewing, chasing, solving or foraging.',
   time: '6 min read',
-  image: 'card-enrichment-play',
-  imageSrc: resourceHubImages['card-enrichment-play'],
-  imageAlt: 'Dog playing with a colourful puzzle enrichment toy',
+  image: 'resource-enrichment-ideas-by-play-style',
+  imageSrc: resourceHubImages['resource-enrichment-ideas-by-play-style'],
+  imageAlt: 'Husky surrounded by different enrichment toys for play styles',
   metaTitle: 'Dog Enrichment Ideas by Play Style | Pawzzles',
   metaDescription:
     'Match dog enrichment ideas to play styles including sniffing, chewing, chasing, solving and foraging.',

@@ -9,9 +9,9 @@ export default {
   intro:
     'A simple guide to kcal per 100g, food labels and using calorie information more confidently.',
   time: '5 min read',
-  image: 'card-feeding-nutrition',
-  imageSrc: resourceHubImages['card-feeding-nutrition'],
-  imageAlt: 'Happy dog beside a teal food bowl in a warm kitchen',
+  image: 'resource-understanding-dog-food-calories',
+  imageSrc: resourceHubImages['resource-understanding-dog-food-calories'],
+  imageAlt: 'Miniature schnauzer beside measured food portions and a blank scale',
   metaTitle: 'Understanding Dog Food Calories | Pawzzles',
   metaDescription:
     'A simple Pawzzles guide to kcal per 100g, dog food labels and using calorie information as a feeding starting point.',

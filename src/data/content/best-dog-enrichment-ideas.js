@@ -9,9 +9,9 @@ export default {
   intro:
     'Enrichment isn’t about doing more. It’s about doing the right things for your dog. Here are simple, low-cost ideas to keep your dog happily occupied.',
   time: '4 min read',
-  image: 'resource-enrichment-ideas',
-  imageSrc: resourceHubImages['resource-enrichment-ideas'],
-  imageAlt: 'Dog with puzzle, snuffle and chew enrichment toys',
+  image: 'resource-best-dog-enrichment-ideas',
+  imageSrc: resourceHubImages['resource-best-dog-enrichment-ideas'],
+  imageAlt: 'Terrier mix exploring snuffle and puzzle enrichment toys',
   metaTitle: 'Best Dog Enrichment Ideas | Pawzzles',
   metaDescription:
     'Simple, low-cost dog enrichment ideas covering sniffing, puzzles, calming, training and play, designed to support enrichment, routine and wellbeing.',
