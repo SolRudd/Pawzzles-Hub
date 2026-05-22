@@ -29,6 +29,16 @@
       "source": "/resources/:slug",
       "destination": "/resources/:slug/",
       "permanent": true
+    },
+    {
+      "source": "/choosing-the-right-slow-feeder",
+      "destination": "/resources/choosing-the-right-slow-feeder/",
+      "permanent": true
+    },
+    {
+      "source": "/choosing-the-right-slow-feeder/",
+      "destination": "/resources/choosing-the-right-slow-feeder/",
+      "permanent": true
     }
   ],
   "rewrites": [
