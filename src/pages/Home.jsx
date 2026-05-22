@@ -18,7 +18,7 @@ export default function Home() {
     description: SITE.defaultDescription,
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${absoluteUrl('/resources')}?q={search_term_string}`,
+      target: `${absoluteUrl('/resources/')}?q={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   }

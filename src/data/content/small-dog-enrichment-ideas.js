@@ -38,7 +38,7 @@ export default {
     title: 'Match ideas to play style',
     body: 'Use the Enrichment Finder to choose activities that fit your dog’s routine.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['small-dog-feeding-enrichment', 'choosing-enrichment-toys-by-play-style', 'toy-safety-guide'],
 }

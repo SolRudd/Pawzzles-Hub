@@ -5,10 +5,11 @@ import { SITE } from '../../data/site.js'
 import { trackVisitShop } from '../../lib/tracking.js'
 
 const NAV = [
-  { label: 'Resources', to: '/resources' },
-  { label: 'Feeding Calculator', to: '/calculators/dog-feeding-calculator' },
-  { label: 'Enrichment Finder', to: '/calculators/enrichment-finder' },
-  { label: 'About', to: '/about' },
+  { label: 'Resources', to: '/resources/' },
+  { label: 'All Guides', to: '/all-guides/' },
+  { label: 'Feeding Calculator', to: '/calculators/dog-feeding-calculator/' },
+  { label: 'Enrichment Finder', to: '/calculators/enrichment-finder/' },
+  { label: 'About', to: '/about/' },
 ]
 
 export default function Header() {
@@ -58,7 +59,7 @@ export default function Header() {
 
         <div className="site-header__actions">
           <Link
-            to="/resources"
+            to="/resources/"
             aria-label="Browse resources"
             className="hidden lg:inline-flex w-11 h-11 items-center justify-center rounded-full bg-white border border-navy/10 hover:border-orange/40 hover:text-orange text-navy/70 shadow-soft transition-colors"
           >

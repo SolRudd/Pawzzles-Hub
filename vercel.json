@@ -1,11 +1,47 @@
 {
+  "redirects": [
+    {
+      "source": "/resources",
+      "destination": "/resources/",
+      "permanent": true
+    },
+    {
+      "source": "/all-guides",
+      "destination": "/all-guides/",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/about/",
+      "permanent": true
+    },
+    {
+      "source": "/calculators/dog-feeding-calculator",
+      "destination": "/calculators/dog-feeding-calculator/",
+      "permanent": true
+    },
+    {
+      "source": "/calculators/enrichment-finder",
+      "destination": "/calculators/enrichment-finder/",
+      "permanent": true
+    },
+    {
+      "source": "/resources/:slug",
+      "destination": "/resources/:slug/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
     {
-      "source": "/(.*)",
+      "source": "/results/:token",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/results/:token/",
       "destination": "/index.html"
     }
   ]

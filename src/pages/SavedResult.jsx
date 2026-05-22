@@ -209,7 +209,7 @@ export default function SavedResult() {
             <div className="rounded-[2rem] bg-white shadow-card ring-1 ring-navy/5 p-8">
               <h2 className="font-display text-3xl text-navy">We could not find that result</h2>
               <p className="mt-2 text-muted">{state.error}</p>
-              <Link to="/resources" className="btn-primary mt-6">
+              <Link to="/resources/" className="btn-primary mt-6">
                 Browse resources
               </Link>
             </div>
@@ -241,7 +241,7 @@ export default function SavedResult() {
               <Disclaimer className="mt-8" />
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link to="/resources" className="btn-primary">
+                <Link to="/resources/" className="btn-primary">
                   Browse resources
                   <Icon name="arrowRight" className="w-4 h-4" />
                 </Link>

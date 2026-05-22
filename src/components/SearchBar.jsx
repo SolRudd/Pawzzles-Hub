@@ -15,7 +15,7 @@ export default function SearchBar({
   function onSubmit(e) {
     e.preventDefault()
     const params = value.trim() ? `?q=${encodeURIComponent(value.trim())}` : ''
-    navigate(`/resources${params}`)
+    navigate(`/resources/${params}`)
   }
 
   return (

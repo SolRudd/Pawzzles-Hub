@@ -37,7 +37,7 @@ export default {
     title: 'Get a tailored starting point',
     body: 'Answer four quick questions and get a simple enrichment mix for your dog.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['enrichment-ideas-by-play-style', 'introducing-a-new-dog-toy', 'toy-safety-guide'],
 }

@@ -16,7 +16,7 @@ export default function NotFound() {
           </p>
           <div className="mt-7 flex items-center justify-center gap-3">
             <Link to="/" className="btn-primary">Back to home</Link>
-            <Link to="/resources" className="btn-secondary">Browse resources</Link>
+            <Link to="/resources/" className="btn-secondary">Browse resources</Link>
           </div>
         </div>
       </section>

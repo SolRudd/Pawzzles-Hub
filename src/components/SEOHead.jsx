@@ -27,7 +27,7 @@ export default function SEOHead({
       <title>{title}</title>
       {description && <meta name="description" content={description} />}
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-      {noindex && <meta name="robots" content="noindex,nofollow" />}
+      <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow'} />
 
       <meta property="og:title" content={ogTitle || title} />
       {description && (

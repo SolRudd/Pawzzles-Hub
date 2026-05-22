@@ -69,7 +69,7 @@ export default {
     title: 'Get personalised enrichment ideas',
     body: 'Tell us about your dog and we’ll suggest the right activities to try first.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['enrichment-ideas-by-play-style', 'toy-safety-guide', 'enrichment-for-fast-eaters'],
 }

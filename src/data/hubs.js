@@ -13,7 +13,7 @@ export const hubs = [
     icon: 'bowl',
     accent: 'orange',
     cta: 'Open feeding tools',
-    href: '/calculators/dog-feeding-calculator',
+    href: '/calculators/dog-feeding-calculator/',
     bullets: ['Feeding calculator', 'Portion guides', 'Mealtime routines'],
   },
   {
@@ -28,7 +28,7 @@ export const hubs = [
     icon: 'ball',
     accent: 'green',
     cta: 'Find enrichment ideas',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
     bullets: ['Enrichment finder', 'Sniff & puzzle ideas', 'Boredom busters'],
   },
   {
@@ -43,7 +43,7 @@ export const hubs = [
     icon: 'puppy',
     accent: 'teal',
     cta: 'Start with puppy basics',
-    href: '/resources/puppy-socialisation-checklist',
+    href: '/resources/puppy-socialisation-checklist/',
     bullets: ['Socialisation checklist', 'House routine guidance', 'Calm training tips'],
   },
 ]

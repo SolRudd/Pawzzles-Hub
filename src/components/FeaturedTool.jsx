@@ -45,13 +45,13 @@ export default function FeaturedTool() {
               </ul>
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <Link
-                  to="/calculators/dog-feeding-calculator"
+                  to="/calculators/dog-feeding-calculator/"
                   className="btn-primary"
                 >
                   Launch calculator
                 </Link>
                 <Link
-                  to="/calculators/enrichment-finder"
+                  to="/calculators/enrichment-finder/"
                   className="btn-ghost inline-flex items-center gap-1.5"
                 >
                   Try the Enrichment Finder
@@ -90,7 +90,7 @@ export default function FeaturedTool() {
                     per 100g when you have it.
                   </p>
                   <Link
-                    to="/calculators/dog-feeding-calculator"
+                    to="/calculators/dog-feeding-calculator/"
                     className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-teal hover:text-teal-deep"
                   >
                     Try it now

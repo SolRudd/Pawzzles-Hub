@@ -43,7 +43,7 @@ export default {
     title: 'Find ideas that match your dog',
     body: 'Use the Enrichment Finder to choose activities by age, energy and play style.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['best-dog-enrichment-ideas', 'toy-safety-guide', 'puppy-enrichment-basics'],
 }

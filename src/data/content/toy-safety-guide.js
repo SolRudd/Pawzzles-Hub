@@ -53,7 +53,7 @@ export default {
     title: 'Pair safe toys with the right activities',
     body: 'See enrichment ideas matched to your dog’s play style.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['introducing-a-new-dog-toy', 'enrichment-ideas-by-play-style', 'best-dog-enrichment-ideas'],
 }

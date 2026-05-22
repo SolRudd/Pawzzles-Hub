@@ -54,7 +54,7 @@ export default function About() {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     name: 'About Pawzzles',
-    url: absoluteUrl('/about'),
+    url: absoluteUrl('/about/'),
     description:
       'Pawzzles is a playful dog enrichment and mealtime brand built around practical tools, dog-friendly advice and everyday routines.',
     isPartOf: {
@@ -69,7 +69,7 @@ export default function About() {
       <SEOHead
         title="About Pawzzles | Dog Enrichment, Mealtime Routines and Practical Tools"
         description="Meet Pawzzles, a playful dog enrichment and mealtime brand with practical tools, guides and routines built for real dog owners."
-        canonical="/about"
+        canonical="/about/"
         structuredData={schema}
       />
 
@@ -175,10 +175,10 @@ export default function About() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
-                <Link to="/resources" className="btn-primary">
+                <Link to="/resources/" className="btn-primary">
                   Explore resources
                 </Link>
-                <Link to="/calculators/dog-feeding-calculator" className="btn-secondary">
+                <Link to="/calculators/dog-feeding-calculator/" className="btn-secondary">
                   Try the feeding calculator
                 </Link>
                 <a

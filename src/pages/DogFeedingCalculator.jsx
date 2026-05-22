@@ -276,7 +276,7 @@ export default function DogFeedingCalculator() {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: 'Dog Feeding Calculator',
-    url: absoluteUrl('/calculators/dog-feeding-calculator'),
+    url: absoluteUrl('/calculators/dog-feeding-calculator/'),
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
     description:
@@ -292,7 +292,7 @@ export default function DogFeedingCalculator() {
       <SEOHead
         title="Dog Feeding Calculator | Pawzzles Practical Feeding Tool"
         description="Use the Pawzzles dog feeding calculator as a practical starting point for daily portions, calories and mealtime planning."
-        canonical="/calculators/dog-feeding-calculator"
+        canonical="/calculators/dog-feeding-calculator/"
         structuredData={schema}
       />
       <PageHero
@@ -301,7 +301,7 @@ export default function DogFeedingCalculator() {
         intro="A practical starting point for daily portions. Food type matters because dry, wet, pouch, tray and raw foods have different moisture levels and calorie density."
         crumbs={[
           { label: 'Home', to: '/' },
-          { label: 'Resources', to: '/resources' },
+          { label: 'Resources', to: '/resources/' },
           { label: 'Dog Feeding Calculator' },
         ]}
         meta={[
@@ -612,7 +612,7 @@ export default function DogFeedingCalculator() {
 
                 <p className="mt-5 rounded-2xl bg-cream border border-navy/5 p-4 text-sm leading-relaxed text-navy/85">
                   {result.foodEnergyNote}{' '}
-                  <Link to="/resources/how-to-read-dog-food-feeding-labels" className="font-bold text-teal hover:text-teal-deep">
+                  <Link to="/resources/how-to-read-dog-food-feeding-labels/" className="font-bold text-teal hover:text-teal-deep">
                     Read the food label guide
                   </Link>
                 </p>
@@ -622,11 +622,11 @@ export default function DogFeedingCalculator() {
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
-                  <Link to="/resources?category=feeding" className="btn-primary">
+                  <Link to="/resources/?category=feeding" className="btn-primary">
                     Explore feeding guides
                     <Icon name="arrowRight" className="w-4 h-4" />
                   </Link>
-                  <Link to="/resources?category=enrichment" className="btn-secondary">
+                  <Link to="/resources/?category=enrichment" className="btn-secondary">
                     Browse enrichment ideas
                   </Link>
                   <a
@@ -649,7 +649,7 @@ export default function DogFeedingCalculator() {
           <div className="mt-16">
             <div className="flex items-end justify-between gap-3 mb-6">
               <h2 className="font-display text-2xl sm:text-3xl text-navy">Helpful next steps</h2>
-              <Link to="/resources" className="text-sm font-bold text-teal hover:text-teal-deep inline-flex items-center gap-1.5">
+              <Link to="/resources/" className="text-sm font-bold text-teal hover:text-teal-deep inline-flex items-center gap-1.5">
                 See all resources <Icon name="arrowRight" className="w-4 h-4" />
               </Link>
             </div>

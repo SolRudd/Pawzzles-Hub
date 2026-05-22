@@ -38,7 +38,7 @@ export default {
     title: 'Use the puppy checklist next',
     body: 'Build confidence with calm, practical socialisation ideas.',
     button: 'Open puppy checklist',
-    href: '/resources/puppy-socialisation-checklist',
+    href: '/resources/puppy-socialisation-checklist/',
   },
   related: ['puppy-socialisation-checklist', 'indoor-enrichment-ideas', 'toy-safety-guide'],
 }

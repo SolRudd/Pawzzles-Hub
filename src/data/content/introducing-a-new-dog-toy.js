@@ -37,7 +37,7 @@ export default {
     title: 'Choose safer play ideas',
     body: 'Match enrichment ideas to how your dog likes to play.',
     button: 'Browse enrichment by play style',
-    href: '/resources/enrichment-ideas-by-play-style',
+    href: '/resources/enrichment-ideas-by-play-style/',
   },
   related: ['toy-safety-guide', 'enrichment-ideas-by-play-style', 'choosing-enrichment-toys-by-play-style'],
 }

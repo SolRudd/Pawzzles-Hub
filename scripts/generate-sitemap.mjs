@@ -11,10 +11,11 @@ const staticLastmod = '2026-05-15'
 
 const staticRoutes = [
   { loc: '/', lastmod: staticLastmod },
-  { loc: '/resources', lastmod: staticLastmod },
-  { loc: '/about', lastmod: staticLastmod },
-  { loc: '/calculators/dog-feeding-calculator', lastmod: staticLastmod },
-  { loc: '/calculators/enrichment-finder', lastmod: staticLastmod },
+  { loc: '/resources/', lastmod: staticLastmod },
+  { loc: '/all-guides/', lastmod: staticLastmod },
+  { loc: '/about/', lastmod: staticLastmod },
+  { loc: '/calculators/dog-feeding-calculator/', lastmod: staticLastmod },
+  { loc: '/calculators/enrichment-finder/', lastmod: staticLastmod },
 ]
 
 const resourceRoutes = getSitemapResources()

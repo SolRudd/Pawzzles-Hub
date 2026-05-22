@@ -49,7 +49,7 @@ export default {
     title: 'Turn feeding into enrichment',
     body: 'Try simple mealtime ideas that support calmer routines.',
     button: 'Read mealtime ideas',
-    href: '/resources/mealtime-enrichment-ideas',
+    href: '/resources/mealtime-enrichment-ideas/',
   },
   related: [
     'slow-feeders-and-mealtime-routines',

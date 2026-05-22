@@ -37,7 +37,7 @@ export default {
     title: 'Estimate the daily calories',
     body: 'Use the feeding calculator as a practical starting point for meal planning.',
     button: 'Try the feeding calculator',
-    href: '/calculators/dog-feeding-calculator',
+    href: '/calculators/dog-feeding-calculator/',
   },
   related: ['dog-feeding-calculator', 'slow-feeders-and-mealtime-routines', 'mealtime-enrichment-ideas'],
 }

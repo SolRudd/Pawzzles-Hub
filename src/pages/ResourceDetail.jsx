@@ -43,27 +43,53 @@ export default function ResourceDetail() {
     ...(content.category === 'Toy Safety' ? ['toy_safety'] : []),
     ...(content.slug.includes('puppy') ? ['puppy', 'training'] : []),
   ]
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: content.title,
-    description: content.metaDescription || content.intro,
-    image: content.imageSrc ? absoluteUrl(content.imageSrc) : undefined,
-    mainEntityOfPage: absoluteUrl(canonical),
-    dateModified: resource.lastmod,
-    author: {
-      '@type': 'Organization',
-      name: SITE.brandName,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: SITE.brandName,
-      logo: {
-        '@type': 'ImageObject',
-        url: absoluteUrl('/pawzzles-logo.svg'),
+  const schema = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: content.title,
+      description: content.metaDescription || content.intro,
+      image: content.imageSrc ? absoluteUrl(content.imageSrc) : undefined,
+      mainEntityOfPage: absoluteUrl(canonical),
+      dateModified: resource.lastmod,
+      author: {
+        '@type': 'Organization',
+        name: SITE.brandName,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: SITE.brandName,
+        logo: {
+          '@type': 'ImageObject',
+          url: absoluteUrl('/pawzzles-logo.svg'),
+        },
       },
     },
-  }
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: absoluteUrl('/'),
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Resources',
+          item: absoluteUrl('/resources/'),
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: content.title,
+          item: absoluteUrl(canonical),
+        },
+      ],
+    },
+  ]
 
   return (
     <>
@@ -82,7 +108,7 @@ export default function ResourceDetail() {
         intro={content.intro}
         crumbs={[
           { label: 'Home', to: '/' },
-          { label: 'Resources', to: '/resources' },
+          { label: 'Resources', to: '/resources/' },
           { label: content.title },
         ]}
         meta={[
@@ -177,7 +203,7 @@ export default function ResourceDetail() {
             <div className="mt-20">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
                 <h2 className="font-display text-2xl sm:text-3xl text-navy">Related resources</h2>
-                <Link to="/resources" className="text-sm font-bold text-teal hover:text-teal-deep inline-flex items-center gap-1.5">
+                <Link to="/resources/" className="text-sm font-bold text-teal hover:text-teal-deep inline-flex items-center gap-1.5">
                   See all resources <Icon name="arrowRight" className="w-4 h-4" />
                 </Link>
               </div>

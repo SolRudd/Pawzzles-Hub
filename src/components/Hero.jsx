@@ -41,12 +41,12 @@ export default function Hero() {
 
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <Link
-                to="/calculators/dog-feeding-calculator"
+                to="/calculators/dog-feeding-calculator/"
                 className="btn-primary"
               >
                 Try the feeding calculator
               </Link>
-              <Link to="/resources" className="btn-secondary">
+              <Link to="/resources/" className="btn-secondary">
                 Browse resources
               </Link>
             </div>

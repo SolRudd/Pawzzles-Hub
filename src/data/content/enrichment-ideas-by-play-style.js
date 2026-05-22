@@ -41,7 +41,7 @@ export default {
     title: 'Get a quick activity match',
     body: 'Answer a few questions and get a simple enrichment plan for your dog.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['best-dog-enrichment-ideas', 'choosing-enrichment-toys-by-play-style', 'introducing-a-new-dog-toy'],
 }

@@ -37,7 +37,7 @@ export default {
     title: 'Choose the right feeder first',
     body: 'See what to look for before you add a slow feeder to the routine.',
     button: 'Read the slow feeder guide',
-    href: '/resources/slow-feeder-guide',
+    href: '/resources/slow-feeder-guide/',
   },
   related: ['slow-feeder-guide', 'calmer-mealtime-routine', 'mealtime-enrichment-ideas'],
 }

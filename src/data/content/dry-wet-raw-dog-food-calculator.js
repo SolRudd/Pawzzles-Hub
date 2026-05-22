@@ -42,7 +42,7 @@ export default {
     title: 'Estimate a starting portion',
     body: 'Choose your food type or add the kcal per 100g from your packet.',
     button: 'Try the feeding calculator',
-    href: '/calculators/dog-feeding-calculator',
+    href: '/calculators/dog-feeding-calculator/',
   },
   related: [
     'understanding-dog-food-calories',

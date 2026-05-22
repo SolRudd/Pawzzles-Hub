@@ -43,7 +43,7 @@ export default {
     title: 'Choose a slow feeder',
     body: 'See what to look for based on your dog’s size, eating style and routine.',
     button: 'Read the slow feeder guide',
-    href: '/resources/choosing-the-right-slow-feeder',
+    href: '/resources/choosing-the-right-slow-feeder/',
   },
   related: ['slow-feeders-and-mealtime-routines', 'enrichment-for-fast-eaters', 'calmer-mealtime-routine'],
 }

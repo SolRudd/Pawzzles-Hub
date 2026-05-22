@@ -21,7 +21,7 @@ export default function PopularResources() {
             </p>
           </div>
           <Link
-            to="/resources"
+            to="/resources/"
             className="inline-flex items-center gap-1.5 font-bold text-teal hover:text-teal-deep"
           >
             See all resources <Icon name="arrowRight" className="w-4 h-4" />

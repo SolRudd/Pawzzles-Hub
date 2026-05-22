@@ -42,7 +42,7 @@ export default {
     title: 'Use the value in the calculator',
     body: 'Enter kcal per 100g from your food label for a more useful grams estimate.',
     button: 'Try the feeding calculator',
-    href: '/calculators/dog-feeding-calculator',
+    href: '/calculators/dog-feeding-calculator/',
   },
   related: [
     'how-to-read-dog-food-feeding-labels',

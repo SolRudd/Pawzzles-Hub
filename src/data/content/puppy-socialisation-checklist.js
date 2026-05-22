@@ -77,7 +77,7 @@ export default {
     title: 'Find enrichment ideas for your puppy',
     body: 'Try the Enrichment Finder for tailored, age-appropriate activities.',
     button: 'Open Enrichment Finder',
-    href: '/calculators/enrichment-finder',
+    href: '/calculators/enrichment-finder/',
   },
   related: ['best-dog-enrichment-ideas', 'toy-safety-guide'],
 }

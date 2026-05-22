@@ -43,7 +43,7 @@ export default {
     title: 'Build a calmer mealtime',
     body: 'Start with a simple routine before adding more enrichment.',
     button: 'Read mealtime routine tips',
-    href: '/resources/calmer-mealtime-routine',
+    href: '/resources/calmer-mealtime-routine/',
   },
   related: ['slow-feeders-and-mealtime-routines', 'mealtime-enrichment-ideas', 'toy-safety-guide'],
 }

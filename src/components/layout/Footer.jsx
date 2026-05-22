@@ -7,24 +7,25 @@ const FOOTER_GROUPS = [
   {
     title: 'Resource Hub',
     links: [
-      { label: 'Resources', to: '/resources' },
-      { label: 'About', to: '/about' },
+      { label: 'Resources', to: '/resources/' },
+      { label: 'All Guides', to: '/all-guides/' },
+      { label: 'About', to: '/about/' },
     ],
   },
   {
     title: 'Categories',
     links: [
-      { label: 'Feeding', to: '/resources?category=feeding' },
-      { label: 'Enrichment', to: '/resources?category=enrichment' },
-      { label: 'Puppy', to: '/resources?category=puppy' },
-      { label: 'Guides', to: '/resources?category=guides' },
+      { label: 'Feeding', to: '/resources/?category=feeding' },
+      { label: 'Enrichment', to: '/resources/?category=enrichment' },
+      { label: 'Puppy', to: '/resources/?category=puppy' },
+      { label: 'Guides', to: '/resources/?category=guides' },
     ],
   },
   {
     title: 'Calculators',
     links: [
-      { label: 'Feeding Calculator', to: '/calculators/dog-feeding-calculator' },
-      { label: 'Enrichment Finder', to: '/calculators/enrichment-finder' },
+      { label: 'Feeding Calculator', to: '/calculators/dog-feeding-calculator/' },
+      { label: 'Enrichment Finder', to: '/calculators/enrichment-finder/' },
     ],
   },
   {

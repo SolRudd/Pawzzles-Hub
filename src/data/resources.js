@@ -403,9 +403,16 @@ function slugFromHref(href = '') {
   return match?.[1] || ''
 }
 
+function withTrailingSlash(path = '/') {
+  if (!path || path === '/') return '/'
+  if (path.includes('?') || path.includes('#')) return path
+  return path.endsWith('/') ? path : `${path}/`
+}
+
 function normaliseResource(resource) {
   const status = resource.status || (resource.comingSoon ? 'coming_soon' : 'published')
-  const href = resource.href || (resource.slug ? `/resources/${resource.slug}` : '/resources')
+  const rawHref = resource.href || (resource.slug ? `/resources/${resource.slug}` : '/resources')
+  const href = withTrailingSlash(rawHref)
   const slug = resource.slug || slugFromHref(href) || resource.id
   const isResourceDetail = href.startsWith('/resources/')
   const sitemap = resource.sitemap ?? (status === 'published' && isResourceDetail)

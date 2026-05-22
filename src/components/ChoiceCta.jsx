@@ -19,7 +19,7 @@ export default function ChoiceCta({ className = '' }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link to="/resources" className="btn-secondary">
+          <Link to="/resources/" className="btn-secondary">
             Browse resources
           </Link>
           <a

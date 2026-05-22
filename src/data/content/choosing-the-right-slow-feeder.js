@@ -43,7 +43,7 @@ export default {
     title: 'Estimate daily portions first',
     body: 'Use the feeding calculator as a practical starting point for meal planning.',
     button: 'Open feeding calculator',
-    href: '/calculators/dog-feeding-calculator',
+    href: '/calculators/dog-feeding-calculator/',
   },
   related: ['slow-feeder-guide', 'mealtime-enrichment-ideas', 'dog-feeding-calculator'],
 }

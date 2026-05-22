@@ -251,7 +251,7 @@ export default function EnrichmentFinder() {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: 'Enrichment Finder',
-    url: absoluteUrl('/calculators/enrichment-finder'),
+    url: absoluteUrl('/calculators/enrichment-finder/'),
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
     description:
@@ -267,7 +267,7 @@ export default function EnrichmentFinder() {
       <SEOHead
         title="Dog Enrichment Finder | Pawzzles Practical Tool"
         description="Use the Pawzzles Enrichment Finder to choose dog-friendly enrichment ideas by life stage, energy, goal and play style."
-        canonical="/calculators/enrichment-finder"
+        canonical="/calculators/enrichment-finder/"
         structuredData={schema}
       />
       <PageHero
@@ -276,7 +276,7 @@ export default function EnrichmentFinder() {
         intro="Answer four quick questions and we'll suggest enrichment ideas matched to your dog."
         crumbs={[
           { label: 'Home', to: '/' },
-          { label: 'Resources', to: '/resources' },
+          { label: 'Resources', to: '/resources/' },
           { label: 'Enrichment Finder' },
         ]}
         meta={[
@@ -430,7 +430,7 @@ export default function EnrichmentFinder() {
                   <button type="submit" className="btn-primary" disabled={submitStatus === 'loading'}>
                     {submitStatus === 'loading' ? 'Emailing plan...' : 'Get and email my plan'}
                   </button>
-                  <Link to="/resources/best-dog-enrichment-ideas" className="btn-ghost">
+                  <Link to="/resources/best-dog-enrichment-ideas/" className="btn-ghost">
                     See all enrichment ideas
                   </Link>
                 </div>
@@ -539,11 +539,11 @@ export default function EnrichmentFinder() {
                 </div>
 
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <Link to="/resources?category=enrichment" className="btn-primary">
+                  <Link to="/resources/?category=enrichment" className="btn-primary">
                     Browse enrichment ideas
                     <Icon name="arrowRight" className="w-4 h-4" />
                   </Link>
-                  <Link to="/resources?category=feeding" className="btn-secondary">
+                  <Link to="/resources/?category=feeding" className="btn-secondary">
                     Explore feeding guides
                   </Link>
                   <a
@@ -561,7 +561,7 @@ export default function EnrichmentFinder() {
           <div className="mt-16">
             <div className="flex items-end justify-between gap-3 mb-6">
               <h2 className="font-display text-2xl sm:text-3xl text-navy">Helpful next steps</h2>
-              <Link to="/resources" className="text-sm font-bold text-teal hover:text-teal-deep inline-flex items-center gap-1.5">
+              <Link to="/resources/" className="text-sm font-bold text-teal hover:text-teal-deep inline-flex items-center gap-1.5">
                 See all resources <Icon name="arrowRight" className="w-4 h-4" />
               </Link>
             </div>

@@ -9,6 +9,7 @@ import DogFeedingCalculator from './pages/DogFeedingCalculator.jsx'
 import EnrichmentFinder from './pages/EnrichmentFinder.jsx'
 import About from './pages/About.jsx'
 import SavedResult from './pages/SavedResult.jsx'
+import AllGuides from './pages/AllGuides.jsx'
 import NotFound from './pages/NotFound.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
 import { readCookieConsent } from './lib/cookieConsent.js'
@@ -54,6 +55,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/all-guides" element={<AllGuides />} />
             <Route path="/about" element={<About />} />
             <Route path="/resources/:slug" element={<ResourceDetail />} />
             <Route

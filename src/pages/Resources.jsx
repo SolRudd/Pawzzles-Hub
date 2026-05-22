@@ -44,7 +44,7 @@ export default function Resources() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Pawzzles Resource Hub',
-    url: absoluteUrl('/resources'),
+    url: absoluteUrl('/resources/'),
     description:
       'Pawzzles practical calculators, dog-friendly guides and checklists for enrichment, feeding and everyday routines.',
     isPartOf: {
@@ -59,7 +59,7 @@ export default function Resources() {
       <SEOHead
         title="Dog Enrichment, Feeding & Puppy Resources | Pawzzles Resource Hub"
         description="Browse Pawzzles dog-friendly guides, feeding tools, slow feeder advice, enrichment ideas and practical checklists built for everyday dog care."
-        canonical="/resources"
+        canonical="/resources/"
         ogType="website"
         structuredData={schema}
       />
